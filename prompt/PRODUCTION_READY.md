@@ -1,6 +1,6 @@
 ลองวิเคราะห์โค้ดทั้งหมด  พร้อมขึ้น production หรือยัง
 
-ถ้าพร้อมแล้ว ช่วยอัพเดต /Users/marosdeeuma/racing-simulation-queue-nextjs/README.md
+ถ้าพร้อมแล้ว ช่วยอัพเดต /Users/marosdeeuma/racing-game-station-nextjs/README.md
 
 ให้เป็นมืออาชีพ
 
@@ -8,7 +8,7 @@
 
 เช่น ผมจะเอาขึ้นโปรดักชั้น ต้องทำอย่างไร
 
-ถ้าเป็น script อ้อโต้ ให้รันผ่าน /Users/marosdeeuma/racing-simulation-queue-nextjs/package.json จะยิ่งดีมาก
+ถ้าเป็น script อ้อโต้ ให้รันผ่าน /Users/marosdeeuma/racing-game-station-nextjs/package.json จะยิ่งดีมาก
 
 ผมต้องการให้งานทุกอย่างเป็น automation
 

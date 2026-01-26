@@ -1,5 +1,5 @@
 -- ============================================================
--- Racing Simulation Queue System - Schema
+-- Racing Game Station System - Schema
 -- Created: 2026-01-08 (Consolidated for Production)
 -- Description: Tables, indexes, policies, and triggers
 -- ============================================================
@@ -39,14 +39,16 @@ CREATE TABLE IF NOT EXISTS public.machines (
     image_url TEXT,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     status public.machine_status NOT NULL DEFAULT 'available',
-    type TEXT DEFAULT 'Racing Sim',
-    hourly_rate DECIMAL(10,2) DEFAULT 200.00,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    type TEXT DEFAULT 'Game Station',
+    hourly_rate DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Comments
-COMMENT ON COLUMN public.machines.type IS 'Station type for categorization (e.g., Racing Sim, PS5, PC)';
+COMMENT ON TABLE public.machines IS 'Machines / Stations available for booking';
+COMMENT ON COLUMN public.machines.status IS 'Current status: available, occupied, maintenance';
+COMMENT ON COLUMN public.machines.type IS 'Station type for categorization (e.g., Game Station, PS5, PC)';
 COMMENT ON COLUMN public.machines.hourly_rate IS 'Price per hour in THB';
 
 -- Enable RLS

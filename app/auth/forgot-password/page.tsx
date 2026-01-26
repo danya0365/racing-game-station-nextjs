@@ -2,8 +2,8 @@ import { ForgotPasswordView } from '@/src/presentation/components/auth/ForgotPas
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'ลืมรหัสผ่าน | Racing Queue',
-  description: 'รีเซ็ตรหัสผ่านสำหรับบัญชี Racing Queue',
+  title: 'ลืมรหัสผ่าน | Racing Game Station',
+  description: 'รีเซ็ตรหัสผ่านสำหรับบัญชี Racing Game Station',
 };
 
 /**

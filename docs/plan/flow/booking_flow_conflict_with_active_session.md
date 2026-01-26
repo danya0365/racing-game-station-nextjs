@@ -66,7 +66,7 @@ sessions (
 
 ### Database - Sessions Table
 
-#### [MODIFY] [20260119000002_sessions.sql](file:///Users/marosdeeuma/racing-simulation-queue-nextjs/supabase/migrations/20260119000002_sessions.sql)
+#### [MODIFY] [20260119000002_sessions.sql](file:///Users/marosdeeuma/racing-game-station-nextjs/supabase/migrations/20260119000002_sessions.sql)
 
 เพิ่ม column `estimated_end_time` ใน sessions table:
 
@@ -83,7 +83,7 @@ IS 'Estimated end time for walk-in/manual sessions. Used for slot availability c
 
 ### Database - Slot Availability Function
 
-#### [MODIFY] [20260115000000_bookings.sql](file:///Users/marosdeeuma/racing-simulation-queue-nextjs/supabase/migrations/20260115000000_bookings.sql)
+#### [MODIFY] [20260115000000_bookings.sql](file:///Users/marosdeeuma/racing-game-station-nextjs/supabase/migrations/20260115000000_bookings.sql)
 
 แก้ไข `rpc_is_booking_slot_available` ให้ตรวจสอบ active sessions ด้วย:
 
@@ -144,7 +144,7 @@ $$;
 
 ### Database - Start Session Function
 
-#### [MODIFY] [20260119000002_sessions.sql](file:///Users/marosdeeuma/racing-simulation-queue-nextjs/supabase/migrations/20260119000002_sessions.sql)
+#### [MODIFY] [20260119000002_sessions.sql](file:///Users/marosdeeuma/racing-game-station-nextjs/supabase/migrations/20260119000002_sessions.sql)
 
 แก้ไข `rpc_start_session` ให้รับ `p_estimated_duration_minutes`:
 
@@ -187,7 +187,7 @@ RETURNS JSON
 
 ### Frontend - Backend Presenter
 
-#### [MODIFY] [BackendPresenter.ts](file:///Users/marosdeeuma/racing-simulation-queue-nextjs/src/presentation/presenters/backend/BackendPresenter.ts)
+#### [MODIFY] [BackendPresenter.ts](file:///Users/marosdeeuma/racing-game-station-nextjs/src/presentation/presenters/backend/BackendPresenter.ts)
 
 เพิ่ม parameter `estimatedDurationMinutes` เมื่อ start session:
 

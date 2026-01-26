@@ -141,7 +141,7 @@ export class ControlPresenter {
    */
   generateMetadata(): Metadata {
     return {
-      title: 'ควบคุมห้องเกม | Racing Simulation',
+      title: 'ควบคุมห้องเกม | Racing Game Station',
       description: 'หน้าควบคุมห้องเครื่องเล่นเกม - Session Control Panel',
     };
   }

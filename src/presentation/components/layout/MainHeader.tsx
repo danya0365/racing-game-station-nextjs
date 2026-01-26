@@ -39,7 +39,7 @@ export function MainHeader() {
             <span 
               className="text-xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent hidden sm:block transition-all duration-300 group-hover:drop-shadow-[0_0_10px_rgba(0,212,255,0.5)]"
             >
-              Racing Queue
+              Racing Game Station
             </span>
           </div>
         </Link>

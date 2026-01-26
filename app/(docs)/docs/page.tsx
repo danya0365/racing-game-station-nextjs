@@ -7,7 +7,7 @@ export default function DocsPage() {
       <div className="hidden print:block print:mb-8 print:pb-8 print:border-b-2 print:border-purple-500 print:text-center">
         <div className="text-6xl mb-4">📖</div>
         <h1 className="text-4xl font-bold text-gray-900 mb-2">คู่มือการใช้งาน</h1>
-        <p className="text-xl text-gray-600">Racing Queue - ระบบจองเวลาเล่นเกม</p>
+        <p className="text-xl text-gray-600">Racing Game Station - ระบบจองเวลาเล่นเกม</p>
         <p className="text-sm text-gray-500 mt-4">พิมพ์เมื่อ: มกราคม 2026</p>
       </div>
 
@@ -22,7 +22,7 @@ export default function DocsPage() {
           </span>
         </h1>
         <p className="text-gray-600 dark:text-gray-400 text-lg">
-          Racing Queue - ระบบจองเวลาเล่นเกม
+          Racing Game Station - ระบบจองเวลาเล่นเกม
         </p>
         <div className="mt-8 flex flex-col items-center gap-4">
           <div className="flex items-center gap-3">
@@ -193,7 +193,7 @@ export default function DocsPage() {
         </div>
         
         <p className="mt-8 text-sm text-gray-500 border-t border-gray-300 pt-4">
-          Racing Queue - คู่มือการใช้งาน | หน้า 1
+          Racing Game Station - คู่มือการใช้งาน | หน้า 1
         </p>
       </div>
     </div>

@@ -1,7 +1,7 @@
--- ShopQueue Security Policies
+-- Racing Game Station Security Policies
 -- Created: 2025-06-18
 -- Author: Marosdee Uma
--- Description: Row Level Security (RLS) policies for ShopQueue application
+-- Description: Row Level Security (RLS) policies for Racing Game Station application
 
 -- Enable Row Level Security on all tables
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;

@@ -90,7 +90,7 @@ export function JoinWalkInView() {
               เข้าคิวเล่นเกม
             </h1>
             <p className="text-gray-600 dark:text-white/60">
-              กรอกข้อมูลเพื่อรับลำดับคิว Racing Simulation
+              กรอกข้อมูลเพื่อรับลำดับคิว Racing Game Station
             </p>
           </div>
 

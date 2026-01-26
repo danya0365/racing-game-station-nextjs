@@ -1,4 +1,4 @@
--- ShopQueue Profile Functions
+-- Racing Game Station Profile Functions
 -- Created: 2025-06-19
 -- Author: Marosdee Uma
 -- Description: Adds profile management RPC functions

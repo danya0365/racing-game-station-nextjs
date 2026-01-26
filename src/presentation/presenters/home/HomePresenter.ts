@@ -74,8 +74,8 @@ export class HomePresenter {
    */
   generateMetadata(): Metadata {
     return {
-      title: 'Racing Queue - หน้าแรก',
-      description: 'ระบบจองคิวสำหรับร้านเกม Racing Simulation - ดูสถานะเครื่องและจองคิวได้ง่ายๆ',
+      title: 'Racing Game Station - หน้าแรก',
+      description: 'ระบบจองคิวสำหรับ Racing Game Station - ดูสถานะเครื่องและจองคิวได้ง่ายๆ',
     };
   }
 

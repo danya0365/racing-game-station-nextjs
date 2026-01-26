@@ -2,8 +2,8 @@ import { LoginView } from '@/src/presentation/components/auth/LoginView';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'เข้าสู่ระบบ | Racing Queue',
-  description: 'เข้าสู่ระบบเพื่อจองคิว Racing Simulator',
+  title: 'เข้าสู่ระบบ | Racing Game Station',
+  description: 'เข้าสู่ระบบเพื่อจองคิว Racing Game Station',
 };
 
 /**

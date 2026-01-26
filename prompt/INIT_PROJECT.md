@@ -1,12 +1,12 @@
-1. ช่วยเขียน TODO สำหรับโปรเจค /Users/marosdeeuma/racing-simulation-queue-nextjs
+1. ช่วยเขียน TODO สำหรับโปรเจค /Users/marosdeeuma/racing-game-station-nextjs
 
-สร้างโปรเจค Racing Simulation Queue
+สร้างโปรเจค Racing Game Station
 
-อ่านฟีเจอร์ที่เขียนไว้ที่ /Users/marosdeeuma/racing-simulation-queue-nextjs/prompt/FEATURE.md
+อ่านฟีเจอร์ที่เขียนไว้ที่ /Users/marosdeeuma/racing-game-station-nextjs/prompt/FEATURE.md
 
 ออกแบบ Master Data และ Mock data สำหรับโปรเจค
 
-โดยทุกครั้งที่สร้าง page.tsx ต้องทำตาม rule ที่เขียนไว้ที่ /Users/marosdeeuma/racing-simulation-queue-nextjs/prompt/CREATE_PAGE_PATTERN.md
+โดยทุกครั้งที่สร้าง page.tsx ต้องทำตาม rule ที่เขียนไว้ที่ /Users/marosdeeuma/racing-game-station-nextjs/prompt/CREATE_PAGE_PATTERN.md
 
 ตามหลัก SOLID Clean
 
@@ -14,7 +14,7 @@
 
 MainLayout ต้องให้ออกแบบให้ เป็น Full screen ห้าม scroll อารมณ์เหมือนใช้เว็บแอพ
 
-ให้ใช้ tailwindcss สำหรับทำ style ที่ /Users/marosdeeuma/racing-simulation-queue-nextjs/public/styles/index.css
+ให้ใช้ tailwindcss สำหรับทำ style ที่ /Users/marosdeeuma/racing-game-station-nextjs/public/styles/index.css
 
 3. ออกแบบ Reuse Component ของ MainLayout
 

@@ -273,8 +273,8 @@ export class BackendPresenter {
    */
   generateMetadata(): Metadata {
     return {
-      title: 'แอดมิน | Racing Queue',
-      description: 'ระบบจัดการคิวและเครื่องเล่น Racing Simulator',
+      title: 'แอดมิน | Racing Game Station',
+      description: 'ระบบจัดการคิวและเครื่องเล่น Racing Game Station',
     };
   }
 

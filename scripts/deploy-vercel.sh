@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #######################################
-# Racing Queue - Vercel Deployment Script
+# Racing Game Station - Vercel Deployment Script
 # 
 # This script deploys the Next.js app to Vercel
 # 
@@ -36,7 +36,7 @@ ENVIRONMENT="${1:-production}"
 
 echo -e "${PURPLE}"
 echo "╔════════════════════════════════════════════════════════════╗"
-echo "║           🏎️  Racing Queue - Vercel Deployment             ║"
+echo "║           🏎️  Racing Game Station - Vercel Deployment             ║"
 echo "╚════════════════════════════════════════════════════════════╝"
 echo -e "${NC}"
 
@@ -105,4 +105,4 @@ echo "  2. Verify environment variables in Vercel dashboard"
 echo "  3. Test authentication flows"
 echo "  4. Check database connectivity"
 echo ""
-echo -e "${PURPLE}🏎️ Racing Queue deployed successfully!${NC}"
+echo -e "${PURPLE}🏎️ Racing Game Station deployed successfully!${NC}"

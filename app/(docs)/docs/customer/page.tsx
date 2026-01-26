@@ -7,7 +7,7 @@ export default function CustomerDocsPage() {
       <div className="hidden print:block print:mb-8 print:pb-8 print:border-b-2 print:border-purple-500 print:text-center">
         <div className="text-6xl mb-4">📖</div>
         <h1 className="text-4xl font-bold text-gray-900 mb-2">คู่มือสำหรับลูกค้า</h1>
-        <p className="text-xl text-gray-600">Racing Queue - ระบบจองเวลาเล่นเกม</p>
+        <p className="text-xl text-gray-600">Racing Game Station - ระบบจองเวลาเล่นเกม</p>
         <p className="text-sm text-gray-500 mt-4">พิมพ์เมื่อ: มกราคม 2026</p>
       </div>
 
@@ -266,7 +266,7 @@ export default function CustomerDocsPage() {
 
       {/* Print Footer */}
       <div className="hidden print:block print:mt-8 print:pt-4 print:border-t print:border-gray-300 print:text-center print:text-sm print:text-gray-500">
-        <p>Racing Queue - คู่มือสำหรับลูกค้า | หน้า _____</p>
+        <p>Racing Game Station - คู่มือสำหรับลูกค้า | หน้า _____</p>
       </div>
     </div>
   );

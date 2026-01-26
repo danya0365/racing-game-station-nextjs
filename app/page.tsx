@@ -21,8 +21,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
     // Fallback metadata
     return {
-      title: "Racing Queue - ระบบจองคิว Racing Simulator",
-      description: "ระบบจองคิวสำหรับร้านเกม Racing Simulation",
+      title: "Racing Game Station - ระบบจองคิว Racing Game Station",
+      description: "ระบบจองคิวสำหรับ Racing Game Station",
     };
   }
 }

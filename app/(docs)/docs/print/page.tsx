@@ -42,25 +42,25 @@ export default function PrintDocsPage() {
 
   const handlePrintAll = useReactToPrint({
     contentRef: printAllRef,
-    documentTitle: 'คู่มือการใช้งาน Racing Queue',
+    documentTitle: 'คู่มือการใช้งาน Racing Game Station',
     pageStyle: printStyles,
   });
 
   const handlePrintCustomer = useReactToPrint({
     contentRef: printCustomerRef,
-    documentTitle: 'คู่มือสำหรับลูกค้า - Racing Queue',
+    documentTitle: 'คู่มือสำหรับลูกค้า - Racing Game Station',
     pageStyle: printStyles,
   });
 
   const handlePrintAdmin = useReactToPrint({
     contentRef: printAdminRef,
-    documentTitle: 'คู่มือสำหรับแอดมิน - Racing Queue',
+    documentTitle: 'คู่มือสำหรับแอดมิน - Racing Game Station',
     pageStyle: printStyles,
   });
 
   const handlePrintGameControl = useReactToPrint({
     contentRef: printGameControlRef,
-    documentTitle: 'คู่มือห้องควบคุมเกม - Racing Queue',
+    documentTitle: 'คู่มือห้องควบคุมเกม - Racing Game Station',
     pageStyle: printStyles,
   });
 
@@ -141,7 +141,7 @@ function CoverPage() {
     <section className="print-section-cover text-center py-20 border-b-4 border-purple-500 print:break-after-page">
       <div className="text-8xl mb-6">📖</div>
       <h1 className="text-5xl font-bold text-gray-900 mb-4">คู่มือการใช้งาน</h1>
-      <h2 className="text-3xl text-purple-600 font-semibold mb-8">Racing Queue</h2>
+      <h2 className="text-3xl text-purple-600 font-semibold mb-8">Racing Game Station</h2>
       <p className="text-xl text-gray-600">ระบบจองเวลาเล่นเกม</p>
 
       <div className="mt-16 text-gray-500">
@@ -804,11 +804,11 @@ function BackCover() {
   return (
     <section className="py-16 text-center border-t-4 border-purple-500 mt-12 print:break-before-page">
       <div className="text-6xl mb-6">🏁</div>
-      <h2 className="text-3xl font-bold text-gray-900 mb-4">Racing Queue</h2>
+      <h2 className="text-3xl font-bold text-gray-900 mb-4">Racing Game Station</h2>
       <p className="text-xl text-gray-600 mb-8">ระบบจองเวลาเล่นเกม</p>
 
       <div className="text-gray-500">
-        <p>© 2026 Racing Queue</p>
+        <p>© 2026 Racing Game Station</p>
         <p className="mt-2">คู่มือการใช้งาน เวอร์ชัน 1.0</p>
       </div>
     </section>

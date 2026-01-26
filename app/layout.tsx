@@ -5,13 +5,13 @@ import type { Metadata } from "next";
 import "../public/styles/index.css";
 
 export const metadata: Metadata = {
-  title: "Racing Queue - ระบบจองคิว Racing Simulator",
-  description: "ระบบจองคิวสำหรับร้านเกม Racing Simulation - จองคิวง่าย รวดเร็ว",
-  keywords: ["racing simulator", "จองคิว", "racing game", "simulation"],
-  authors: [{ name: "Racing Queue Team" }],
+  title: "Racing Game Station - ระบบจองคิว Racing Game Station",
+  description: "ระบบจองคิวสำหรับ Racing Game Station - จองคิวง่าย รวดเร็ว",
+  keywords: ["racing game station", "จองคิว", "racing game", "esports", "driving"],
+  authors: [{ name: "Racing Game Station Team" }],
   openGraph: {
-    title: "Racing Queue - ระบบจองคิว Racing Simulator",
-    description: "ระบบจองคิวสำหรับร้านเกม Racing Simulation",
+    title: "Racing Game Station - ระบบจองคิว Racing Game Station",
+    description: "ระบบจองคิวสำหรับ Racing Game Station",
     type: "website",
   },
 };

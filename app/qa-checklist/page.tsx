@@ -2,7 +2,7 @@
 
 /**
  * QA Checklist Page
- * Manual testing checklist for the racing queue system
+ * Manual testing checklist for the racing game station system
  * Helps track testing progress with persistent checkboxes
  */
 
@@ -51,7 +51,7 @@ export default function QAChecklistPage() {
                   🧪 QA Checklist
                 </span>
               </h1>
-              <p className="text-muted text-sm mt-1">รายการทดสอบสำหรับระบบ Racing Queue</p>
+              <p className="text-muted text-sm mt-1">รายการทดสอบสำหรับระบบ Racing Game Station</p>
             </div>
             <GlowButton
               color="red"

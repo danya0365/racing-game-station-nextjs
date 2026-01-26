@@ -1,6 +1,6 @@
-# 🚀 Racing Queue Deployment Guide
+# 🚀 Racing Game Station Deployment Guide
 
-คู่มือการ Deploy ระบบ Racing Queue ไปยัง Production
+คู่มือการ Deploy ระบบ Racing Game Station ไปยัง Production
 
 ---
 
@@ -75,7 +75,7 @@ supabase db push
 
 เข้าไปที่ Supabase Dashboard > Database > Tables เพื่อตรวจสอบว่า tables ถูกสร้างแล้ว:
 
-- `machines` - เครื่องเล่น Racing Simulator
+- `machines` - เครื่องเล่น Racing Game Station
 - `queues` - คิวการจอง
 - `profiles` - ข้อมูลผู้ใช้
 
@@ -118,11 +118,11 @@ supabase db seed
 
 **Users & Authentication:**
 - Admin: `admin@racing.com` (password: `12345678`)
-- User 1: `user1@shopqueue.com` (password: `12345678`)
-- User 2: `user2@shopqueue.com` (password: `12345678`)
+- User 1: `user1@racinggamestation.com` (password: `12345678`)
+- User 2: `user2@racinggamestation.com` (password: `12345678`)
 
 **Machines:**
-- 6 เครื่อง Racing Simulator (Racing Sim 1-6)
+- 6 เครื่อง Racing Game Station (Game Station 1-6)
 
 **Customers:**
 - 10 ลูกค้าตัวอย่าง พร้อมประวัติการเล่น
@@ -166,7 +166,7 @@ vercel link
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public API key | `eyJhbGci...` |
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-side key | `eyJhbGci...` |
 | `NEXT_PUBLIC_APP_URL` | Application URL | `https://your-app.vercel.app` |
-| `NEXT_PUBLIC_APP_NAME` | App display name | `Racing Queue` |
+| `NEXT_PUBLIC_APP_NAME` | App display name | `Racing Game Station` |
 | `NEXT_PUBLIC_AUTH_EMAIL_ENABLED` | Enable email auth | `true` |
 | `NEXT_PUBLIC_AUTH_REGISTRATION_ENABLED` | Allow registration | `false` |
 
@@ -221,7 +221,7 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 # Application Configuration
 NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_APP_NAME="Racing Simulation Queue"
+NEXT_PUBLIC_APP_NAME="Racing Game Station"
 
 # Auth Configuration
 NEXT_PUBLIC_AUTH_EMAIL_ENABLED=true
@@ -238,7 +238,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-production-service-role-key
 
 # Application Configuration
 NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
-NEXT_PUBLIC_APP_NAME="Racing Simulation Queue"
+NEXT_PUBLIC_APP_NAME="Racing Game Station"
 
 # Auth Configuration - Production มักจะปิดการ register
 NEXT_PUBLIC_AUTH_EMAIL_ENABLED=true
@@ -333,13 +333,13 @@ Error: permission denied for schema public
 
 หากพบปัญหาในการ deploy สามารถ:
 
-1. ตรวจสอบ [GitHub Issues](https://github.com/yourusername/racing-simulation-queue-nextjs/issues)
+1. ตรวจสอบ [GitHub Issues](https://github.com/yourusername/racing-game-station-nextjs/issues)
 2. อ่าน [Troubleshooting Guide](#troubleshooting)
 3. Contact: your-email@example.com
 
 ---
 
 <p align="center">
-  <strong>🏎️ Racing Queue - Deployment Guide</strong><br/>
-  <sub>Built with ❤️ for Racing Simulation enthusiasts</sub>
+  <strong>🏎️ Racing Game Station - Deployment Guide</strong><br/>
+  <sub>Built with ❤️ for Racing Game Station enthusiasts</sub>
 </p>

@@ -3,8 +3,8 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 
 export const metadata: Metadata = {
-  title: 'ยืนยันอีเมล | Racing Queue',
-  description: 'ยืนยันอีเมลสำหรับบัญชี Racing Queue',
+  title: 'ยืนยันอีเมล | Racing Game Station',
+  description: 'ยืนยันอีเมลสำหรับบัญชี Racing Game Station',
 };
 
 /**

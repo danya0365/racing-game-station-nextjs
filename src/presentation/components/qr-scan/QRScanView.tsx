@@ -9,7 +9,7 @@ import { useReactToPrint } from 'react-to-print';
 
 // Shop configuration
 const SHOP_CONFIG = {
-  name: 'Racing Simulation',
+  name: 'Racing Game Station',
   tagline: 'ประสบการณ์แข่งรถเสมือนจริงระดับพรีเมียม',
   address: 'อ.เมือง จ.นราธิวาส 96000',
   phone: '02-XXX-XXXX',

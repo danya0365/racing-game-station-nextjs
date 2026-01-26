@@ -1,5 +1,5 @@
 -- ============================================================
--- Racing Simulation Queue System - RPC Functions
+-- Racing Game Station System - RPC Functions
 -- Created: 2026-01-08 (Consolidated for Production)
 -- Description: All RPC functions and grants
 -- ============================================================

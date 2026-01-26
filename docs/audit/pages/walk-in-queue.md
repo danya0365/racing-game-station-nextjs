@@ -68,7 +68,7 @@
 | Feature | Database Support | Current UI Support | Gap |
 | :--- | :--- | :--- | :--- |
 | **จำนวนคน (Party Size)** | ✅ 1-10 คน | ⚠️ 1-4 คน (UI Limit) | ปรับเพิ่มได้ถ้าต้องการรองรับกลุ่มใหญ่ |
-| **เลือกประเภทเครื่อง (Station Type)** | ✅ Text (e.g., PS5, Sim) | ⚠️ Auto-derived from Machine | เลือกเครื่องที่ต้องการได้โดยตรง (Type จะถูกระบุอัตโนมัติ) |
+| **เลือกประเภทเครื่อง (Station Type)** | ✅ Text (e.g., PS5, Station) | ⚠️ Auto-derived from Machine | เลือกเครื่องที่ต้องการได้โดยตรง (Type จะถูกระบุอัตโนมัติ) |
 | **เลือกเครื่องระบุเจาะจง (Specific Machine)** | ✅ FK to Machine | ✅ รองรับแล้ว (Dropdown) | ลูกค้าสามารถเลือกเครื่องที่ว่างหรือรอคิวเครื่องที่ต้องการได้ |
 | **โน้ตเพิ่มเติม (Notes)** | ✅ Text | ✅ รองรับแล้ว | ระบุความต้องการพิเศษได้ |
 
