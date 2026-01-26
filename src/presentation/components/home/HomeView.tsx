@@ -2,8 +2,6 @@
 
 import { Machine } from '@/src/application/repositories/IMachineRepository';
 import { getShopNow, SHOP_TIMEZONE } from '@/src/lib/date';
-import { AnimatedCard } from '@/src/presentation/components/ui/AnimatedCard';
-import { GlowButton } from '@/src/presentation/components/ui/GlowButton';
 import { HomeViewModel } from '@/src/presentation/presenters/home/HomePresenter';
 import { useHomePresenter } from '@/src/presentation/presenters/home/useHomePresenter';
 import 'dayjs/locale/th';
@@ -18,6 +16,10 @@ interface DashboardStats {
   occupiedMachines: number;
   todayBookings: number;
   activeBookings: number;
+  walkInQueueCount: number;
+  averageWaitTime: number;
+  generalCustomers: number;
+  totalPlayers: number;
   waitingInQueue: number;
 }
 
@@ -56,272 +58,155 @@ export function HomeView({ initialViewModel }: { initialViewModel?: HomeViewMode
     occupiedMachines: machines.filter(m => m.status === 'occupied').length,
     todayBookings: viewModel?.todayBookings || 0,
     activeBookings: viewModel?.activeBookings || 0,
+    walkInQueueCount: viewModel?.walkInQueueCount || 0,
+    averageWaitTime: viewModel?.queueStats.averageWaitMinutes || 0,
+    generalCustomers: viewModel?.generalCustomers || 0,
+    totalPlayers: viewModel?.totalPlayers || 0,
     waitingInQueue: viewModel?.queueStats.waitingCount || 0,
   };
 
-  const loading = isLoading && !viewModel; // Only show loading if no data at all
+  const loading = isLoading && !viewModel;
 
   return (
-    <div className="min-h-screen bg-background overflow-auto scrollbar-thin">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        {/* Background gradient - works in both light and dark mode */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-pink-500/10 to-cyan-500/20 dark:from-purple-900/40 dark:via-pink-900/20 dark:to-cyan-900/30" />
+    <div className="min-h-screen bg-background overflow-auto scrollbar-thin pb-20">
+      {/* Hero Section - Compact & Informational */}
+      <section className="relative overflow-hidden bg-surface border-b border-border">
+        {/* Background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 via-background to-background" />
         
-        {/* Racing stripe decoration */}
-        <div className="absolute inset-0 opacity-5 dark:opacity-10">
-          <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-purple-500 to-transparent" />
-          <div className="absolute top-0 left-1/2 w-px h-full bg-gradient-to-b from-transparent via-pink-500 to-transparent" />
-          <div className="absolute top-0 left-3/4 w-px h-full bg-gradient-to-b from-transparent via-cyan-500 to-transparent" />
-        </div>
-
-        <div className="relative px-4 md:px-8 py-16 md:py-24">
-          <div className="max-w-6xl mx-auto text-center">
-            {/* Logo / Icon */}
-            <div className="inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-gradient-to-br from-purple-500 to-pink-600 shadow-2xl shadow-purple-500/30 mb-8 animate-pulse">
-              <span className="text-5xl">🏎️</span>
+        <div className="relative px-4 py-6 md:py-8 max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-3xl shadow-lg shadow-purple-500/20">
+              🏎️
             </div>
-
-            {/* Main Title */}
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
                 Racing Game Station
-              </span>
-            </h1>
-
-            {/* Subtitle */}
-            <p className="text-lg md:text-xl text-muted mb-8 max-w-2xl mx-auto">
-              ระบบจัดการ Racing Game Station | จองล่วงหน้า • เข้าคิว Walk-in • ติดตามสถานะ
-            </p>
-
-            {/* Current time */}
-            <div className="inline-flex items-center gap-3 px-6 py-3 bg-surface/80 dark:bg-surface/50 backdrop-blur-sm border border-border rounded-full mb-10">
-              <span className="text-2xl">📅</span>
-              <span className="text-foreground font-medium">
-                {currentTime.locale('th').format('dddd D MMMM YYYY')}
-              </span>
-              <span className="text-muted">•</span>
-              <span className="text-xl font-bold text-foreground">
-                {currentTime.format('HH:mm')}
-              </span>
+              </h1>
+              <div className="flex items-center gap-2 text-muted text-sm mt-1">
+                <span>📅 {currentTime.locale('th').format('D MMM BB')}</span>
+                <span>•</span>
+                <span>⏰ {currentTime.format('HH:mm')}</span>
+              </div>
             </div>
+          </div>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/time-booking">
-                <GlowButton color="purple" size="lg" className="w-full sm:w-auto">
-                  📅 จองล่วงหน้า
-                </GlowButton>
-              </Link>
-              <Link href="/walk-in">
-                <GlowButton color="cyan" size="lg" className="w-full sm:w-auto">
-                  🏁 เข้าคิว Walk-in
-                </GlowButton>
-              </Link>
-            </div>
+          {/* Status Badge */}
+          <div className="flex gap-3">
+             <div className="px-4 py-2 rounded-xl bg-surface border border-border flex flex-col items-center min-w-[100px]">
+               <span className="text-xs text-muted mb-1">เครื่องว่าง</span>
+               <span className="text-xl font-bold text-emerald-500">
+                 {loading ? '-' : stats.availableMachines}
+                 <span className="text-sm text-muted font-normal ml-1">/ {stats.totalMachines}</span>
+               </span>
+             </div>
+             <div className="px-4 py-2 rounded-xl bg-surface border border-border flex flex-col items-center min-w-[100px]">
+               <span className="text-xs text-muted mb-1">คิวรอ</span>
+               <span className="text-xl font-bold text-amber-500">
+                 {loading ? '-' : stats.waitingInQueue}
+               </span>
+             </div>
           </div>
         </div>
       </section>
 
-      {/* Live Dashboard Section */}
-      <section className="px-4 md:px-8 py-12 -mt-6 relative z-10">
-        <div className="max-w-6xl mx-auto">
-          {/* Section Title */}
-          <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-              สถานะวันนี้
-            </h2>
-            <p className="text-muted">อัปเดตแบบ real-time</p>
-          </div>
-
-          {/* Stats Grid */}
+      <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+        
+        {/* Quick Actions - Primary Utility */}
+        <section>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {/* Total Machines */}
-            <AnimatedCard className="p-5 text-center bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/30">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 text-3xl mb-3 shadow-lg">
-                🎮
-              </div>
-              <div className="text-3xl font-bold text-foreground">
-                {loading ? '...' : stats.totalMachines}
-              </div>
-              <div className="text-sm text-muted">เครื่องทั้งหมด</div>
-            </AnimatedCard>
-
-            {/* Available */}
-            <AnimatedCard className="p-5 text-center bg-gradient-to-br from-emerald-500/10 to-green-500/10 border-emerald-500/30">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-3xl mb-3 shadow-lg">
-                ✅
-              </div>
-              <div className="text-3xl font-bold text-emerald-500 dark:text-emerald-400">
-                {loading ? '...' : stats.availableMachines}
-              </div>
-              <div className="text-sm text-muted">ว่างพร้อมเล่น</div>
-            </AnimatedCard>
-
-            {/* Occupied */}
-            <AnimatedCard className="p-5 text-center bg-gradient-to-br from-orange-500/10 to-amber-500/10 border-orange-500/30">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 text-3xl mb-3 shadow-lg">
-                🔥
-              </div>
-              <div className="text-3xl font-bold text-orange-500 dark:text-orange-400">
-                {loading ? '...' : stats.occupiedMachines}
-              </div>
-              <div className="text-sm text-muted">กำลังใช้งาน</div>
-            </AnimatedCard>
-
-            {/* Today's Bookings */}
-            <AnimatedCard className="p-5 text-center bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border-cyan-500/30">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-3xl mb-3 shadow-lg">
-                📋
-              </div>
-              <div className="text-3xl font-bold text-cyan-500 dark:text-cyan-400">
-                {loading ? '...' : stats.waitingInQueue}
-              </div>
-              <div className="text-sm text-muted">คิวรอหน้าร้าน</div>
-            </AnimatedCard>
-          </div>
-        </div>
-      </section>
-
-      {/* Quick Actions Section */}
-      <section className="px-4 md:px-8 py-12 bg-surface/50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold mb-2">
-              <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                เริ่มต้นใช้งาน
-              </span>
-            </h2>
-            <p className="text-muted">เลือกบริการที่ต้องการ</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Advance Booking */}
+            <QuickActionCard
+              href="/walk-in"
+              icon="🏁"
+              title="เข้าคิวทันที"
+              description="เล่นเลย ไม่ต้องจอง"
+              color="cyan"
+              isPrimary
+            />
             <QuickActionCard
               href="/time-booking"
               icon="📅"
               title="จองล่วงหน้า"
-              description="เลือกวันและเวลาที่ต้องการ จองได้ล่วงหน้าถึง 7 วัน"
+              description="ล็อคเวลาที่ต้องการ"
               color="purple"
             />
-
-            {/* Walk-in Queue */}
-            <QuickActionCard
-              href="/walk-in"
-              icon="🏁"
-              title="เข้าคิว Walk-in"
-              description="มาถึงแล้ว? เข้าคิวรอเล่นได้เลย ไม่ต้องจอง"
-              color="cyan"
-            />
-
-            {/* Booking History */}
             <QuickActionCard
               href="/customer/booking-history"
               icon="📋"
               title="ประวัติการจอง"
-              description="ดูประวัติและสถานะการจองของคุณ"
+              description="เช็คสถานะของคุณ"
               color="pink"
             />
-
-            {/* QR Scan */}
-            <QuickActionCard
+             <QuickActionCard
               href="/qr-scan"
               icon="📱"
               title="สแกน QR"
-              description="สแกน QR Code เพื่อเข้าถึงบริการอย่างรวดเร็ว"
+              description="เช็คอิน / จ่ายเงิน"
               color="green"
             />
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Machine Status Preview */}
-      <section className="px-4 md:px-8 py-12">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+        {/* Real-time Machine Status */}
+        <section>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold flex items-center gap-2">
+              <span className="w-2 h-6 md:h-8 rounded-full bg-purple-500" />
               สถานะเครื่อง
             </h2>
-            <p className="text-muted">เครื่องที่พร้อมให้บริการ</p>
+             <div className="flex gap-2 text-xs">
+                <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-500">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" /> ว่าง
+                </div>
+                <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-orange-500/10 text-orange-500">
+                  <span className="w-2 h-2 rounded-full bg-orange-500" /> ไม่ว่าง
+                </div>
+             </div>
           </div>
 
           {loading ? (
-            <div className="text-center py-12">
-              <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
-              <p className="text-muted">กำลังโหลด...</p>
-            </div>
+             <div className="flex justify-center py-12">
+               <div className="animate-spin text-purple-500 text-2xl">⚡</div>
+             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              {machines.slice(0, 6).map((machine) => (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              {machines.map((machine) => (
                 <MachineStatusCard key={machine.id} machine={machine} />
               ))}
             </div>
           )}
+        </section>
 
-          {machines.length > 6 && (
-            <div className="text-center mt-8">
-              <Link href="/time-booking">
-                <GlowButton color="purple" size="md">
-                  ดูเครื่องทั้งหมด ({machines.length} เครื่อง)
-                </GlowButton>
-              </Link>
-            </div>
-          )}
-        </div>
-      </section>
+        {/* Today's Schedule Overview */}
+        <section className="bg-surface/30 rounded-2xl p-6 border border-border/50">
+           <div className="flex items-center justify-between mb-4">
+             <h3 className="font-medium text-foreground">ภาพรวมวันนี้</h3>
+             <Link href="/time-booking" className="text-sm text-purple-400 hover:text-purple-300">
+               ดูตารางเวลาเต็ม →
+             </Link>
+           </div>
+           
+           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="p-4 rounded-xl bg-surface border border-border">
+                <div className="text-sm text-muted mb-1">จองวันนี้แล้ว</div>
+                <div className="text-2xl font-bold">{stats.todayBookings} <span className="text-sm font-normal text-muted">รายการ</span></div>
+              </div>
+              <div className="p-4 rounded-xl bg-surface border border-border">
+                <div className="text-sm text-muted mb-1">คิว Walk-in</div>
+                 <div className="text-2xl font-bold text-amber-500">{stats.walkInQueueCount} <span className="text-sm font-normal text-muted">คิว</span></div>
+              </div>
+              <div className="p-4 rounded-xl bg-surface border border-border">
+                <div className="text-sm text-muted mb-1">ลูกค้าทั่วไป</div>
+                <div className="text-2xl font-bold text-blue-500">{stats.generalCustomers} <span className="text-sm font-normal text-muted">คน</span></div>
+              </div>
+              <div className="p-4 rounded-xl bg-surface border border-border">
+                <div className="text-sm text-muted mb-1">ผู้เล่นวันนี้</div>
+                <div className="text-2xl font-bold text-emerald-500">{stats.totalPlayers} <span className="text-sm font-normal text-muted">คน</span></div>
+              </div>
+           </div>
+        </section>
 
-      {/* Features Section */}
-      <section className="px-4 md:px-8 py-16 bg-gradient-to-b from-surface/50 to-background">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-10">
-            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              ทำไมต้องใช้ระบบนี้?
-            </span>
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <FeatureCard
-              icon="⏰"
-              title="ไม่ต้องรอคิว"
-              description="จองเวลาที่ต้องการล่วงหน้า มาถึงเวลาเล่นได้เลย ไม่เสียเวลารอ"
-            />
-            <FeatureCard
-              icon="📱"
-              title="จองง่ายทุกที่"
-              description="จองผ่านมือถือได้ทุกที่ทุกเวลา ไม่ต้องโทรสอบถาม"
-            />
-            <FeatureCard
-              icon="🔔"
-              title="แจ้งเตือนอัตโนมัติ"
-              description="รับการแจ้งเตือนเมื่อถึงคิว หรือใกล้ถึงเวลาจอง"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Footer CTA */}
-      <section className="px-4 md:px-8 py-12">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">
-            พร้อมเล่นแล้วหรือยัง?
-          </h2>
-          <p className="text-muted mb-8">
-            เลือกวิธีที่สะดวกที่สุดสำหรับคุณ!
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/walk-in">
-              <GlowButton color="cyan" size="lg" className="w-full sm:w-auto">
-                🏁 เข้าคิวหน้าร้าน
-              </GlowButton>
-            </Link>
-            <Link href="/time-booking">
-              <GlowButton color="pink" size="lg" className="w-full sm:w-auto">
-                📅 จองล่วงหน้า
-              </GlowButton>
-            </Link>
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
   );
 }
@@ -336,6 +221,7 @@ interface QuickActionCardProps {
   title: string;
   description: string;
   color: 'purple' | 'cyan' | 'pink' | 'green' | 'orange';
+  isPrimary?: boolean;
 }
 
 const colorMap = {
@@ -371,7 +257,7 @@ const colorMap = {
   },
 };
 
-function QuickActionCard({ href, icon, title, description, color }: QuickActionCardProps) {
+function QuickActionCard({ href, icon, title, description, color, isPrimary }: QuickActionCardProps) {
   const colors = colorMap[color];
   
   return (
@@ -385,6 +271,8 @@ function QuickActionCard({ href, icon, title, description, color }: QuickActionC
           hover:scale-105 hover:-translate-y-1
           hover:shadow-xl ${colors.shadow}
           cursor-pointer
+          ${isPrimary ? 'ring-2 ring-emerald-500/50' : ''}
+          h-full
         `}
       >
         <div
@@ -406,22 +294,18 @@ function QuickActionCard({ href, icon, title, description, color }: QuickActionC
         <div className="absolute top-6 right-6 text-muted group-hover:text-foreground transition-colors">
           →
         </div>
+        
+        {isPrimary && (
+          <div className="absolute -top-3 left-6 px-3 py-1 bg-emerald-500 text-white text-xs font-bold rounded-full shadow-lg animate-bounce">
+            แนะนำ
+          </div>
+        )}
       </div>
     </Link>
   );
 }
 
-function FeatureCard({ icon, title, description }: { icon: string; title: string; description: string }) {
-  return (
-    <div className="text-center p-6 bg-background border border-border rounded-2xl hover:border-purple-500/50 transition-all hover:shadow-lg">
-      <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 text-4xl mb-4">
-        {icon}
-      </div>
-      <h3 className="text-xl font-bold text-foreground mb-2">{title}</h3>
-      <p className="text-muted">{description}</p>
-    </div>
-  );
-}
+
 
 function MachineStatusCard({ machine }: { machine: Machine }) {
   const statusConfig = {

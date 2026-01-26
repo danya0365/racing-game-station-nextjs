@@ -9,6 +9,7 @@
 'use client';
 
 import { ApiBookingRepository } from '@/src/infrastructure/repositories/api/ApiBookingRepository';
+import { ApiDashboardRepository } from '@/src/infrastructure/repositories/api/ApiDashboardRepository';
 import { ApiMachineRepository } from '@/src/infrastructure/repositories/api/ApiMachineRepository';
 import { ApiWalkInQueueRepository } from '@/src/infrastructure/repositories/api/ApiWalkInQueueRepository';
 import { HomePresenter } from './HomePresenter';
@@ -19,8 +20,9 @@ export class HomePresenterClientFactory {
     const machineRepository = new ApiMachineRepository();
     const walkInQueueRepository = new ApiWalkInQueueRepository();
     const bookingRepository = new ApiBookingRepository();
+    const dashboardRepository = new ApiDashboardRepository();
 
-    return new HomePresenter(machineRepository, walkInQueueRepository, bookingRepository);
+    return new HomePresenter(machineRepository, walkInQueueRepository, bookingRepository, dashboardRepository);
   }
 }
 
