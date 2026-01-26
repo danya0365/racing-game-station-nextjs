@@ -68,7 +68,7 @@ export function HomeView({ initialViewModel }: { initialViewModel?: HomeViewMode
   const loading = isLoading && !viewModel;
 
   return (
-    <div className="min-h-screen bg-background overflow-auto scrollbar-thin pb-20">
+    <div className="bg-background overflow-auto scrollbar-thin">
       {/* Hero Section - Compact & Informational */}
       <section className="relative overflow-hidden bg-surface border-b border-border">
         {/* Background gradient */}
