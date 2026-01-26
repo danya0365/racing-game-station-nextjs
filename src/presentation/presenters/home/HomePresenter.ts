@@ -6,6 +6,7 @@
  * ✅ Updated to use IWalkInQueueRepository (new schema)
  */
 
+import { IBookingRepository } from '@/src/application/repositories/IBookingRepository';
 import { IMachineRepository, Machine, MachineStats } from '@/src/application/repositories/IMachineRepository';
 import { IWalkInQueueRepository, WalkInQueue, WalkInQueueStats } from '@/src/application/repositories/IWalkInQueueRepository';
 import { Metadata } from 'next';
@@ -16,6 +17,8 @@ export interface HomeViewModel {
   waitingQueues: WalkInQueue[];
   queueStats: WalkInQueueStats;
   currentTime: string;
+  todayBookings: number;
+  activeBookings: number;
 }
 
 /**
@@ -25,7 +28,8 @@ export interface HomeViewModel {
 export class HomePresenter {
   constructor(
     private readonly machineRepository: IMachineRepository,
-    private readonly walkInQueueRepository: IWalkInQueueRepository
+    private readonly walkInQueueRepository: IWalkInQueueRepository,
+    private readonly bookingRepository: IBookingRepository
   ) {}
 
   /**
@@ -46,15 +50,22 @@ export class HomePresenter {
   async getViewModel(todayStr: string, now: string): Promise<HomeViewModel> {
     try {
       // Get data in parallel for better performance
-      const [allMachines, machineStats, waitingQueues, queueStats] = await this.withTimeout(Promise.all([
+      const [allMachines, machineStats, waitingQueues, queueStats, bookings] = await this.withTimeout(Promise.all([
         this.machineRepository.getAll(),
         this.machineRepository.getStats(),
         this.walkInQueueRepository.getWaiting(),
         this.walkInQueueRepository.getStats(),
+        this.bookingRepository.getByDate(todayStr),
       ]));
 
       // Filter only active machines for client display
       const machines = allMachines.filter(m => m.isActive);
+
+      // Calculate booking stats
+      const todayBookings = bookings.length;
+      const activeBookings = bookings.filter(b => 
+        b.status === 'confirmed' || b.status === 'pending'
+      ).length;
 
       return {
         machines,
@@ -62,6 +73,8 @@ export class HomePresenter {
         waitingQueues,
         queueStats,
         currentTime: now,
+        todayBookings,
+        activeBookings,
       };
     } catch (error) {
       console.error('Error getting home view model:', error);

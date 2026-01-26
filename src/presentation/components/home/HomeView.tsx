@@ -1,14 +1,14 @@
 'use client';
 
 import { Machine } from '@/src/application/repositories/IMachineRepository';
-import { createBookingRepositories } from '@/src/infrastructure/repositories/RepositoryFactory';
-import { getShopNow, getShopTodayString, SHOP_TIMEZONE } from '@/src/lib/date';
+import { getShopNow, SHOP_TIMEZONE } from '@/src/lib/date';
 import { AnimatedCard } from '@/src/presentation/components/ui/AnimatedCard';
 import { GlowButton } from '@/src/presentation/components/ui/GlowButton';
 import { HomeViewModel } from '@/src/presentation/presenters/home/HomePresenter';
+import { useHomePresenter } from '@/src/presentation/presenters/home/useHomePresenter';
 import 'dayjs/locale/th';
 import Link from 'next/link';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const DEFAULT_TIMEZONE = SHOP_TIMEZONE;
 
@@ -37,26 +37,8 @@ interface DashboardStats {
  * ✅ Dark mode support via CSS variables
  */
 export function HomeView({ initialViewModel }: { initialViewModel?: HomeViewModel }) {
-  const [machines, setMachines] = useState<Machine[]>([]);
-  const [stats, setStats] = useState<DashboardStats>({
-    totalMachines: 0,
-    availableMachines: 0,
-    occupiedMachines: 0,
-    todayBookings: 0,
-    activeBookings: 0,
-    waitingInQueue: 0,
-  });
-  const [loading, setLoading] = useState(true);
+  const [{ viewModel, loading: isLoading }, { refreshData }] = useHomePresenter(initialViewModel);
   const [currentTime, setCurrentTime] = useState(getShopNow());
-
-  // Get today's date
-  const today = useMemo(() => getShopTodayString(), []);
-
-  // Repositories
-  const { bookingRepo, machineRepo } = useMemo(
-    () => createBookingRepositories(),
-    []
-  );
 
   // Update current time every minute
   useEffect(() => {
@@ -66,48 +48,18 @@ export function HomeView({ initialViewModel }: { initialViewModel?: HomeViewMode
     return () => clearInterval(interval);
   }, []);
 
-  // Load dashboard data
-  const loadData = useCallback(async () => {
-    try {
-      const allMachines = await machineRepo.getAll();
-      const activeMachines = allMachines.filter(m => m.isActive);
-      setMachines(activeMachines);
+  // Derive stats from viewModel
+  const machines = viewModel?.machines || [];
+  const stats: DashboardStats = {
+    totalMachines: machines.length,
+    availableMachines: machines.filter(m => m.status === 'available').length,
+    occupiedMachines: machines.filter(m => m.status === 'occupied').length,
+    todayBookings: viewModel?.todayBookings || 0,
+    activeBookings: viewModel?.activeBookings || 0,
+    waitingInQueue: viewModel?.queueStats.waitingCount || 0,
+  };
 
-      // Count machine statuses
-      const available = activeMachines.filter(m => m.status === 'available').length;
-      const occupied = activeMachines.filter(m => m.status === 'occupied').length;
-
-      // Load today's bookings
-      const referenceTime = getShopNow().toISOString();
-      let totalBookings = 0;
-      let activeBookings = 0;
-
-      await Promise.all(activeMachines.map(async (machine) => {
-        const bookings = await bookingRepo.getByMachineAndDate(machine.id, today);
-        totalBookings += bookings.length;
-        activeBookings += bookings.filter(b => 
-          b.status === 'confirmed' || b.status === 'pending'
-        ).length;
-      }));
-
-      setStats({
-        totalMachines: activeMachines.length,
-        availableMachines: available,
-        occupiedMachines: occupied,
-        todayBookings: totalBookings,
-        activeBookings,
-        waitingInQueue: 0, // TODO: Load from walk-in queue
-      });
-    } catch (err) {
-      console.error('Error loading dashboard data:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [machineRepo, bookingRepo, today]);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  const loading = isLoading && !viewModel; // Only show loading if no data at all
 
   return (
     <div className="min-h-screen bg-background overflow-auto scrollbar-thin">
@@ -223,9 +175,9 @@ export function HomeView({ initialViewModel }: { initialViewModel?: HomeViewMode
                 📋
               </div>
               <div className="text-3xl font-bold text-cyan-500 dark:text-cyan-400">
-                {loading ? '...' : stats.activeBookings}
+                {loading ? '...' : stats.waitingInQueue}
               </div>
-              <div className="text-sm text-muted">การจองที่รออยู่</div>
+              <div className="text-sm text-muted">คิวรอหน้าร้าน</div>
             </AnimatedCard>
           </div>
         </div>
