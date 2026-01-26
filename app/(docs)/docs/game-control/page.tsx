@@ -25,7 +25,7 @@ export default function GameControlDocsPage() {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">คู่มือห้องควบคุมเกม</h1>
-            <p className="text-gray-600 dark:text-gray-400">วิธีควบคุมเครื่องเล่นและจัดการเซสชัน</p>
+            <p className="text-gray-600 dark:text-gray-400">วิธีควบคุมเครื่องเล่น บันทึกเวลา และจัดการลูกค้า</p>
           </div>
         </div>
       </header>
@@ -41,204 +41,188 @@ export default function GameControlDocsPage() {
 
         <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 space-y-4">
           <p className="text-gray-600 dark:text-gray-400">
-            เข้าสู่หน้าห้องควบคุมได้ 2 วิธี:
+            หน้าห้องควบคุม (Control Room) เป็นหน้าที่ออกแบบมาสำหรับพนักงานดูแลร้านโดยเฉพาะ โดยมี URL คือ:
+            <code className="mx-2 px-2 py-1 bg-gray-200 dark:bg-white/10 rounded text-pink-700 dark:text-pink-300 text-sm">/backend/control</code>
           </p>
           
-          <ol className="space-y-3 text-gray-600 dark:text-gray-400">
-            <li className="flex items-start gap-2">
-              <span className="text-pink-600 dark:text-pink-400">1.</span>
-              จากหน้าแอดมิน คลิกที่ <span className="text-pink-600 dark:text-pink-400 font-medium">&ldquo;🎛️ ห้องควบคุม&rdquo;</span> ในส่วนลิงก์ด้านล่าง
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-pink-600 dark:text-pink-400">2.</span>
-              หรือเข้า URL โดยตรง: <code className="px-2 py-1 bg-gray-200 dark:bg-white/10 rounded text-pink-700 dark:text-pink-300 text-sm">/backend/control</code>
-            </li>
-          </ol>
-
           <div className="mt-4 p-4 bg-pink-50 dark:bg-pink-500/10 border border-pink-200 dark:border-pink-500/30 rounded-xl">
             <p className="text-sm text-gray-700 dark:text-gray-300">
-              💡 <strong>Tip:</strong> หน้านี้ออกแบบมาสำหรับใช้งานบนหน้าจอขนาดใหญ่ แนะนำให้ใช้บน Tablet หรือ PC
+              💡 <strong>แนะนำ:</strong> ควรใช้หน้านี้บน Tablet หรือหน้าจอ Monitor หลักของร้าน เพื่อให้เห็นสถานะเครื่องทั้งหมดได้ชัดเจน
             </p>
           </div>
         </div>
       </section>
 
-      {/* Section 2: ภาพรวมหน้าจอหลัก */}
+      {/* Section 2: สถานะเครื่องเล่น */}
       <section id="overview" className="mb-16 print:break-before-page print:pt-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-500/20 border border-purple-300 dark:border-purple-500/30 flex items-center justify-center text-xl">
             📊
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">ภาพรวมหน้าจอหลัก</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">สถานะเครื่องเล่น (Overview)</h2>
         </div>
 
         <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 space-y-6">
           <p className="text-gray-600 dark:text-gray-400">
-            หน้าห้องควบคุมแสดงข้อมูลแบบเรียลไทม์:
+            ระบบจะแสดงเครื่องเล่นทั้งหมดในรูปแบบการ์ด โดยสถานะจะเปลี่ยนไปตามการใช้งานจริง:
           </p>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div className="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 rounded-xl p-3 text-center">
-              <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">✓</div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">เครื่องว่าง</div>
+          {/* Cards Status */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Available */}
+            <div className="border border-emerald-200 dark:border-emerald-500/30 rounded-xl p-4 bg-emerald-50 dark:bg-emerald-500/10">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="w-3 h-3 rounded-full bg-emerald-500"></span>
+                <h3 className="font-bold text-gray-900 dark:text-white">✅ ว่าง (Available)</h3>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                เครื่องว่างพร้อมให้บริการ
+              </p>
+              <ul className="text-xs text-gray-500 dark:text-gray-400 space-y-1 ml-4 list-disc">
+                <li>ปุ่ม <strong>"▶️ เริ่มเล่น"</strong>: สำหรับลูกค้า Walk-in ทั่วไป</li>
+                <li>ปุ่ม <strong>"📋 เลือกจากคิว"</strong>: เรียกคิวที่รออยู่มาลงเครื่องนี้</li>
+              </ul>
             </div>
-            <div className="bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/30 rounded-xl p-3 text-center">
-              <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">🏁</div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">กำลังเล่น</div>
-            </div>
-            <div className="bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/30 rounded-xl p-3 text-center">
-              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">📅</div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">การจองวันนี้</div>
-            </div>
-            <div className="bg-cyan-50 dark:bg-cyan-500/10 border border-cyan-200 dark:border-cyan-500/30 rounded-xl p-3 text-center">
-              <div className="text-2xl font-bold text-cyan-600 dark:text-cyan-400">⏰</div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">Slots ว่าง</div>
-            </div>
-          </div>
 
-          <div className="mt-4 p-4 bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/30 rounded-xl">
-            <h4 className="font-bold text-purple-700 dark:text-purple-400 mb-2">การ์ดเครื่องแต่ละเครื่อง</h4>
-            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-              <li>🟢 <strong>เครื่องว่าง</strong> - แสดงกรอบสีเขียว พร้อมรายการจองถัดไป</li>
-              <li>🟠 <strong>กำลังเล่น</strong> - แสดงกรอบสีส้ม พร้อมข้อมูลลูกค้าและเวลาเหลือ</li>
-              <li>📊 <strong>แถบตารางวันนี้</strong> - แสดง slots ทั้งหมดของวัน (เขียว=ว่าง, แดง=จองแล้ว)</li>
-            </ul>
+            {/* Reserved */}
+            <div className="border border-yellow-200 dark:border-yellow-500/30 rounded-xl p-4 bg-yellow-50 dark:bg-yellow-500/10">
+               <div className="flex items-center gap-2 mb-3">
+                <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
+                <h3 className="font-bold text-gray-900 dark:text-white">📅 จองไว้ (Reserved)</h3>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                มีลูกค้าจองล่วงหน้าในช่วงเวลานี้
+              </p>
+              <ul className="text-xs text-gray-500 dark:text-gray-400 space-y-1 ml-4 list-disc">
+                 <li>แสดงชื่อลูกค้าและเวลาจอง</li>
+                 <li>ปุ่ม <strong>"✅ Check-in"</strong>: กดเมื่อลูกค้ามาถึงเพื่อเริ่มเล่น</li>
+                 <li><span className="text-red-500 font-bold">สีแดง</span>: หากเลยเวลานัดแล้วยังไม่มา</li>
+              </ul>
+            </div>
+
+            {/* In Use */}
+            <div className="border border-orange-200 dark:border-orange-500/30 rounded-xl p-4 bg-orange-50 dark:bg-orange-500/10">
+               <div className="flex items-center gap-2 mb-3">
+                <span className="w-3 h-3 rounded-full bg-orange-500 animate-pulse"></span>
+                <h3 className="font-bold text-gray-900 dark:text-white">🏁 กำลังเล่น (In Use)</h3>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                มีลูกค้ากำลังใช้งานอยู่
+              </p>
+              <ul className="text-xs text-gray-500 dark:text-gray-400 space-y-1 ml-4 list-disc">
+                 <li>แสดงเวลาที่เล่นไปแล้ว</li>
+                 <li>ปุ่ม <strong>"⏹️ จบการเล่น"</strong>: กดเมื่อลูกค้าเล่นเสร็จแล้ว</li>
+                 <li>คลิกที่การ์ดเพื่อดูรายละเอียด/แก้ไขราคา</li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Section 3: ระบบจับเวลา */}
-      <section id="timer" className="mb-16 print:break-before-page print:pt-8">
+      {/* Section 3: การจัดการรอบเล่น */}
+      <section id="session-management" className="mb-16 print:break-before-page print:pt-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-cyan-100 dark:bg-cyan-500/20 border border-cyan-300 dark:border-cyan-500/30 flex items-center justify-center text-xl">
             ⏱️
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">ระบบจับเวลา (Session Timer)</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">การจัดการรอบเล่น (Session)</h2>
         </div>
 
-        <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 space-y-4">
-          <p className="text-gray-600 dark:text-gray-400">
-            ระบบจับเวลาช่วยบันทึกเวลาเล่นจริงของลูกค้า:
-          </p>
+        <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 space-y-8">
           
-          <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <span className="px-3 py-1 bg-cyan-500 text-white rounded-full text-xs font-bold">▶️ เริ่ม</span>
-              <div>
-                <p className="text-gray-700 dark:text-gray-300 font-medium">เริ่มจับเวลา</p>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">กดเมื่อลูกค้าเริ่มเล่น ระบบจะบันทึกเวลาเริ่มต้น</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <span className="px-3 py-1 bg-red-500 text-white rounded-full text-xs font-bold">⏸️ หยุด</span>
-              <div>
-                <p className="text-gray-700 dark:text-gray-300 font-medium">หยุดชั่วคราว</p>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">กดเพื่อพักเวลา เช่น ลูกค้าเข้าห้องน้ำ หรือพักเบรก</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <span className="px-3 py-1 bg-orange-500 text-white rounded-full text-xs font-bold">▶️ ต่อ</span>
-              <div>
-                <p className="text-gray-700 dark:text-gray-300 font-medium">เริ่มจับเวลาต่อ (Resume)</p>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">กดเพื่อจับเวลาต่อจากที่หยุดไว้ ระบบจะรวมเวลาสะสม</p>
-              </div>
+          {/* 1. Start Session */}
+          <div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+              <span className="w-6 h-6 rounded bg-cyan-500 text-white flex items-center justify-center text-xs">1</span>
+              การเริ่มเล่น (Start)
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-3 ml-8">
+              ทำได้ 3 วิธี ขึ้นอยู่กับประเภทลูกค้า:
+            </p>
+            <div className="grid md:grid-cols-3 gap-4 ml-8">
+               <div className="bg-white/50 dark:bg-black/20 p-3 rounded-lg border border-gray-200 dark:border-white/5">
+                 <strong className="text-purple-600 dark:text-purple-400 block mb-1">ลูกค้า Walk-in</strong>
+                 <p className="text-xs text-gray-500 dark:text-gray-400">
+                   กดปุ่ม "เริ่มเล่น" ใส่ชื่อลูกค้าและเลือกเวลาเล่น
+                 </p>
+               </div>
+               <div className="bg-white/50 dark:bg-black/20 p-3 rounded-lg border border-gray-200 dark:border-white/5">
+                 <strong className="text-amber-600 dark:text-amber-400 block mb-1">จากคิว (Queue)</strong>
+                 <p className="text-xs text-gray-500 dark:text-gray-400">
+                   กดปุ่ม "เลือกจากคิว" เพื่อดึงข้อมูลลูกค้าจากคิวที่รออยู่
+                 </p>
+               </div>
+               <div className="bg-white/50 dark:bg-black/20 p-3 rounded-lg border border-gray-200 dark:border-white/5">
+                 <strong className="text-blue-600 dark:text-blue-400 block mb-1">ลูกค้าจอง (Booking)</strong>
+                 <p className="text-xs text-gray-500 dark:text-gray-400">
+                   รอลูกค้ามาถึง แล้วกดปุ่ม "Check-in" ที่การ์ดสีเหลือง
+                 </p>
+               </div>
             </div>
           </div>
 
-          <div className="mt-4 p-4 bg-cyan-50 dark:bg-cyan-500/10 border border-cyan-200 dark:border-cyan-500/30 rounded-xl">
-            <p className="text-sm text-gray-700 dark:text-gray-300">
-              💡 <strong>Tip:</strong> ระบบรองรับการ หยุด-เริ่มต่อ หลายครั้ง และจะรวมเวลาทั้งหมดที่เล่นจริง
-            </p>
+          <div className="border-t border-gray-200 dark:border-white/10"></div>
+
+          {/* 2. During Session */}
+          <div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+              <span className="w-6 h-6 rounded bg-orange-500 text-white flex items-center justify-center text-xs">2</span>
+              ระหว่างเล่น (In Progress)
+            </h3>
+            <div className="ml-8 text-gray-600 dark:text-gray-400">
+              <p className="mb-2">
+                เมื่อกดเริ่มแล้ว สถานะจะเป็น <span className="text-orange-600 dark:text-orange-400 font-bold">"กำลังเล่น"</span> ระบบจะจับเวลาอัตโนมัติ
+              </p>
+              <p className="text-sm">
+                <strong>📝 การแก้ไขข้อมูล:</strong> คลิกที่การ์ดเพื่อเปิดดูรายละเอียด สามารถ:
+              </p>
+              <ul className="list-disc ml-6 mt-1 text-sm space-y-1">
+                <li>แก้ไขราคารวม (หากมีการเพิ่มเวลา/ส่วนลด)</li>
+                <li>ดูเวลาที่เหลือ (Count down)</li>
+              </ul>
+            </div>
           </div>
+
+          <div className="border-t border-gray-200 dark:border-white/10"></div>
+
+          {/* 3. End Session */}
+          <div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+              <span className="w-6 h-6 rounded bg-red-500 text-white flex items-center justify-center text-xs">3</span>
+              จบการเล่น (Finish)
+            </h3>
+            <div className="ml-8 text-gray-600 dark:text-gray-400">
+              <ol className="list-decimal space-y-2 ml-4">
+                <li>
+                  กดปุ่ม <span className="text-red-600 dark:text-red-400 font-bold">"⏹️ จบการเล่น"</span>
+                </li>
+                <li>
+                  ระบบจะสรุปยอดเงินและเวลาเล่นทั้งหมด
+                </li>
+                <li>
+                  กดยืนยันเพื่อบันทึกประวัติ และคืนสถานะเครื่องเป็น "ว่าง"
+                </li>
+              </ol>
+            </div>
+          </div>
+
         </div>
       </section>
 
-      {/* Section 4: จัดการการจองปัจจุบัน */}
-      <section id="current" className="mb-16 print:break-before-page print:pt-8">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-300 dark:border-emerald-500/30 flex items-center justify-center text-xl">
-            ✅
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">จัดการการจองปัจจุบัน</h2>
-        </div>
-
-        <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 space-y-4">
-          <p className="text-gray-600 dark:text-gray-400">
-            เมื่อมีการจองที่กำลังเล่นอยู่:
-          </p>
-          
-          <ol className="space-y-3 text-gray-600 dark:text-gray-400">
-            <li className="flex items-start gap-2">
-              <span className="text-emerald-600 dark:text-emerald-400">1.</span>
-              มองหาการ์ดเครื่องที่มี <span className="text-orange-600 dark:text-orange-400 font-medium">&ldquo;🏁 กำลังเล่น&rdquo;</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-emerald-600 dark:text-emerald-400">2.</span>
-              จะเห็นข้อมูล: ชื่อลูกค้า, เบอร์โทร, เวลาเริ่ม-สิ้นสุด, และเวลาที่เหลือ
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-emerald-600 dark:text-emerald-400">3.</span>
-              ใช้ปุ่มจับเวลาเพื่อบันทึกเวลาเล่นจริง
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-emerald-600 dark:text-emerald-400">4.</span>
-              กดปุ่ม <span className="text-emerald-600 dark:text-emerald-400 font-medium">&ldquo;✅ เสร็จสิ้น&rdquo;</span> เมื่อลูกค้าเล่นเสร็จก่อนเวลา
-            </li>
-          </ol>
-
-          <div className="mt-4 p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 rounded-xl">
-            <p className="text-sm text-gray-700 dark:text-gray-300">
-              💡 <strong>หมายเหตุ:</strong> การจองจะเปลี่ยนเป็น &ldquo;สำเร็จ&rdquo; อัตโนมัติเมื่อหมดเวลา หรือกดปุ่มเสร็จสิ้นก่อนได้
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 5: ดูรายละเอียดการจอง */}
-      <section id="details" className="mb-16 print:break-before-page print:pt-8">
+      {/* Section 4: ประวัติและรายงาน */}
+      <section id="history" className="mb-16 print:break-before-page print:pt-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-500/20 border border-blue-300 dark:border-blue-500/30 flex items-center justify-center text-xl">
-            📋
+            📜
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">ดูรายละเอียดการจอง</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">ประวัติการเล่น (History)</h2>
         </div>
 
         <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 space-y-4">
           <p className="text-gray-600 dark:text-gray-400">
-            คลิกที่ส่วนใดก็ได้ของการจองเพื่อดูรายละเอียดเพิ่มเติม:
+            ท่านสามารถดูประวัติย้อนหลังของแต่ละเครื่องได้โดยกดปุ่ม <span className="bg-white/20 px-2 rounded">🕒</span> มุมขวาบนของการ์ดเครื่อง
+            ระบบจะแสดงรายการล่าสุด 5 รายการ พร้อมสถานะการชำระเงิน
           </p>
-          
-          <ul className="space-y-2 text-gray-600 dark:text-gray-400 ml-4 list-disc">
-            <li>คลิกที่ <span className="text-orange-600 dark:text-orange-400 font-medium">&ldquo;🏁 กำลังเล่น&rdquo;</span> badge</li>
-            <li>คลิกที่กล่องข้อมูลการจองปัจจุบัน</li>
-            <li>คลิกที่รายการจองถัดไปในส่วน &ldquo;📅 การจองถัดไป&rdquo;</li>
-          </ul>
-
-          <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/30 rounded-xl">
-            <h4 className="font-bold text-blue-700 dark:text-blue-400 mb-2">ข้อมูลที่แสดงในหน้าต่างรายละเอียด</h4>
-            <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
-              <li>📊 ข้อมูลลูกค้า (ชื่อ, เบอร์โทร)</li>
-              <li>⏰ เวลาจอง และระยะเวลา</li>
-              <li>📜 ประวัติการจับเวลา (Session Logs)</li>
-              <li>🎮 ปุ่มควบคุมเซสชัน (เริ่ม/หยุด)</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Quick Links - Hidden in Print */}
-      <section className="bg-gradient-to-br from-pink-100 to-rose-100 dark:from-pink-500/10 dark:to-rose-500/10 border border-pink-300 dark:border-pink-500/30 rounded-2xl p-6 print:hidden">
-        <h3 className="font-bold text-gray-900 dark:text-white mb-4">🔗 ลิงก์ที่เกี่ยวข้อง</h3>
-        <div className="grid grid-cols-2 gap-3">
-          <Link href="/backend" className="bg-white/50 dark:bg-cyan-500/20 hover:bg-white dark:hover:bg-cyan-500/30 border border-cyan-300 dark:border-cyan-500/30 rounded-xl p-4 text-center transition-all">
-            <span className="text-2xl block mb-2">📊</span>
-            <span className="text-sm text-gray-700 dark:text-gray-300">Dashboard</span>
-          </Link>
-          <Link href="/backend/control" className="bg-white/50 dark:bg-pink-500/20 hover:bg-white dark:hover:bg-pink-500/30 border border-pink-300 dark:border-pink-500/30 rounded-xl p-4 text-center transition-all">
-            <span className="text-2xl block mb-2">🎛️</span>
-            <span className="text-sm text-gray-700 dark:text-gray-300">เปิดห้องควบคุม</span>
-          </Link>
         </div>
       </section>
 

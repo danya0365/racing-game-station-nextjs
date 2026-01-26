@@ -94,8 +94,13 @@ export default function DocsPage() {
             <h3 className="font-bold text-purple-600 dark:text-purple-400 mb-2">👤 คู่มือลูกค้า</h3>
             <ul className="space-y-2 text-gray-600 dark:text-gray-400 ml-6">
               <li>
+                <Link href="/docs/customer#walk-in" className="hover:text-gray-900 dark:hover:text-white transition-colors">
+                  → วิธีจองคิวหน้าร้าน (Walk-in)
+                </Link>
+              </li>
+              <li>
                 <Link href="/docs/customer#booking" className="hover:text-gray-900 dark:hover:text-white transition-colors">
-                  → วิธีจองเวลาเล่น
+                  → วิธีจองเวลาเล่นล่วงหน้า
                 </Link>
               </li>
               <li>
@@ -117,6 +122,11 @@ export default function DocsPage() {
               <li>
                 <Link href="/docs/admin#dashboard" className="hover:text-gray-900 dark:hover:text-white transition-colors">
                   → หน้า Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link href="/docs/admin#walk-in" className="hover:text-gray-900 dark:hover:text-white transition-colors">
+                  → จัดการคิวหน้าร้าน
                 </Link>
               </li>
               <li>
