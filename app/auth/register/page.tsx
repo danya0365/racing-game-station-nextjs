@@ -2,8 +2,8 @@ import { RegisterView } from '@/src/presentation/components/auth/RegisterView';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'สมัครสมาชิก | Racing Queue',
-  description: 'สมัครสมาชิกเพื่อจองคิว Racing Simulator ได้ง่ายขึ้น',
+  title: 'สมัครสมาชิก | Racing Game Station',
+  description: 'สมัครสมาชิกเพื่อจองคิว Racing Game Station ได้ง่ายขึ้น',
 };
 
 /**

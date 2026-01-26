@@ -2,7 +2,7 @@ import { BookingHistoryView } from '@/src/presentation/components/customer/Booki
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'ตารางการจอง | Racing Queue',
+  title: 'ตารางการจอง | Racing Game Station',
   description: 'ดูตารางและประวัติการจองเวลาทั้งหมด',
 };
 

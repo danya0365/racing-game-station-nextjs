@@ -14,7 +14,7 @@ export interface Machine {
   imageUrl?: string;
   isActive: boolean;
   status: MachineStatus;
-  /** Station type for categorization (e.g., Racing Sim, PS5, PC) */
+  /** Station type for categorization (e.g., Game Station, PS5, PC) */
   type?: string;
   /** Price per hour in THB */
   hourlyRate?: number;

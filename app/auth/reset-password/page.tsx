@@ -3,8 +3,8 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 
 export const metadata: Metadata = {
-  title: 'ตั้งรหัสผ่านใหม่ | Racing Queue',
-  description: 'ตั้งรหัสผ่านใหม่สำหรับบัญชี Racing Queue',
+  title: 'ตั้งรหัสผ่านใหม่ | Racing Game Station',
+  description: 'ตั้งรหัสผ่านใหม่สำหรับบัญชี Racing Game Station',
 };
 
 /**

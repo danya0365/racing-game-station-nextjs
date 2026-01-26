@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="public/racing-queue-hero.svg" alt="Racing Queue Logo" width="120" height="120" />
+  <img src="public/racing-game-station-hero.svg" alt="Racing Game Station Logo" width="120" height="120" />
 </p>
 
-<h1 align="center">🏎️ Racing Queue</h1>
+<h1 align="center">🏎️ Racing Game Station</h1>
 
 <p align="center">
-  <strong>ระบบจองคิว Racing Simulator ที่ทันสมัยและใช้งานง่าย</strong>
+  <strong>ระบบจองคิว Racing Game Station ที่ทันสมัยและใช้งานง่าย</strong>
 </p>
 
 <p align="center">
@@ -25,7 +25,7 @@
 
 ## 📖 Overview
 
-**Racing Queue** คือระบบจัดการคิวสำหรับร้านเกม Racing Simulation ที่ออกแบบมาให้ใช้งานง่าย รวดเร็ว และมีประสิทธิภาพ รองรับทั้งฝั่งลูกค้าและแอดมิน พร้อม Real-time updates
+**Racing Game Station** คือระบบจัดการคิวสำหรับ Racing Game Station ที่ออกแบบมาให้ใช้งานง่าย รวดเร็ว และมีประสิทธิภาพ รองรับทั้งฝั่งลูกค้าและแอดมิน พร้อม Real-time updates
 
 ### ✨ Key Features
 
@@ -102,7 +102,7 @@
 ### 📁 Project Structure
 
 ```
-racing-simulation-queue-nextjs/
+racing-game-station-nextjs/
 ├── app/                          # Next.js App Router
 │   ├── layout.tsx               # Root layout
 │   ├── page.tsx                 # Home page
@@ -160,8 +160,8 @@ racing-simulation-queue-nextjs/
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yourusername/racing-simulation-queue-nextjs.git
-cd racing-simulation-queue-nextjs
+git clone https://github.com/yourusername/racing-game-station-nextjs.git
+cd racing-game-station-nextjs
 
 # 2. Install dependencies
 npm install
@@ -215,7 +215,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
 # Application Configuration
 NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
-NEXT_PUBLIC_APP_NAME="Racing Simulation Queue"
+NEXT_PUBLIC_APP_NAME="Racing Game Station"
 
 # Auth Configuration
 NEXT_PUBLIC_AUTH_EMAIL_ENABLED=true
@@ -370,7 +370,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 <table>
   <tr>
     <td align="center">
-      <strong>Racing Queue Team</strong><br />
+      <strong>Racing Game Station Team</strong><br />
       <sub>Built with ❤️ in Thailand</sub>
     </td>
   </tr>
@@ -379,5 +379,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <p align="center">
-  <strong>🏎️ Racing Queue - จองคิว ง่าย รวดเร็ว ทันใจ</strong>
+  <strong>🏎️ Racing Game Station - จองคิว ง่าย รวดเร็ว ทันใจ</strong>
 </p>

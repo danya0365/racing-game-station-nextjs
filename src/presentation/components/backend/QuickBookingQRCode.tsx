@@ -25,7 +25,7 @@ export const QuickBookingQRCode = React.forwardRef<HTMLDivElement, QuickBookingQ
           <p className="mt-8 text-2xl text-black font-semibold">{url}</p>
         </div>
         <div className="mt-16 text-center">
-          <p className="text-3xl text-gray-600 font-bold">Racing Simulation</p>
+          <p className="text-3xl text-gray-600 font-bold">Racing Game Station</p>
           <p className="text-xl text-gray-400 mt-2">Queue System</p>
         </div>
       </div>

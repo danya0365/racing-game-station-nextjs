@@ -5,18 +5,18 @@
  */
 
 import type {
-  AuthProfile,
-  AuthResult,
-  AuthSession,
-  AuthUser,
-  IAuthRepository,
-  OTPSignInData,
-  ResetPasswordData,
-  SignInData,
-  SignUpData,
-  UpdatePasswordData,
-  UpdateProfileData,
-  VerifyOTPData,
+    AuthProfile,
+    AuthResult,
+    AuthSession,
+    AuthUser,
+    IAuthRepository,
+    OTPSignInData,
+    ResetPasswordData,
+    SignInData,
+    SignUpData,
+    UpdatePasswordData,
+    UpdateProfileData,
+    VerifyOTPData,
 } from '@/src/application/repositories/IAuthRepository';
 import { Metadata } from 'next';
 
@@ -91,27 +91,27 @@ export class AuthPresenter {
   generateMetadata(page: AuthPage): Metadata {
     const metadataMap: Record<AuthPage, Metadata> = {
       login: {
-        title: 'เข้าสู่ระบบ | Racing Queue',
-        description: 'เข้าสู่ระบบเพื่อจองคิว Racing Simulator',
+        title: 'เข้าสู่ระบบ | Racing Game Station',
+        description: 'เข้าสู่ระบบเพื่อจองคิว Racing Game Station',
       },
       register: {
-        title: 'สมัครสมาชิก | Racing Queue',
-        description: 'สมัครสมาชิกเพื่อจองคิว Racing Simulator ได้ง่ายขึ้น',
+        title: 'สมัครสมาชิก | Racing Game Station',
+        description: 'สมัครสมาชิกเพื่อจองคิว Racing Game Station ได้ง่ายขึ้น',
       },
       'forgot-password': {
-        title: 'ลืมรหัสผ่าน | Racing Queue',
-        description: 'รีเซ็ตรหัสผ่านสำหรับบัญชี Racing Queue',
+        title: 'ลืมรหัสผ่าน | Racing Game Station',
+        description: 'รีเซ็ตรหัสผ่านสำหรับบัญชี Racing Game Station',
       },
       'reset-password': {
-        title: 'ตั้งรหัสผ่านใหม่ | Racing Queue',
-        description: 'ตั้งรหัสผ่านใหม่สำหรับบัญชี Racing Queue',
+        title: 'ตั้งรหัสผ่านใหม่ | Racing Game Station',
+        description: 'ตั้งรหัสผ่านใหม่สำหรับบัญชี Racing Game Station',
       },
       'verify-email': {
-        title: 'ยืนยันอีเมล | Racing Queue',
-        description: 'ยืนยันอีเมลสำหรับบัญชี Racing Queue',
+        title: 'ยืนยันอีเมล | Racing Game Station',
+        description: 'ยืนยันอีเมลสำหรับบัญชี Racing Game Station',
       },
       profile: {
-        title: 'โปรไฟล์ | Racing Queue',
+        title: 'โปรไฟล์ | Racing Game Station',
         description: 'จัดการข้อมูลโปรไฟล์ของคุณ',
       },
     };

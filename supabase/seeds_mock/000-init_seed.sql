@@ -59,7 +59,7 @@ INSERT INTO
         '00000000-0000-0000-0000-000000000003',
         'authenticated',
         'authenticated',
-        'user1@shopqueue.com',
+        'user1@racinggamestation.com',
         crypt (current_setting('my.app_password'), gen_salt ('bf')),
         NOW() - INTERVAL '20 days',
         NULL,
@@ -84,7 +84,7 @@ INSERT INTO
         '00000000-0000-0000-0000-000000000004',
         'authenticated',
         'authenticated',
-        'user2@shopqueue.com',
+        'user2@racinggamestation.com',
         crypt (current_setting('my.app_password'), gen_salt ('bf')),
         NOW() - INTERVAL '15 days',
         NULL,
@@ -129,10 +129,10 @@ FROM
     auth.users
 ON CONFLICT (provider_id, provider) DO NOTHING;
 
---  ShopQueue Seed Data - Profiles
+--  Racing Game Station Seed Data - Profiles
 -- Created: 2025-06-19
 -- Author: Marosdee Uma
--- Description: Sample profile data for testing ShopQueue application with multiple profiles per user
+-- Description: Sample profile data for testing Racing Game Station application with multiple profiles per user
 
 -- Insert profiles for admin user (2 profiles)
 INSERT INTO public.profiles (
@@ -194,7 +194,7 @@ ON CONFLICT (id) DO NOTHING;
 
 -- Created at: 2025-06-21T10:15:00+07:00
 -- Author: Marosdee Uma
--- Description: Seed initial profile_roles data for ShopQueue application
+-- Description: Seed initial profile_roles data for Racing Game Station application
 
 -- Insert initial admin role for the first user's active profile
 -- This assumes the first user in auth.users is the system admin
@@ -217,20 +217,20 @@ SET role = 'admin'::public.profile_role;
 SELECT public.migrate_profile_roles();
 
 -- ============================================================================
--- RACING SYSTEM: Seed Machines
+-- RACING GAME STATION: Seed Machines
 -- ============================================================================
 INSERT INTO public.machines (id, name, description, position, status, is_active)
 VALUES
-  ('00000000-0000-0000-0000-000000000101', 'Racing Sim 1', 'เครื่อง Formula Racing Simulator พร้อมพวงมาลัย Fanatec GT DD Pro', 1, 'available', TRUE),
-  ('00000000-0000-0000-0000-000000000102', 'Racing Sim 2', 'เครื่อง GT Racing Simulator พร้อมพวงมาลัย Thrustmaster T300RS', 2, 'available', TRUE),
-  ('00000000-0000-0000-0000-000000000103', 'Racing Sim 3', 'เครื่อง Rally Racing Simulator พร้อมพวงมาลัย Logitech G923', 3, 'available', TRUE),
-  ('00000000-0000-0000-0000-000000000104', 'Racing Sim 4', 'เครื่อง Drift Simulator พร้อมจอโค้ง Ultrawide 49 นิ้ว', 4, 'available', TRUE),
-  ('00000000-0000-0000-0000-000000000105', 'Racing Sim 5', 'เครื่อง F1 Simulator VIP พร้อมระบบ Motion Platform', 5, 'available', TRUE),
-  ('00000000-0000-0000-0000-000000000106', 'Racing Sim 6', 'เครื่อง Endurance Simulator ระดับ Pro สำหรับ E-Sports', 6, 'maintenance', FALSE)
+  ('00000000-0000-0000-0000-000000000101', 'Game Station 1', 'เครื่อง Formula Racing Game Station พร้อมพวงมาลัย Fanatec GT DD Pro', 1, 'available', TRUE),
+  ('00000000-0000-0000-0000-000000000102', 'Game Station 2', 'เครื่อง GT Racing Game Station พร้อมพวงมาลัย Thrustmaster T300RS', 2, 'available', TRUE),
+  ('00000000-0000-0000-0000-000000000103', 'Game Station 3', 'เครื่อง Rally Racing Game Station พร้อมพวงมาลัย Logitech G923', 3, 'available', TRUE),
+  ('00000000-0000-0000-0000-000000000104', 'Game Station 4', 'เครื่อง Drift Game Station พร้อมจอโค้ง Ultrawide 49 นิ้ว', 4, 'available', TRUE),
+  ('00000000-0000-0000-0000-000000000105', 'Game Station 5', 'เครื่อง F1 Game Station VIP พร้อมระบบ Motion Platform', 5, 'available', TRUE),
+  ('00000000-0000-0000-0000-000000000106', 'Game Station 6', 'เครื่อง Endurance Game Station ระดับ Pro สำหรับ E-Sports', 6, 'maintenance', FALSE)
 ON CONFLICT (id) DO NOTHING;
 
 -- ============================================================================
--- RACING SYSTEM: Seed Customers (Additional)
+-- RACING GAME STATION: Seed Customers (Additional)
 -- ============================================================================
 INSERT INTO public.customers (id, name, phone, visit_count, total_play_time, is_vip, created_at)
 VALUES
@@ -247,7 +247,7 @@ VALUES
 ON CONFLICT (id) DO NOTHING;
 
 -- ============================================================================
--- RACING SYSTEM: Seed Historical Queues (Last 30 Days)
+-- RACING GAME STATION: Seed Historical Queues (Last 30 Days)
 -- ============================================================================
 -- This block generates random historical data
 DO $$

@@ -5,6 +5,8 @@
  * ✅ Uses new IWalkInQueueRepository
  */
 
+import { SupabaseBookingRepository } from '@/src/infrastructure/repositories/supabase/SupabaseBookingRepository';
+import { SupabaseDashboardRepository } from '@/src/infrastructure/repositories/supabase/SupabaseDashboardRepository';
 import { SupabaseMachineRepository } from '@/src/infrastructure/repositories/supabase/SupabaseMachineRepository';
 import { SupabaseWalkInQueueRepository } from '@/src/infrastructure/repositories/supabase/SupabaseWalkInQueueRepository';
 import { createClient } from '@/src/infrastructure/supabase/server';
@@ -17,8 +19,10 @@ export class HomePresenterServerFactory {
     // ✅ Using Supabase Repositories for production/real data
     const machineRepository = new SupabaseMachineRepository(supabase);
     const walkInQueueRepository = new SupabaseWalkInQueueRepository(supabase);
+    const bookingRepository = new SupabaseBookingRepository(supabase);
+    const dashboardRepository = new SupabaseDashboardRepository(supabase);
 
-    return new HomePresenter(machineRepository, walkInQueueRepository);
+    return new HomePresenter(machineRepository, walkInQueueRepository, bookingRepository, dashboardRepository);
   }
 }
 

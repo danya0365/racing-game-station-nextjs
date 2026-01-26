@@ -5,6 +5,7 @@ import { Machine } from '@/src/application/repositories/IMachineRepository';
 import { createBookingRepositories } from '@/src/infrastructure/repositories/RepositoryFactory';
 import { AnimatedCard } from '@/src/presentation/components/ui/AnimatedCard';
 import { GlowButton } from '@/src/presentation/components/ui/GlowButton';
+import { PageHeader } from '@/src/presentation/components/ui/PageHeader';
 import { TimezoneNotice } from '@/src/presentation/components/ui/TimezoneNotice';
 import { useCustomerStore } from '@/src/presentation/stores/useCustomerStore';
 import { animated } from '@react-spring/web';
@@ -175,14 +176,14 @@ export function BookingHistoryView() {
     : schedule?.bookedSlots || 0;
 
   return (
-    <div className="min-h-screen bg-background py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">📋 ตารางการจอง</h1>
-          <p className="text-muted">ดูตารางและประวัติการจองทั้งหมด</p>
-        </div>
+    <div className="min-h-screen bg-background overflow-auto scrollbar-thin">
+      <PageHeader
+        title="ตารางการจอง"
+        showHomeButton={true}
+      />
 
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        
         {/* 🌍 Timezone Notice */}
         <TimezoneNotice />
 

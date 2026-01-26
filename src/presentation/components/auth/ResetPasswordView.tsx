@@ -142,7 +142,7 @@ export function ResetPasswordView() {
               🏎️
             </div>
             <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
-              Racing Queue
+              Racing Game Station
             </span>
           </Link>
           <h1 className="mt-6 text-3xl font-bold text-foreground">

@@ -7,7 +7,7 @@ export default function DocsPage() {
       <div className="hidden print:block print:mb-8 print:pb-8 print:border-b-2 print:border-purple-500 print:text-center">
         <div className="text-6xl mb-4">📖</div>
         <h1 className="text-4xl font-bold text-gray-900 mb-2">คู่มือการใช้งาน</h1>
-        <p className="text-xl text-gray-600">Racing Queue - ระบบจองเวลาเล่นเกม</p>
+        <p className="text-xl text-gray-600">Racing Game Station - ระบบจองเวลาเล่นเกม</p>
         <p className="text-sm text-gray-500 mt-4">พิมพ์เมื่อ: มกราคม 2026</p>
       </div>
 
@@ -22,17 +22,11 @@ export default function DocsPage() {
           </span>
         </h1>
         <p className="text-gray-600 dark:text-gray-400 text-lg">
-          Racing Queue - ระบบจองเวลาเล่นเกม
+          Racing Game Station - ระบบจองเวลาเล่นเกม
         </p>
         <div className="mt-8 flex flex-col items-center gap-4">
           <div className="flex items-center gap-3">
-            <Link 
-              href="/"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 rounded-xl text-gray-700 hover:text-gray-900 dark:text-white/70 dark:hover:text-white transition-all font-medium border border-gray-200 dark:border-white/10"
-            >
-              ← กลับหน้าแรก
-            </Link>
-            
+
             <Link 
               href="/docs/print"
               className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-xl shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 transition-all font-medium"
@@ -100,8 +94,13 @@ export default function DocsPage() {
             <h3 className="font-bold text-purple-600 dark:text-purple-400 mb-2">👤 คู่มือลูกค้า</h3>
             <ul className="space-y-2 text-gray-600 dark:text-gray-400 ml-6">
               <li>
+                <Link href="/docs/customer#walk-in" className="hover:text-gray-900 dark:hover:text-white transition-colors">
+                  → วิธีจองคิวหน้าร้าน (Walk-in)
+                </Link>
+              </li>
+              <li>
                 <Link href="/docs/customer#booking" className="hover:text-gray-900 dark:hover:text-white transition-colors">
-                  → วิธีจองเวลาเล่น
+                  → วิธีจองเวลาเล่นล่วงหน้า
                 </Link>
               </li>
               <li>
@@ -123,6 +122,11 @@ export default function DocsPage() {
               <li>
                 <Link href="/docs/admin#dashboard" className="hover:text-gray-900 dark:hover:text-white transition-colors">
                   → หน้า Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link href="/docs/admin#walk-in" className="hover:text-gray-900 dark:hover:text-white transition-colors">
+                  → จัดการคิวหน้าร้าน
                 </Link>
               </li>
               <li>
@@ -193,7 +197,7 @@ export default function DocsPage() {
         </div>
         
         <p className="mt-8 text-sm text-gray-500 border-t border-gray-300 pt-4">
-          Racing Queue - คู่มือการใช้งาน | หน้า 1
+          Racing Game Station - คู่มือการใช้งาน | หน้า 1
         </p>
       </div>
     </div>

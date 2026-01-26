@@ -2,7 +2,7 @@ import { TimeBookingView } from '@/src/presentation/components/customer/TimeBook
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'จองเวลา | Racing Queue',
+  title: 'จองเวลา | Racing Game Station',
   description: 'จองเวลาเล่น เลือกวันเวลาที่สะดวก',
 };
 

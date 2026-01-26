@@ -20,8 +20,8 @@ export async function generateMetadata(): Promise<Metadata> {
     console.error("Error generating metadata:", error);
 
     return {
-      title: "แอดมิน | Racing Queue",
-      description: "ระบบจัดการคิวและเครื่องเล่น Racing Simulator",
+      title: "แอดมิน | Racing Game Station",
+      description: "ระบบจัดการคิวและเครื่องเล่น Racing Game Station",
     };
   }
 }

@@ -2,7 +2,7 @@ import { BookingStatusView } from '@/src/presentation/components/customer/Bookin
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'สถานะการจอง | Racing Queue',
+  title: 'สถานะการจอง | Racing Game Station',
   description: 'ดูสถานะการจองเวลาของคุณ',
 };
 

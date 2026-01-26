@@ -65,12 +65,6 @@ export function BackendView({ initialViewModel }: BackendViewProps) {
       {/* Header */}
       <section className="px-4 md:px-8 py-6 bg-gradient-to-br from-purple-500/10 via-background to-pink-500/10 border-b border-border">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-3 mb-4">
-            <Link href="/" className="text-muted hover:text-purple-400 transition-colors">
-              ← กลับหน้าแรก
-            </Link>
-          </div>
-
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-3xl shadow-lg">

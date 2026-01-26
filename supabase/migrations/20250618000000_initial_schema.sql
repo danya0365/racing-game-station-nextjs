@@ -1,7 +1,7 @@
--- ShopQueue Database Schema
+-- Racing Game Station Database Schema
 -- Created: 2025-06-18
 -- Author: Marosdee Uma
--- Description: Initial schema for ShopQueue application following Clean Architecture principles
+-- Description: Initial schema for Racing Game Station application following Clean Architecture principles
 
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

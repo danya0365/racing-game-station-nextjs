@@ -9,7 +9,7 @@ import { useReactToPrint } from 'react-to-print';
 
 // Shop configuration
 const SHOP_CONFIG = {
-  name: 'Racing Simulation',
+  name: 'Racing Game Station',
   tagline: 'ประสบการณ์แข่งรถเสมือนจริงระดับพรีเมียม',
   address: 'อ.เมือง จ.นราธิวาส 96000',
   phone: '02-XXX-XXXX',
@@ -221,15 +221,6 @@ export function QRScanView() {
       {/* Hero Section */}
       <section className="px-4 md:px-8 py-12 bg-gradient-to-br from-cyan-500/10 via-background to-purple-500/10">
         <div className="max-w-4xl mx-auto">
-          {/* Back Link */}
-          <div className="mb-8">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-muted hover:text-cyan-400 transition-colors"
-            >
-              ← กลับหน้าแรก
-            </Link>
-          </div>
 
           {/* Header */}
           <div className="text-center mb-12">

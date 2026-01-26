@@ -69,12 +69,12 @@
 
 ## Proposed Changes
 
-### [NEW] [page.tsx](file:///Users/marosdeeuma/racing-simulation-queue-nextjs/app/backend/control/page.tsx)
+### [NEW] [page.tsx](file:///Users/marosdeeuma/racing-game-station-nextjs/app/backend/control/page.tsx)
 Simple page wrapper, renders `<ControlView />`
 
 ---
 
-### [NEW] [ControlView.tsx](file:///Users/marosdeeuma/racing-simulation-queue-nextjs/src/presentation/components/backend/ControlView.tsx)
+### [NEW] [ControlView.tsx](file:///Users/marosdeeuma/racing-game-station-nextjs/src/presentation/components/backend/ControlView.tsx)
 
 Main component features:
 - Full-screen gradient background
@@ -119,7 +119,7 @@ export function ControlView() {
 
 ---
 
-### [NEW] [useControlPresenter.ts](file:///Users/marosdeeuma/racing-simulation-queue-nextjs/src/presentation/presenters/backend/useControlPresenter.ts)
+### [NEW] [useControlPresenter.ts](file:///Users/marosdeeuma/racing-game-station-nextjs/src/presentation/presenters/backend/useControlPresenter.ts)
 
 Custom hook following MVP pattern:
 - Loads machines, sessions, walk-in queue, today's bookings

@@ -216,7 +216,7 @@ function EditMachineModal({ machine, onClose, onSave, isUpdating }: EditMachineM
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-cyan-500 text-foreground"
-              placeholder="เช่น Racing Sim 1"
+              placeholder="เช่น Game Station 1"
             />
           </div>
 
@@ -228,7 +228,7 @@ function EditMachineModal({ machine, onClose, onSave, isUpdating }: EditMachineM
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-cyan-500 text-foreground resize-none"
               rows={3}
-              placeholder="เช่น เครื่อง Formula Racing Simulator พร้อมพวงมาลัย..."
+              placeholder="เช่น เครื่อง Formula Racing Game Station พร้อมพวงมาลัย..."
             />
           </div>
 

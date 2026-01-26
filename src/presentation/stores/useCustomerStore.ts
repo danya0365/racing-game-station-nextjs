@@ -181,7 +181,7 @@ export const useCustomerStore = create<CustomerStore>()(
       },
     }),
     {
-      name: 'racing-queue-customer', // localStorage key
+      name: 'racing-gamestation-customer', // localStorage key
       onRehydrateStorage: () => (state) => {
         if (state) {
           state.isInitialized = true;

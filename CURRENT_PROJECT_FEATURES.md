@@ -1,4 +1,4 @@
-# 🏎️ Racing Simulation Queue - Current Project Features
+# 🏎️ Racing Game Station - Current Project Features
 
 > **สรุปฟีเจอร์ปัจจุบัน** | Last Updated: 2026-01-12
 
@@ -17,7 +17,7 @@
 
 ## 🎯 ภาพรวมระบบ
 
-**Racing Simulation Queue** เป็นระบบจัดการคิวสำหรับร้านเกม Racing Simulator ที่พัฒนาด้วย **Next.js** และ **Supabase** ตามแนวทาง **Clean Architecture**
+**Racing Game Station** เป็นระบบจัดการคิวสำหรับ Racing Game Station ที่พัฒนาด้วย **Next.js** และ **Supabase** ตามแนวทาง **Clean Architecture**
 
 ### เทคโนโลยีหลัก
 - **Frontend**: Next.js 14+ (App Router)
@@ -108,7 +108,7 @@
 | `granted_by` | UUID | FK → auth.users |
 | `granted_at` | TIMESTAMPTZ | เวลาที่ได้รับบทบาท |
 
-#### 3. `machines` - เครื่องเล่น Racing Simulator
+#### 3. `machines` - เครื่องเล่น Racing Game Station
 | Column | Type | Description |
 |--------|------|-------------|
 | `id` | UUID | Primary Key |

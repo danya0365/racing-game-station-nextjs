@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #######################################
-# Racing Queue - Supabase Deployment Script
+# Racing Game Station - Supabase Deployment Script
 # 
 # This script deploys database migrations to Supabase
 # 
@@ -40,7 +40,7 @@ COMMAND="${1:-push}"
 
 echo -e "${CYAN}"
 echo "╔════════════════════════════════════════════════════════════╗"
-echo "║          🗄️  Racing Queue - Supabase Deployment            ║"
+echo "║          🗄️  Racing Game Station - Supabase Deployment            ║"
 echo "╚════════════════════════════════════════════════════════════╝"
 echo -e "${NC}"
 

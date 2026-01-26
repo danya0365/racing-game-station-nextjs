@@ -7,7 +7,7 @@ export default function CustomerDocsPage() {
       <div className="hidden print:block print:mb-8 print:pb-8 print:border-b-2 print:border-purple-500 print:text-center">
         <div className="text-6xl mb-4">📖</div>
         <h1 className="text-4xl font-bold text-gray-900 mb-2">คู่มือสำหรับลูกค้า</h1>
-        <p className="text-xl text-gray-600">Racing Queue - ระบบจองเวลาเล่นเกม</p>
+        <p className="text-xl text-gray-600">Racing Game Station - ระบบจองเวลาเล่นเกม</p>
         <p className="text-sm text-gray-500 mt-4">พิมพ์เมื่อ: มกราคม 2026</p>
       </div>
 
@@ -30,13 +30,59 @@ export default function CustomerDocsPage() {
         </div>
       </header>
 
-      {/* Section 1: วิธีจองเวลา */}
+      {/* Section 1: จองคิวหน้าร้าน (Walk-in) */}
+      <section id="walk-in" className="mb-16 print:break-before-page print:pt-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-500/20 border border-amber-300 dark:border-amber-500/30 flex items-center justify-center text-xl">
+            🚶
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">วิธีจองคิวหน้าร้าน (Walk-in)</h2>
+        </div>
+
+        <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 space-y-6">
+          <div className="flex gap-4">
+             <div className="flex-shrink-0 w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold">
+               1
+             </div>
+             <div className="flex-1">
+               <h3 className="font-bold text-gray-900 dark:text-white mb-2">ไปที่จุดลงทะเบียน</h3>
+               <p className="text-gray-600 dark:text-gray-400 mb-2">
+                 แจ้งพนักงานหรือกดปุ่มเพื่อรับบัตรคิวที่หน้าเคาน์เตอร์ หรือกดปุ่ม <span className="text-amber-600 dark:text-amber-400 font-medium">"เข้าคิวทันที"</span> ในหน้าเว็บ
+               </p>
+             </div>
+          </div>
+          <div className="flex gap-4">
+             <div className="flex-shrink-0 w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold">
+               2
+             </div>
+             <div className="flex-1">
+               <h3 className="font-bold text-gray-900 dark:text-white mb-2">กรอกข้อมูล</h3>
+               <p className="text-gray-600 dark:text-gray-400 mb-2">
+                 ระบุชื่อ เบอร์โทร และจำนวนผู้เล่น
+               </p>
+             </div>
+          </div>
+           <div className="flex gap-4">
+             <div className="flex-shrink-0 w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold">
+               3
+             </div>
+             <div className="flex-1">
+               <h3 className="font-bold text-gray-900 dark:text-white mb-2">รอเรียกคิว</h3>
+               <p className="text-gray-600 dark:text-gray-400 mb-2">
+                 รอพนักงานเรียกหมายเลขคิวของคุณ หรือดูสถานะคิวได้ที่หน้าจอมอนิเตอร์ในร้าน
+               </p>
+             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 2: วิธีจองเวลาล่วงหน้า */}
       <section id="booking" className="mb-16 print:break-before-page print:pt-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-500/20 border border-purple-300 dark:border-purple-500/30 flex items-center justify-center text-xl">
             📅
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">วิธีจองเวลาเล่น</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">วิธีจองเวลาเล่นล่วงหน้า</h2>
         </div>
 
         <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 space-y-6">
@@ -49,7 +95,7 @@ export default function CustomerDocsPage() {
               <h3 className="font-bold text-gray-900 dark:text-white mb-2">เข้าหน้าจองเวลา</h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
                 คลิกที่เมนู <span className="text-purple-600 dark:text-purple-400 font-medium">&ldquo;จองเวลา&rdquo;</span> บนแถบเมนู 
-                หรือกดปุ่ม <span className="text-pink-600 dark:text-pink-400 font-medium">&ldquo;📅 จองเลย&rdquo;</span> ที่หน้าแรก
+                หรือกดปุ่ม <span className="text-pink-600 dark:text-pink-400 font-medium">&ldquo;📅 จองล่วงหน้า&rdquo;</span> ที่หน้าแรก
               </p>
               <div className="mt-4 p-4 bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/30 rounded-xl">
                 <p className="text-sm text-gray-700 dark:text-gray-300">
@@ -266,7 +312,7 @@ export default function CustomerDocsPage() {
 
       {/* Print Footer */}
       <div className="hidden print:block print:mt-8 print:pt-4 print:border-t print:border-gray-300 print:text-center print:text-sm print:text-gray-500">
-        <p>Racing Queue - คู่มือสำหรับลูกค้า | หน้า _____</p>
+        <p>Racing Game Station - คู่มือสำหรับลูกค้า | หน้า _____</p>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #######################################
-# Racing Queue - Environment Setup Script
+# Racing Game Station - Environment Setup Script
 # 
 # This script helps setup environment variables for deployment
 # 
@@ -39,7 +39,7 @@ ENVIRONMENT="${1:-local}"
 
 echo -e "${BLUE}"
 echo "╔════════════════════════════════════════════════════════════╗"
-echo "║          🔧 Racing Queue - Environment Setup               ║"
+echo "║          🔧 Racing Game Station - Environment Setup               ║"
 echo "╚════════════════════════════════════════════════════════════╝"
 echo -e "${NC}"
 

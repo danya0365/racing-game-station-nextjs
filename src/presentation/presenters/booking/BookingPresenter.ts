@@ -7,10 +7,10 @@
  */
 
 import {
-  Booking,
-  BookingDaySchedule,
-  CreateBookingData,
-  IBookingRepository,
+    Booking,
+    BookingDaySchedule,
+    CreateBookingData,
+    IBookingRepository,
 } from '@/src/application/repositories/IBookingRepository';
 import { IMachineRepository, Machine } from '@/src/application/repositories/IMachineRepository';
 import { Metadata } from 'next';
@@ -133,8 +133,8 @@ export class BookingPresenter {
    */
   generateMetadata(): Metadata {
     return {
-      title: 'จองเวลา | Racing Queue',
-      description: 'จองคิวเครื่องเล่น Racing Simulator ล่วงหน้า เลือกวันและเวลาที่ต้องการได้ตามสะดวก',
+      title: 'จองเวลา | Racing Game Station',
+      description: 'จองคิวเครื่องเล่น Racing Game Station ล่วงหน้า เลือกวันและเวลาที่ต้องการได้ตามสะดวก',
     };
   }
 }

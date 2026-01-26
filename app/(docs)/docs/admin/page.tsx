@@ -7,7 +7,7 @@ export default function AdminDocsPage() {
       <div className="hidden print:block print:mb-8 print:pb-8 print:border-b-2 print:border-cyan-500 print:text-center">
         <div className="text-6xl mb-4">⚙️</div>
         <h1 className="text-4xl font-bold text-gray-900 mb-2">คู่มือสำหรับแอดมิน</h1>
-        <p className="text-xl text-gray-600">Racing Queue - ระบบจองเวลาเล่นเกม</p>
+        <p className="text-xl text-gray-600">Racing Game Station - ระบบจองเวลาเล่นเกม</p>
         <p className="text-sm text-gray-500 mt-4">พิมพ์เมื่อ: มกราคม 2026</p>
       </div>
 
@@ -30,201 +30,158 @@ export default function AdminDocsPage() {
         </div>
       </header>
 
-      {/* Section 1: เข้าหน้าแอดมิน */}
+      {/* Section 1: Dashboard */}
       <section id="dashboard" className="mb-16 print:break-before-page print:pt-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-cyan-100 dark:bg-cyan-500/20 border border-cyan-300 dark:border-cyan-500/30 flex items-center justify-center text-xl">
             📊
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">เข้าหน้า Dashboard</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">แท็บ Dashboard</h2>
         </div>
 
         <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 space-y-4">
           <p className="text-gray-600 dark:text-gray-400">
-            เข้าสู่หน้าแอดมินได้ 2 วิธี:
+            หน้าแรกสำหรับดูภาพรวมของร้าน ประกอบด้วย:
           </p>
           
-          <ol className="space-y-3 text-gray-600 dark:text-gray-400">
-            <li className="flex items-start gap-2">
-              <span className="text-cyan-600 dark:text-cyan-400">1.</span>
-              คลิกที่เมนู <span className="text-cyan-600 dark:text-cyan-400 font-medium">&ldquo;แอดมิน&rdquo;</span> บนแถบเมนู
+          <ul className="space-y-3 text-gray-600 dark:text-gray-400 list-disc ml-4">
+            <li>
+              <strong>Real-time Status:</strong> การ์ดแสดงจำนวนเครื่องว่าง, คิวรอ, และรายได้วันนี้
             </li>
-            <li className="flex items-start gap-2">
-              <span className="text-cyan-600 dark:text-cyan-400">2.</span>
-              หรือเข้า URL โดยตรง: <code className="px-2 py-1 bg-gray-200 dark:bg-white/10 rounded text-cyan-700 dark:text-cyan-300 text-sm">/backend</code>
+            <li>
+              <strong>Incoming Bookings:</strong> ตารางแสดง Booking ที่กำลังจะมาถึง (เตรียมเครื่องให้พร้อม) และ <span className="text-red-500 font-bold">Overdue</span> (เลยเวลานัด)
             </li>
-          </ol>
+            <li>
+              <strong>Traffic Source:</strong> กราฟเปรียบเทียบลูกค้า Walk-in vs Booking
+            </li>
+          </ul>
 
           <div className="mt-4 p-4 bg-cyan-50 dark:bg-cyan-500/10 border border-cyan-200 dark:border-cyan-500/30 rounded-xl">
-            <h4 className="font-bold text-cyan-700 dark:text-cyan-400 mb-2">หน้า Dashboard แสดงอะไรบ้าง?</h4>
-            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-              <li>📊 สถิติรวม - จำนวนเครื่อง, เครื่องว่าง, คิวรอ, กำลังเล่น</li>
-              <li>📋 คิวล่าสุดวันนี้</li>
+            <h4 className="font-bold text-cyan-700 dark:text-cyan-400 mb-2">💡 Tips</h4>
+            <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+              <li>หากมีรายการ <span className="text-red-500">Overdue Booking</span> ให้รีบโทรตามลูกค้าทันที</li>
+              <li>ใช้ปุ่ม <strong>"🖨️ Print QR"</strong> มุมขวาบน เพื่อพิมพ์ QR Code ให้ลูกค้าสแกนจองหน้าร้าน</li>
             </ul>
           </div>
         </div>
       </section>
 
-      {/* Section 2: Tabs */}
-      <section className="mb-16 print:break-before-page print:pt-8">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-500/20 border border-purple-300 dark:border-purple-500/30 flex items-center justify-center text-xl">
-            📑
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">แท็บต่างๆ ในหน้าแอดมิน</h2>
-        </div>
-
-        <div className="grid gap-4">
-          {/* Dashboard Tab */}
-          <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-4">
-            <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-2">
-              <span className="text-cyan-600 dark:text-cyan-400">📊</span> Dashboard
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
-              ภาพรวมของร้าน สถิติเครื่อง และคิวล่าสุด
-            </p>
-          </div>
-
-          {/* Machines Tab */}
-          <div id="machines" className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-4">
-            <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-2">
-              <span className="text-emerald-600 dark:text-emerald-400">🎮</span> จัดการเครื่อง
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
-              จัดการเครื่องเล่นทั้งหมด
-            </p>
-            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300 ml-4 list-disc">
-              <li>เปลี่ยนสถานะเครื่อง (ว่าง / กำลังเล่น / ปิดซ่อม)</li>
-              <li>ดูคิวของแต่ละเครื่อง</li>
-              <li>Reset คิวเครื่อง</li>
-            </ul>
-          </div>
-
-          {/* Customers Tab */}
-          <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-4">
-            <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-2">
-              <span className="text-orange-600 dark:text-orange-400">👥</span> จัดการลูกค้า
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
-              ดูและจัดการข้อมูลลูกค้า
-            </p>
-            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300 ml-4 list-disc">
-              <li>ค้นหาลูกค้าจากเบอร์โทร</li>
-              <li>ดูประวัติการจอง</li>
-            </ul>
-          </div>
-
-          {/* Bookings Tab */}
-          <div id="bookings" className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-4">
-            <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-2">
-              <span className="text-pink-600 dark:text-pink-400">📅</span> จองเวลา
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
-              จัดการการจองเวลาทั้งหมด
-            </p>
-            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300 ml-4 list-disc">
-              <li>ดูตารางการจองแยกตามเครื่อง</li>
-              <li>ยืนยัน / ยกเลิกการจอง</li>
-              <li>เลือกดูวันอื่นๆ ได้</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 3: เปลี่ยนสถานะเครื่อง */}
-      <section className="mb-16 print:break-before-page print:pt-8">
+      {/* Section 2: Manage Machines */}
+      <section id="machines" className="mb-16 print:break-before-page print:pt-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-300 dark:border-emerald-500/30 flex items-center justify-center text-xl">
-            🔄
+            🎮
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">วิธีเปลี่ยนสถานะเครื่อง</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">จัดการเครื่อง (Machines)</h2>
         </div>
 
         <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 space-y-4">
           <p className="text-gray-600 dark:text-gray-400">
-            ไปที่แท็บ <span className="text-emerald-600 dark:text-emerald-400 font-medium">&ldquo;จัดการเครื่อง&rdquo;</span>
+            ในแท็บนี้ ท่านสามารถจัดการสถานะและข้อมูลของเครื่องเล่นแต่ละเครื่อง:
           </p>
           
-          <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <span className="px-3 py-1 bg-emerald-500 text-white rounded-full text-xs font-bold">ว่าง</span>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">เครื่องพร้อมใช้งาน ลูกค้าจองได้</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <span className="px-3 py-1 bg-orange-500 text-white rounded-full text-xs font-bold">กำลังเล่น</span>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">มีลูกค้ากำลังเล่นอยู่</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <span className="px-3 py-1 bg-gray-500 text-white rounded-full text-xs font-bold">ปิดซ่อม</span>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">เครื่องอยู่ในโหมดซ่อมบำรุง ลูกค้าจองไม่ได้</p>
-            </div>
-          </div>
-
-          <div className="mt-4 p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 rounded-xl">
-            <p className="text-sm text-gray-700 dark:text-gray-300">
-              💡 <strong>วิธีเปลี่ยน:</strong> กดปุ่ม <span className="text-emerald-600 dark:text-emerald-400">&ldquo;🔧 ปิดซ่อม&rdquo;</span> หรือ <span className="text-emerald-600 dark:text-emerald-400">&ldquo;✅ เปิดเครื่อง&rdquo;</span>
-            </p>
+          <div className="grid md:grid-cols-2 gap-4">
+             <div className="border border-gray-200 dark:border-white/10 rounded-xl p-4 bg-white/50 dark:bg-black/20">
+               <h4 className="font-bold text-gray-900 dark:text-white mb-2">เปลี่ยนสถานะ</h4>
+               <p className="text-sm text-gray-500 dark:text-gray-400">
+                 กดปุ่มสถานะเพื่อเปลี่ยนทันที เช่น <span className="text-emerald-600 font-medium">"✅ เปิดใช้งาน"</span> หรือ <span className="text-gray-500 font-medium">"🔧 ซ่อมบำรุง"</span>
+               </p>
+             </div>
+             <div className="border border-gray-200 dark:border-white/10 rounded-xl p-4 bg-white/50 dark:bg-black/20">
+               <h4 className="font-bold text-gray-900 dark:text-white mb-2">แก้ไขข้อมูล</h4>
+               <p className="text-sm text-gray-500 dark:text-gray-400">
+                 กดปุ่ม <span className="text-blue-500 font-medium">"✏️ แก้ไข"</span> เพื่อเปลี่ยนชื่อเครื่อง, รายละเอียด, หรือซ่อน/แสดงเครื่อง
+               </p>
+             </div>
           </div>
         </div>
       </section>
 
-      {/* Section 4: จัดการการจอง */}
-      <section className="mb-16 print:break-before-page print:pt-8">
+      {/* Section 3: Manage Customers */}
+      <section id="customers" className="mb-16 print:break-before-page print:pt-8">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-pink-100 dark:bg-pink-500/20 border border-pink-300 dark:border-pink-500/30 flex items-center justify-center text-xl">
-            ✅
+          <div className="w-10 h-10 rounded-lg bg-orange-100 dark:bg-orange-500/20 border border-orange-300 dark:border-orange-500/30 flex items-center justify-center text-xl">
+            👥
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">ยืนยัน/ยกเลิกการจอง</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">จัดการลูกค้า (Customers)</h2>
         </div>
 
         <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 space-y-4">
           <p className="text-gray-600 dark:text-gray-400">
-            ไปที่แท็บ <span className="text-pink-600 dark:text-pink-400 font-medium">&ldquo;จองเวลา&rdquo;</span>
+            แท็บสำหรับดูข้อมูลและจัดการลูกค้าทั้งหมดในระบบ:
+          </p>
+
+          <ul className="space-y-3 text-gray-600 dark:text-gray-400 list-disc ml-4">
+            <li>
+               <strong>Stats:</strong> ดูจำนวนลูกค้าทั้งหมด, ลูกค้า <span className="text-amber-500 font-bold">VIP</span>, ลูกค้าใหม่วันนี้, และลูกค้าประจำ
+            </li>
+            <li>
+               <strong>Search & Filter:</strong> ค้นหาชื่อ/เบอร์โทร หรือกดปุ่ม Filter เพื่อดูเฉพาะกลุ่ม (เช่น เฉพาะ VIP)
+            </li>
+            <li>
+               <strong>VIP Management:</strong> กดปุ่ม <span className="text-amber-500 font-bold">"⭐ VIP"</span> เพื่อปรับสถานะลูกค้าให้เป็น VIP (ได้รับสิทธิพิเศษ)
+            </li>
+            <li>
+               <strong>Add/Edit:</strong> เพิ่มลูกค้าใหม่เข้าระบบ หรือแก้ไขข้อมูลลูกค้าเดิม
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      {/* Section 4: Manage Queue */}
+      <section id="walk-in" className="mb-16 print:break-before-page print:pt-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-500/20 border border-amber-300 dark:border-amber-500/30 flex items-center justify-center text-xl">
+            🚶
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">คิวหน้าร้าน (Walk-in Queue)</h2>
+        </div>
+
+        <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 space-y-4">
+          <p className="text-gray-600 dark:text-gray-400">
+            ใช้แท็บนี้สำหรับจัดการลูกค้าที่มารอหน้าร้านโดยไม่ได้จองล่วงหน้า:
           </p>
           
-          <ol className="space-y-3 text-gray-600 dark:text-gray-400">
-            <li className="flex items-start gap-2">
-              <span className="text-pink-600 dark:text-pink-400">1.</span>
-              เลือกเครื่องที่ต้องการดู (หรือเลือก &ldquo;ทุกเครื่อง&rdquo;)
+          <ol className="list-decimal space-y-3 ml-4 text-gray-600 dark:text-gray-400">
+            <li>
+               <strong>ลงทะเบียนคิวใหม่:</strong> กดปุ่ม "➕ เพิ่มคิว" ใส่ชื่อและเบอร์โทร
             </li>
-            <li className="flex items-start gap-2">
-              <span className="text-pink-600 dark:text-pink-400">2.</span>
-              เลือกวันที่ต้องการดู
+            <li>
+               <strong>เรียกคิว:</strong> เมื่อเครื่องว่าง กดปุ่ม "📢 เรียกคิว" ที่รายการแรกสุด
             </li>
-            <li className="flex items-start gap-2">
-              <span className="text-pink-600 dark:text-pink-400">3.</span>
-              ดูรายการจองในตาราง
+            <li>
+               <strong>รับลูกค้า (Assign):</strong> เมื่อลูกค้าแสดงตัว กด "Assign" แล้วเลือกเครื่องที่จะให้เล่น
             </li>
-            <li className="flex items-start gap-2">
-              <span className="text-pink-600 dark:text-pink-400">4.</span>
-              กดปุ่ม <span className="text-emerald-600 dark:text-emerald-400">&ldquo;✅&rdquo;</span> เพื่อยืนยัน หรือ <span className="text-red-600 dark:text-red-400">&ldquo;❌&rdquo;</span> เพื่อยกเลิก
+            <li>
+               <strong>ข้าม/ยกเลิก (Cancel):</strong> หากลูกค้าไม่มา กด "❌ ยกเลิก"
             </li>
           </ol>
         </div>
       </section>
 
-      {/* Section 5: Print QR */}
-      <section className="mb-16 print:break-before-page print:pt-8">
+      {/* Section 4: History & Bookings */}
+      <section id="bookings" className="mb-16 print:break-before-page print:pt-8">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-500/20 border border-blue-300 dark:border-blue-500/30 flex items-center justify-center text-xl">
-            🖨️
+          <div className="w-10 h-10 rounded-lg bg-pink-100 dark:bg-pink-500/20 border border-pink-300 dark:border-pink-500/30 flex items-center justify-center text-xl">
+            📜
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">พิมพ์ QR Code</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">จองเวลา & ประวัติการเล่น</h2>
         </div>
 
         <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 space-y-4">
-          <p className="text-gray-600 dark:text-gray-400">
-            กดปุ่ม <span className="text-blue-600 dark:text-blue-400 font-medium">&ldquo;🖨️ Print QR&rdquo;</span> ที่ด้านบนของหน้าแอดมิน
-          </p>
-          
-          <p className="text-gray-600 dark:text-gray-400">
-            ระบบจะพิมพ์ QR Code สำหรับให้ลูกค้าสแกนเพื่อจองเวลา ติดไว้ที่ร้านได้เลย
-          </p>
-
-          <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/30 rounded-xl">
-            <p className="text-sm text-gray-700 dark:text-gray-300">
-              💡 <strong>Tip:</strong> QR Code จะลิงก์ไปที่หน้าจองเวลาโดยตรง
-            </p>
+          <div className="space-y-4">
+             <div>
+                <h4 className="font-bold text-pink-600 dark:text-pink-400 mb-1">📅 แท็บ จองเวลา (Bookings)</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  ดูตารางการจองล่วงหน้าทั้งหมด สามารถดูแยกตามวัน หรือค้นหาชื่อลูกค้าได้
+                </p>
+             </div>
+             <div>
+                <h4 className="font-bold text-purple-600 dark:text-purple-400 mb-1">⏱️ แท็บ ประวัติการเล่น (Sessions)</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  ดูประวัติการเล่นที่จบไปแล้ว (Completed Sessions) พร้อมยอดเงินรายรับ สามารถกดแก้ไขสถานะ "จ่ายแล้ว/ยังไม่จ่าย" ได้ที่นี่
+                </p>
+             </div>
           </div>
         </div>
       </section>
@@ -232,7 +189,7 @@ export default function AdminDocsPage() {
       {/* Quick Links - Hidden in Print */}
       <section className="bg-gradient-to-br from-cyan-100 to-blue-100 dark:from-cyan-500/10 dark:to-blue-500/10 border border-cyan-300 dark:border-cyan-500/30 rounded-2xl p-6 print:hidden">
         <h3 className="font-bold text-gray-900 dark:text-white mb-4">🔗 ลิงก์แอดมิน</h3>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           <Link href="/backend" className="bg-white/50 dark:bg-cyan-500/20 hover:bg-white dark:hover:bg-cyan-500/30 border border-cyan-300 dark:border-cyan-500/30 rounded-xl p-4 text-center transition-all">
             <span className="text-2xl block mb-2">📊</span>
             <span className="text-sm text-gray-700 dark:text-gray-300">Dashboard</span>
@@ -266,7 +223,7 @@ export default function AdminDocsPage() {
 
       {/* Print Footer */}
       <div className="hidden print:block print:mt-8 print:pt-4 print:border-t print:border-gray-300 print:text-center print:text-sm print:text-gray-500">
-        <p>Racing Queue - คู่มือสำหรับแอดมิน | หน้า _____</p>
+        <p>Racing Game Station - คู่มือสำหรับแอดมิน | หน้า _____</p>
       </div>
     </div>
   );

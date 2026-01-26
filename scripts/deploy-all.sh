@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #######################################
-# Racing Queue - Full Deployment Script
+# Racing Game Station - Full Deployment Script
 # 
 # This script deploys both Supabase and Vercel
 # 
@@ -32,7 +32,7 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 echo -e "${PURPLE}"
 echo "╔════════════════════════════════════════════════════════════╗"
-echo "║         🏎️  Racing Queue - Full Deployment                 ║"
+echo "║         🏎️  Racing Game Station - Full Deployment                 ║"
 echo "║                                                            ║"
 echo "║           Supabase + Vercel Production Deploy              ║"
 echo "╚════════════════════════════════════════════════════════════╝"
@@ -95,7 +95,7 @@ echo "╔═══════════════════════�
 echo "║                                                            ║"
 echo "║            🎉 Full Deployment Complete! 🎉                 ║"
 echo "║                                                            ║"
-echo "║      🏎️  Racing Queue is now live in production!           ║"
+echo "║      🏎️  Racing Game Station is now live in production!           ║"
 echo "║                                                            ║"
 echo "╚════════════════════════════════════════════════════════════╝"
 echo -e "${NC}"

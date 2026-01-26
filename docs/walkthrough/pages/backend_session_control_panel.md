@@ -9,11 +9,11 @@
 
 | File | Purpose |
 |------|---------|
-| [page.tsx](file:///Users/marosdeeuma/racing-simulation-queue-nextjs/app/backend/control/page.tsx) | Page route |
-| [ControlPresenter.ts](file:///Users/marosdeeuma/racing-simulation-queue-nextjs/src/presentation/presenters/backend/ControlPresenter.ts) | Business logic & ViewModel |
-| [ControlPresenterClientFactory.ts](file:///Users/marosdeeuma/racing-simulation-queue-nextjs/src/presentation/presenters/backend/ControlPresenterClientFactory.ts) | Factory for client-side |
-| [useControlPresenter.ts](file:///Users/marosdeeuma/racing-simulation-queue-nextjs/src/presentation/presenters/backend/useControlPresenter.ts) | React hook for state |
-| [ControlView.tsx](file:///Users/marosdeeuma/racing-simulation-queue-nextjs/src/presentation/components/backend/ControlView.tsx) | Main UI component |
+| [page.tsx](file:///Users/marosdeeuma/racing-game-station-nextjs/app/backend/control/page.tsx) | Page route |
+| [ControlPresenter.ts](file:///Users/marosdeeuma/racing-game-station-nextjs/src/presentation/presenters/backend/ControlPresenter.ts) | Business logic & ViewModel |
+| [ControlPresenterClientFactory.ts](file:///Users/marosdeeuma/racing-game-station-nextjs/src/presentation/presenters/backend/ControlPresenterClientFactory.ts) | Factory for client-side |
+| [useControlPresenter.ts](file:///Users/marosdeeuma/racing-game-station-nextjs/src/presentation/presenters/backend/useControlPresenter.ts) | React hook for state |
+| [ControlView.tsx](file:///Users/marosdeeuma/racing-game-station-nextjs/src/presentation/components/backend/ControlView.tsx) | Main UI component |
 
 ---
 

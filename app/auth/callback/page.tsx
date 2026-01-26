@@ -2,7 +2,7 @@ import { AuthCallbackView } from '@/src/presentation/components/auth/AuthCallbac
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'กำลังเข้าสู่ระบบ... | Racing Queue',
+  title: 'กำลังเข้าสู่ระบบ... | Racing Game Station',
   description: 'กำลังดำเนินการเข้าสู่ระบบ',
 };
 

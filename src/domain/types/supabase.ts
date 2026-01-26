@@ -141,7 +141,7 @@ export type Database = {
         Row: {
           created_at: string | null
           description: string | null
-          hourly_rate: number | null
+          hourly_rate: number
           id: string
           image_url: string | null
           is_active: boolean
@@ -154,7 +154,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           description?: string | null
-          hourly_rate?: number | null
+          hourly_rate?: number
           id?: string
           image_url?: string | null
           is_active?: boolean
@@ -167,7 +167,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           description?: string | null
-          hourly_rate?: number | null
+          hourly_rate?: number
           id?: string
           image_url?: string | null
           is_active?: boolean
@@ -646,6 +646,7 @@ export type Database = {
           total_price: number
         }[]
       }
+      rpc_get_home_dashboard_stats: { Args: { p_date?: string }; Returns: Json }
       rpc_get_my_bookings: {
         Args: { p_customer_id: string }
         Returns: {

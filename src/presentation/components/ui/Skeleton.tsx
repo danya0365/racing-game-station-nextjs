@@ -138,39 +138,71 @@ export function QueueStatusSkeleton() {
  */
 export function HomePageSkeleton() {
   return (
-    <div className="h-full overflow-auto scrollbar-thin">
-      {/* Hero Skeleton */}
-      <section className="relative min-h-[50vh] flex items-center justify-center">
-        <div className="text-center px-4 py-12">
-          <SkeletonCircle size="w-24 h-24 mx-auto mb-6" />
-          <Skeleton className="h-12 w-80 mx-auto mb-4" />
-          <div className="space-y-2 mb-8">
-            <SkeletonText width="w-96 mx-auto" />
-            <SkeletonText width="w-64 mx-auto" />
-          </div>
-          <div className="flex gap-4 justify-center">
-            <Skeleton className="w-36 h-12 rounded-xl" />
-            <Skeleton className="w-32 h-12 rounded-xl" />
-          </div>
+    <div className="h-full overflow-auto scrollbar-thin pb-20">
+      {/* Hero Skeleton - Compact */}
+      <section className="relative bg-surface border-b border-border">
+        <div className="px-4 py-8 max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+           <div className="flex items-center gap-4">
+             <Skeleton className="w-16 h-16 rounded-2xl" />
+             <div className="space-y-2">
+               <Skeleton className="h-8 w-64" />
+               <SkeletonText width="w-48" />
+             </div>
+           </div>
+           
+           <div className="flex gap-3">
+             <Skeleton className="w-24 h-16 rounded-xl" />
+             <Skeleton className="w-24 h-16 rounded-xl" />
+           </div>
         </div>
       </section>
 
-      {/* Stats Skeleton */}
-      <section className="px-4 md:px-8 py-8">
-        <div className="max-w-6xl mx-auto">
-          <Skeleton className="h-8 w-48 mx-auto mb-6" />
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+        
+        {/* Quick Actions Skeleton */}
+        <section>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[1, 2, 3, 4].map((i) => (
-              <Skeleton key={i} className="h-24 rounded-xl" />
+               <Skeleton key={i} className="h-32 rounded-2xl" />
             ))}
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <SkeletonCard key={i} className="h-48" />
-            ))}
+        </section>
+
+        {/* Real-time Machine Status Skeleton */}
+        <section>
+          <div className="flex items-center justify-between mb-4">
+            <Skeleton className="h-8 w-40 rounded-lg" />
+            <Skeleton className="h-6 w-32 rounded-lg" />
           </div>
-        </div>
-      </section>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+             {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="bg-surface border border-border rounded-xl p-4 h-24">
+                  <div className="flex flex-col items-center justify-center h-full gap-2">
+                    <SkeletonCircle size="w-8 h-8"/>
+                    <SkeletonText width="w-16" />
+                  </div>
+                </div>
+             ))}
+          </div>
+        </section>
+
+        {/* Today's Schedule Overview Skeleton */}
+        <section className="bg-surface/30 rounded-2xl p-6 border border-border/50">
+           <div className="flex items-center justify-between mb-4">
+              <Skeleton className="h-6 w-32" />
+              <Skeleton className="h-6 w-24" />
+           </div>
+           
+           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <Skeleton className="h-24 rounded-xl" />
+              <Skeleton className="h-24 rounded-xl" />
+              <Skeleton className="h-24 rounded-xl" />
+              <Skeleton className="h-24 rounded-xl" />
+           </div>
+        </section>
+
+      </div>
     </div>
   );
 }

@@ -5,11 +5,11 @@
  */
 
 import {
-  AuthProfile,
-  AuthSession,
-  AuthUser,
-  IAuthRepository,
-  UpdateProfileData,
+    AuthProfile,
+    AuthSession,
+    AuthUser,
+    IAuthRepository,
+    UpdateProfileData,
 } from '@/src/application/repositories/IAuthRepository';
 import { Metadata } from 'next';
 
@@ -77,7 +77,7 @@ export class ProfilePresenter {
    */
   generateMetadata(): Metadata {
     return {
-      title: 'โปรไฟล์ | Racing Queue',
+      title: 'โปรไฟล์ | Racing Game Station',
       description: 'จัดการข้อมูลส่วนตัวและการตั้งค่าบัญชีของคุณ',
     };
   }
