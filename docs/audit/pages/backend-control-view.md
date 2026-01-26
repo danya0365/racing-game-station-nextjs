@@ -1,0 +1,57 @@
+# 🔍 รายงานการตรวจสอบ: หน้าควบคุมห้องเกม (Backend Control View Audit)
+
+**ไฟล์ที่ตรวจสอบ**: 
+- `src/presentation/components/backend/ControlView.tsx` (UI)
+- `src/presentation/presenters/backend/ControlPresenter.ts` (Logic)
+- `src/infrastructure/repositories/supabase/SupabaseSessionRepository.ts` (Data Access)
+
+**สถานะ**: ✅ ตรวจสอบครบทุก API และ Database Interaction
+**ผู้ตรวจสอบ**: Antigravity (AI Assistant)
+**วันที่**: 25 มกราคม 2026
+
+---
+
+## 🏗️ ภาพรวมการทำงาน
+หน้านี้เป็น **Command Center** สำหรับพนักงาน เพื่อดูแลเครื่องเล่นเกมทั้งหมดแบบ Real-time โดยมีการรวมข้อมูลจากหลายส่วน (Machines, Sessions, Queues, Bookings) มาแสดงผลและสั่งการในหน้าเดียว
+
+---
+
+## 📡 รายการ API และกระบวนการฐานข้อมูล (Exhaustive List)
+
+### 📊 การดึงข้อมูลแสดงผล (Initial Load & Auto-Refresh)
+| ฟังก์ชันใน Repository | ปลายทาง (Table / RPC) | รายละเอียด | สถานะ |
+| :--- | :--- | :--- | :--- |
+| `machineRepo.getAll()` | Table: `public.machines` | `SELECT *` กรองเฉพาะเครื่องที่ Active (`isActive=true`) | **ปลอดภัย** |
+| `sessionRepo.getActiveSessions()` | RPC: `rpc_get_active_sessions` | ดึง Session ที่ยังไม่จบ (`end_time` is NULL) พร้อมข้อมูลลูกค้า | **ปลอดภัย** |
+| `walkInQueueRepo.getWaiting()` | RPC: `rpc_get_waiting_queue` | ดึงรายการคิว Walk-in ที่สถานะ `waiting` | **ปลอดภัย** |
+| `bookingRepo.getByMachineAndDate()` | RPC: `rpc_get_bookings_by_machine_date` | ดึงข้อมูลการจองของแต่ละเครื่องประจำวัน เพื่อแสดงสถานะ "จอง" | **ปลอดภัย** |
+| `sessionRepo.getByStationId()` | Table: `public.sessions` | `SELECT *` ดูประวัติการเล่นย้อนหลังของเครื่อง (History Modal) | **ปลอดภัย** |
+
+### 🎮 การสั่งการ (Actions)
+| ฟังก์ชันใน Repository | ปลายทาง (Table / RPC) | รายละเอียด | สถานะ |
+| :--- | :--- | :--- | :--- |
+| `sessionRepo.startSession()` | RPC: `rpc_start_session` | **Main Action**: เริ่มต้นใช้งานเครื่อง รองรับ 3 รูปแบบ (Manual, Booking, Queue) ภายใน RPC เดียว | **ปลอดภัย** (Transaction) |
+| `sessionRepo.endSession()` | RPC: `rpc_end_session` | **Main Action**: จบการใช้งาน คำนวณราคาและบันทึกเวลา | **ปลอดภัย** (Transaction) |
+
+---
+
+## 💡 วิเคราะห์ Logic พิเศษ (Business Logic Analysis)
+
+จากการตรวจสอบ `ControlPresenter.ts` พบว่ามีการจัดการ State ที่ซับซ้อนในระดับ Application Layer ก่อนส่งไป View:
+
+1.  **State Determination**: สถานะของเครื่อง (`available`, `in_use`, `reserved`) ถูกคำนวณที่ฝั่ง Server (Presenter) โดยมีลำดับความสำคัญคือ:
+    *   ถ้ามี Active Session -> **In Use**
+    *   ถ้าไม่มี Active Session แต่มี Booking ที่ Confirmed และยังไม่เริ่ม -> **Reserved**
+    *   นอกนั้น -> **Available**
+
+2.  **Concurrency Safety**:
+    *   การใช้ `rpc_start_session` ช่วยป้องกันการเริ่มซ้อนครับ เพราะ Database จะ Lock Row หรือ Check Constraint ได้ดีกว่าทำเลเยอร์ Application
+    *   `rpc_end_session` ช่วยการันตีว่าจบการเล่นเดียวกันแน่นอน
+
+---
+
+## ✅ บทสรุปการตรวจสอบ
+ระบบ Control View นี้ออกแบบมาได้ **ปลอดภัยและมีประสิทธิภาพสูง** โดย:
+1.  **Read Heavy Optimization**: แยกการอ่านข้อมูลเป็น Parallel (`Promise.all`) ทำให้โหลดหน้าจอได้เร็ว
+2.  **Centralized Logic**: รวม Logic การเริ่มเกมทุกแบบไว้ที่ `rpc_start_session` จุดเดียว ลดโอกาสเกิดบั๊กข้อมูลไม่ตรงกัน
+3.  **Audit Trail**: ทุก Action (Start/End) ถูกบันทึกลง Table `sessions` เอาไปตรวจสอบย้อนหลังได้ครบถ้วน

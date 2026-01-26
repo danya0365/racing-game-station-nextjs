@@ -4,31 +4,41 @@
  * 
  * ✅ Uses API-based repositories to avoid Supabase connection pool issues
  * ✅ Centralized repository creation for client-side components
+ * ✅ Now uses IWalkInQueueRepository and ISessionRepository (new schema)
  */
 
 'use client';
 
-import { IAdvanceBookingRepository } from '@/src/application/repositories/IAdvanceBookingRepository';
+import { IBookingRepository } from '@/src/application/repositories/IBookingRepository';
 import { ICustomerRepository } from '@/src/application/repositories/ICustomerRepository';
 import { IMachineRepository } from '@/src/application/repositories/IMachineRepository';
-import { IQueueRepository } from '@/src/application/repositories/IQueueRepository';
-import { ApiAdvanceBookingRepository } from '@/src/infrastructure/repositories/api/ApiAdvanceBookingRepository';
+import { ISessionRepository } from '@/src/application/repositories/ISessionRepository';
+import { IWalkInQueueRepository } from '@/src/application/repositories/IWalkInQueueRepository';
+import { ApiBookingRepository } from '@/src/infrastructure/repositories/api/ApiBookingRepository';
 import { ApiCustomerRepository } from '@/src/infrastructure/repositories/api/ApiCustomerRepository';
 import { ApiMachineRepository } from '@/src/infrastructure/repositories/api/ApiMachineRepository';
-import { ApiQueueRepository } from '@/src/infrastructure/repositories/api/ApiQueueRepository';
+import { ApiSessionRepository } from '@/src/infrastructure/repositories/api/ApiSessionRepository';
+import { ApiWalkInQueueRepository } from '@/src/infrastructure/repositories/api/ApiWalkInQueueRepository';
 
 /**
- * Creates advance booking and machine repositories
+ * Creates booking and machine repositories (TIMESTAMPTZ-based system)
  * Uses API-based implementations for client-side use
  */
-export function createAdvanceBookingRepositories(): {
-  advanceBookingRepo: IAdvanceBookingRepository;
+export function createBookingRepositories(): {
+  bookingRepo: IBookingRepository;
   machineRepo: IMachineRepository;
 } {
   return {
-    advanceBookingRepo: new ApiAdvanceBookingRepository(),
+    bookingRepo: new ApiBookingRepository(),
     machineRepo: new ApiMachineRepository(),
   };
+}
+
+/**
+ * Creates booking repository only (TIMESTAMPTZ-based system)
+ */
+export function createBookingRepository(): IBookingRepository {
+  return new ApiBookingRepository();
 }
 
 /**
@@ -39,20 +49,6 @@ export function createMachineRepository(): IMachineRepository {
 }
 
 /**
- * Creates advance booking repository only
- */
-export function createAdvanceBookingRepository(): IAdvanceBookingRepository {
-  return new ApiAdvanceBookingRepository();
-}
-
-/**
- * Creates queue repository only
- */
-export function createQueueRepository(): IQueueRepository {
-  return new ApiQueueRepository();
-}
-
-/**
  * Creates customer repository only
  */
 export function createCustomerRepository(): ICustomerRepository {
@@ -60,18 +56,42 @@ export function createCustomerRepository(): ICustomerRepository {
 }
 
 /**
+ * Creates walk-in queue repository
+ */
+export function createWalkInQueueRepository(): IWalkInQueueRepository {
+  return new ApiWalkInQueueRepository();
+}
+
+/**
+ * Creates session repository
+ */
+export function createSessionRepository(): ISessionRepository {
+  return new ApiSessionRepository();
+}
+
+/**
  * Creates all common repositories
  */
 export function createAllRepositories(): {
   machineRepo: IMachineRepository;
-  queueRepo: IQueueRepository;
-  advanceBookingRepo: IAdvanceBookingRepository;
+  bookingRepo: IBookingRepository;
   customerRepo: ICustomerRepository;
+  walkInRepo: IWalkInQueueRepository;
+  sessionRepo: ISessionRepository;
 } {
   return {
     machineRepo: new ApiMachineRepository(),
-    queueRepo: new ApiQueueRepository(),
-    advanceBookingRepo: new ApiAdvanceBookingRepository(),
+    bookingRepo: new ApiBookingRepository(),
     customerRepo: new ApiCustomerRepository(),
+    walkInRepo: new ApiWalkInQueueRepository(),
+    sessionRepo: new ApiSessionRepository(),
   };
 }
+
+// Re-export types for convenience
+export type {
+    IBookingRepository,
+    ICustomerRepository,
+    IMachineRepository, ISessionRepository, IWalkInQueueRepository
+};
+

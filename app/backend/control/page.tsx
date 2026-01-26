@@ -1,15 +1,14 @@
 /**
- * Backend Control Page - Game Room Control
+ * Backend Control Page - Game Room Control Panel
  * 
- * Dedicated page for game room control with fullscreen UI.
- * This provides a direct shortcut for admins to quickly access
- * the control interface without navigating through the dashboard.
+ * Full-screen focus mode for managing game room sessions.
+ * Session-centric approach: tracks actual machine usage.
  * 
  * Route: /backend/control
  */
 
-import { GameRoomControlView } from '@/src/presentation/components/backend/GameRoomControlView';
+import { ControlView } from '@/src/presentation/components/backend/ControlView';
 
 export default function BackendControlPage() {
-  return <GameRoomControlView />;
+  return <ControlView />;
 }

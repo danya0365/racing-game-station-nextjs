@@ -1,79 +1,73 @@
 'use client';
 
-import { AdvanceBooking } from '@/src/application/repositories/IAdvanceBookingRepository';
-import { createAdvanceBookingRepository } from '@/src/infrastructure/repositories/RepositoryFactory';
+import { Booking } from '@/src/application/repositories/IBookingRepository';
+import { createBookingRepository } from '@/src/infrastructure/repositories/RepositoryFactory';
+import dayjs, { getShopTodayString } from '@/src/lib/date';
 import { AnimatedButton } from '@/src/presentation/components/ui/AnimatedButton';
 import { AnimatedCard } from '@/src/presentation/components/ui/AnimatedCard';
 import { ConfirmationModal } from '@/src/presentation/components/ui/ConfirmationModal';
+import { CustomerInfoCard } from '@/src/presentation/components/ui/CustomerInfoCard';
 import { GlowButton } from '@/src/presentation/components/ui/GlowButton';
+import { TimezoneNotice } from '@/src/presentation/components/ui/TimezoneNotice';
 import { useCustomerStore } from '@/src/presentation/stores/useCustomerStore';
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 /**
- * AdvanceBookingStatusView - View customer's advance bookings
- * Shows all advance bookings for the current customer (by phone)
+ * BookingStatusView - View customer's bookings
+ * SECURE: Only shows bookings for the current customer (by customer_id from localStorage)
+ * 
+ * ✅ Uses customer_id instead of phone for secure lookup
  */
 export function BookingStatusView() {
-  const { customerInfo } = useCustomerStore();
-  const [bookings, setBookings] = useState<AdvanceBooking[]>([]);
+  const { customerInfo, isInitialized } = useCustomerStore();
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchPhone, setSearchPhone] = useState(customerInfo.phone || '');
-  const [isSearching, setIsSearching] = useState(false);
   const [cancelBookingId, setCancelBookingId] = useState<string | null>(null);
   const [isCancelling, setIsCancelling] = useState(false);
 
   // ✅ Use factory for repository creation
-  const advanceBookingRepo = useMemo(() => createAdvanceBookingRepository(), []);
+  const bookingRepo = useMemo(() => createBookingRepository(), []);
 
-  // Load bookings by phone
-  const loadBookings = useCallback(async (phone: string) => {
-    if (!phone.trim()) {
+  // Load my bookings by customer_id (SECURE)
+  const loadMyBookings = useCallback(async () => {
+    if (!customerInfo.id) {
       setBookings([]);
       setLoading(false);
       return;
     }
 
-    setIsSearching(true);
+    setLoading(true);
     setError(null);
 
     try {
-      const data = await advanceBookingRepo.getByCustomerPhone(phone.trim());
+      const data = await bookingRepo.getMyBookings(customerInfo.id);
       setBookings(data);
     } catch (err) {
       setError('ไม่สามารถโหลดข้อมูลการจองได้');
-      console.error('Error loading bookings:', err);
+      console.error('Error loading my bookings:', err);
     } finally {
       setLoading(false);
-      setIsSearching(false);
     }
-  }, [advanceBookingRepo]);
+  }, [bookingRepo, customerInfo.id]);
 
-  // Auto-load on mount if phone exists
+  // Auto-load when customerInfo.id is available
   useEffect(() => {
-    if (customerInfo.phone) {
-      setSearchPhone(customerInfo.phone);
-      loadBookings(customerInfo.phone);
-    } else {
-      setLoading(false);
+    if (isInitialized) {
+      loadMyBookings();
     }
-  }, [customerInfo.phone, loadBookings]);
-
-  // Handle search
-  const handleSearch = () => {
-    loadBookings(searchPhone);
-  };
+  }, [isInitialized, loadMyBookings]);
 
   // Cancel booking
   const handleCancelBooking = async () => {
-    if (!cancelBookingId) return;
+    if (!cancelBookingId || !customerInfo.id) return;
 
     setIsCancelling(true);
     try {
-      await advanceBookingRepo.cancel(cancelBookingId);
+      await bookingRepo.cancel(cancelBookingId, customerInfo.id);
       // Reload bookings
-      await loadBookings(searchPhone);
+      await loadMyBookings();
     } catch (err) {
       setError('ไม่สามารถยกเลิกการจองได้');
       console.error('Error cancelling booking:', err);
@@ -85,19 +79,13 @@ export function BookingStatusView() {
 
   // Format date for display
   const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    const today = new Date();
-    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    const date = dayjs(dateStr);
+    const today = dayjs().startOf('day');
+    const tomorrow = today.add(1, 'day');
 
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowStr = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`;
-
-    const bookingDateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-
-    if (bookingDateStr === todayStr) {
+    if (date.isSame(today, 'day')) {
       return 'วันนี้';
-    } else if (bookingDateStr === tomorrowStr) {
+    } else if (date.isSame(tomorrow, 'day')) {
       return 'พรุ่งนี้';
     }
 
@@ -105,7 +93,7 @@ export function BookingStatusView() {
       weekday: 'short',
       day: 'numeric',
       month: 'short',
-    }).format(date);
+    }).format(date.toDate());
   };
 
   // Format time
@@ -130,16 +118,16 @@ export function BookingStatusView() {
   };
 
   // Separate upcoming and past bookings
-  const today = (() => {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  })();
+  const todayStr = getShopTodayString();
   const upcomingBookings = bookings.filter(b =>
-    b.bookingDate >= today && (b.status === 'confirmed' || b.status === 'pending')
+    b.localDate >= todayStr && (b.status === 'confirmed' || b.status === 'pending')
   );
   const pastBookings = bookings.filter(b =>
-    b.bookingDate < today || b.status === 'completed' || b.status === 'cancelled'
+    b.localDate < todayStr || b.status === 'completed' || b.status === 'cancelled'
   );
+
+  // Check if user has verified identity (has customerId)
+  const hasCustomerId = !!customerInfo.id;
 
   return (
     <div className="min-h-screen bg-background py-8 px-4">
@@ -150,30 +138,31 @@ export function BookingStatusView() {
           <p className="text-muted">ดูสถานะการจองเวลาทั้งหมด</p>
         </div>
 
-        {/* Search Box */}
-        <AnimatedCard className="p-6 mb-6">
-          <label className="block text-sm font-medium text-muted mb-2">🔍 ค้นหาจากเบอร์โทร</label>
-          <div className="flex gap-3">
-            <input
-              type="tel"
-              value={searchPhone}
-              onChange={(e) => setSearchPhone(e.target.value)}
-              placeholder="08X-XXX-XXXX"
-              className="flex-1 px-4 py-3 bg-surface border border-border rounded-xl text-foreground placeholder:text-muted focus:border-purple-500 focus:outline-none"
-              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            />
-            <AnimatedButton
-              variant="primary"
-              onClick={handleSearch}
-              disabled={isSearching || !searchPhone.trim()}
-            >
-              {isSearching ? '⏳' : '🔍'} ค้นหา
-            </AnimatedButton>
-          </div>
-        </AnimatedCard>
+        {/* 🌍 Timezone Notice */}
+        <TimezoneNotice />
+
+        {/* 👤 Customer Info Card */}
+        <div className="mb-6">
+          <CustomerInfoCard />
+        </div>
+
+        {/* Not Verified Yet */}
+        {!loading && !hasCustomerId && (
+          <AnimatedCard className="p-8 text-center">
+            <div className="text-6xl mb-4">🔐</div>
+            <h3 className="text-xl font-bold text-foreground mb-2">ยังไม่มีประวัติการจอง</h3>
+            <p className="text-muted mb-6">
+              คุณต้องจองอย่างน้อย 1 ครั้งเพื่อยืนยันตัวตน<br />
+              จากนั้นจะสามารถดูและจัดการการจองได้ที่นี่
+            </p>
+            <Link href="/time-booking">
+              <GlowButton color="purple">📅 จองคิวเลย</GlowButton>
+            </Link>
+          </AnimatedCard>
+        )}
 
         {/* Loading */}
-        {loading && (
+        {loading && hasCustomerId && (
           <div className="text-center py-12">
             <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
             <p className="text-muted">กำลังโหลด...</p>
@@ -187,24 +176,15 @@ export function BookingStatusView() {
           </div>
         )}
 
-        {/* No Phone Yet */}
-        {!loading && !searchPhone.trim() && (
-          <AnimatedCard className="p-8 text-center">
-            <div className="text-6xl mb-4">📱</div>
-            <h3 className="text-xl font-bold text-foreground mb-2">ใส่เบอร์โทรเพื่อค้นหา</h3>
-            <p className="text-muted mb-6">กรอกเบอร์โทรที่ใช้จองเพื่อดูรายการจองของคุณ</p>
-            <Link href="/time-booking">
-              <GlowButton color="purple">📅 จองคิวใหม่</GlowButton>
-            </Link>
-          </AnimatedCard>
-        )}
-
         {/* No Bookings Found */}
-        {!loading && searchPhone.trim() && bookings.length === 0 && (
+        {!loading && hasCustomerId && bookings.length === 0 && (
           <AnimatedCard className="p-8 text-center">
             <div className="text-6xl mb-4">📭</div>
-            <h3 className="text-xl font-bold text-foreground mb-2">ไม่พบการจอง</h3>
-            <p className="text-muted mb-6">ไม่พบการจองสำหรับเบอร์ {searchPhone}</p>
+            <h3 className="text-xl font-bold text-foreground mb-2">ยังไม่มีการจอง</h3>
+            <p className="text-muted mb-6">
+              คุณยังไม่มีรายการจอง<br />
+              มาจองคิวกันเถอะ!
+            </p>
             <Link href="/time-booking">
               <GlowButton color="purple">📅 จองคิวใหม่</GlowButton>
             </Link>
@@ -219,9 +199,9 @@ export function BookingStatusView() {
               การจองที่กำลังจะถึง ({upcomingBookings.length})
             </h2>
             <div className="space-y-4">
-              {upcomingBookings.map((booking, index) => {
+              {upcomingBookings.map((booking) => {
                 const statusConfig = getStatusConfig(booking.status);
-                const isToday = booking.bookingDate === today;
+                const isToday = booking.localDate === todayStr;
 
                 return (
                   <AnimatedCard
@@ -241,14 +221,21 @@ export function BookingStatusView() {
                         </div>
                         <div>
                           <p className="font-bold text-foreground text-lg">
-                            {formatDate(booking.bookingDate)}
+                            {formatDate(booking.localDate)}
                           </p>
                           <p className="text-2xl font-bold text-purple-400">
-                            {formatTime(booking.startTime)} - {formatTime(booking.endTime)}
+                            {formatTime(booking.localStartTime)} - {formatTime(booking.localEndTime)}
                           </p>
-                          <p className="text-sm text-muted mt-1">
-                            {booking.duration} นาที
-                          </p>
+                          <div className="flex items-center gap-2 mt-1">
+                            {booking.machineName && (
+                              <span className="px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs font-medium rounded-full">
+                                🎮 {booking.machineName}
+                              </span>
+                            )}
+                            <span className="text-sm text-muted">
+                              {booking.durationMinutes} นาที
+                            </span>
+                          </div>
                         </div>
                       </div>
 
@@ -301,9 +288,14 @@ export function BookingStatusView() {
                         </div>
                         <div>
                           <p className="font-medium text-foreground">
-                            {formatDate(booking.bookingDate)} • {formatTime(booking.startTime)}
+                            {formatDate(booking.localDate)} • {formatTime(booking.localStartTime)}
+                            {booking.machineName && (
+                              <span className="ml-2 px-1.5 py-0.5 bg-gray-500/20 text-gray-400 text-xs rounded">
+                                {booking.machineName}
+                              </span>
+                            )}
                           </p>
-                          <p className="text-xs text-muted">{booking.duration} นาที</p>
+                          <p className="text-xs text-muted">{booking.durationMinutes} นาที</p>
                         </div>
                       </div>
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusConfig.textColor} bg-opacity-20 ${statusConfig.color}/20`}>

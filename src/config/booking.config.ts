@@ -109,6 +109,33 @@ export function formatPrice(durationMinutes: number): string {
 }
 
 /**
+ * Calculate price based on duration logic
+ * - Step pricing: Rounds up to the nearest configured tier
+ * - If exceeds max tier: Adds excess minutes * best rate
+ */
+export function calculateSessionPrice(durationMinutes: number): number {
+  if (durationMinutes <= 0) return 0;
+
+  // Sort options by time asc
+  const sorted = [...DURATION_OPTIONS].sort((a, b) => a.time - b.time);
+  
+  // 1. If exact match or lower than first tier
+  if (durationMinutes <= sorted[0].time) return sorted[0].price;
+
+  // 2. Find tier that covers this duration
+  const tier = sorted.find(opt => opt.time >= durationMinutes);
+  if (tier) return tier.price;
+
+  // 3. If exceeds max tier, use max tier + per minute logic
+  const maxTier = sorted[sorted.length - 1];
+  const extraMinutes = durationMinutes - maxTier.time;
+  // Use best rate (lowest pricePerMinute) for calculation
+  const bestRate = Math.min(...sorted.map(s => s.pricePerMinute));
+  
+  return maxTier.price + Math.ceil(extraMinutes * bestRate);
+}
+
+/**
  * Simple duration values for quick selection (in minutes)
  * Used in components that just need a list of numbers
  */
@@ -145,6 +172,151 @@ export const OPERATING_HOURS = {
 } as const;
 
 /**
+ * Timezone metadata for display purposes
+ */
+export interface TimezoneInfo {
+  /** IANA timezone identifier (e.g., 'Asia/Bangkok') */
+  iana: string;
+  /** Display name in Thai */
+  displayNameTH: string;
+  /** Display name in English */
+  displayNameEN: string;
+  /** City/Region name */
+  cityName: string;
+  /** Country name in Thai */
+  countryTH: string;
+  /** Country name in English */
+  countryEN: string;
+  /** Country flag emoji */
+  flag: string;
+  /** UTC offset description (e.g., 'UTC+7') */
+  utcOffset: string;
+}
+
+/**
+ * Predefined timezone configurations
+ * Add more as needed for different countries
+ */
+export const TIMEZONE_DATABASE: Record<string, TimezoneInfo> = {
+  'Asia/Bangkok': {
+    iana: 'Asia/Bangkok',
+    displayNameTH: 'เวลากรุงเทพฯ',
+    displayNameEN: 'Bangkok Time',
+    cityName: 'กรุงเทพฯ',
+    countryTH: 'ประเทศไทย',
+    countryEN: 'Thailand',
+    flag: '🇹🇭',
+    utcOffset: 'UTC+7',
+  },
+  'Asia/Tokyo': {
+    iana: 'Asia/Tokyo',
+    displayNameTH: 'เวลาโตเกียว',
+    displayNameEN: 'Tokyo Time',
+    cityName: 'โตเกียว',
+    countryTH: 'ญี่ปุ่น',
+    countryEN: 'Japan',
+    flag: '🇯🇵',
+    utcOffset: 'UTC+9',
+  },
+  'Asia/Singapore': {
+    iana: 'Asia/Singapore',
+    displayNameTH: 'เวลาสิงคโปร์',
+    displayNameEN: 'Singapore Time',
+    cityName: 'สิงคโปร์',
+    countryTH: 'สิงคโปร์',
+    countryEN: 'Singapore',
+    flag: '🇸🇬',
+    utcOffset: 'UTC+8',
+  },
+  'Asia/Hong_Kong': {
+    iana: 'Asia/Hong_Kong',
+    displayNameTH: 'เวลาฮ่องกง',
+    displayNameEN: 'Hong Kong Time',
+    cityName: 'ฮ่องกง',
+    countryTH: 'ฮ่องกง',
+    countryEN: 'Hong Kong',
+    flag: '🇭🇰',
+    utcOffset: 'UTC+8',
+  },
+  'Asia/Seoul': {
+    iana: 'Asia/Seoul',
+    displayNameTH: 'เวลาโซล',
+    displayNameEN: 'Seoul Time',
+    cityName: 'โซล',
+    countryTH: 'เกาหลีใต้',
+    countryEN: 'South Korea',
+    flag: '🇰🇷',
+    utcOffset: 'UTC+9',
+  },
+  'America/Los_Angeles': {
+    iana: 'America/Los_Angeles',
+    displayNameTH: 'เวลาแปซิฟิก',
+    displayNameEN: 'Pacific Time',
+    cityName: 'ลอสแองเจลิส',
+    countryTH: 'สหรัฐอเมริกา',
+    countryEN: 'United States',
+    flag: '🇺🇸',
+    utcOffset: 'UTC-8',
+  },
+  'America/New_York': {
+    iana: 'America/New_York',
+    displayNameTH: 'เวลาตะวันออก',
+    displayNameEN: 'Eastern Time',
+    cityName: 'นิวยอร์ก',
+    countryTH: 'สหรัฐอเมริกา',
+    countryEN: 'United States',
+    flag: '🇺🇸',
+    utcOffset: 'UTC-5',
+  },
+  'Europe/London': {
+    iana: 'Europe/London',
+    displayNameTH: 'เวลาลอนดอน',
+    displayNameEN: 'London Time',
+    cityName: 'ลอนดอน',
+    countryTH: 'สหราชอาณาจักร',
+    countryEN: 'United Kingdom',
+    flag: '🇬🇧',
+    utcOffset: 'UTC+0',
+  },
+  'Australia/Sydney': {
+    iana: 'Australia/Sydney',
+    displayNameTH: 'เวลาซิดนีย์',
+    displayNameEN: 'Sydney Time',
+    cityName: 'ซิดนีย์',
+    countryTH: 'ออสเตรเลีย',
+    countryEN: 'Australia',
+    flag: '🇦🇺',
+    utcOffset: 'UTC+10',
+  },
+};
+
+/**
+ * Timezone configuration for booking system
+ * 
+ * ⚠️ SINGLE SOURCE OF TRUTH for shop timezone
+ * Change `defaultBusinessTimezone` to switch the shop's timezone
+ */
+export const TIMEZONE_CONFIG = {
+  /** 
+   * Default business timezone for the shop
+   * This is the timezone where the physical shop is located
+   * Change this when deploying to a different country
+   */
+  defaultBusinessTimezone: 'Asia/Bangkok' as keyof typeof TIMEZONE_DATABASE,
+  
+  /** Fallback timezone if something goes wrong */
+  fallbackTimezone: 'Asia/Bangkok' as keyof typeof TIMEZONE_DATABASE,
+  
+  /** Get the shop's timezone info */
+  get shopTimezoneInfo(): TimezoneInfo {
+    return TIMEZONE_DATABASE[this.defaultBusinessTimezone] || TIMEZONE_DATABASE[this.fallbackTimezone];
+  },
+  
+  /** Get supported timezones list */
+  supportedTimezones: Object.keys(TIMEZONE_DATABASE),
+} as const;
+
+/**
  * Export type for readonly config
  */
 export type BookingConfig = {
@@ -152,4 +324,5 @@ export type BookingConfig = {
   defaultDuration: typeof DEFAULT_DURATION;
   validation: typeof BOOKING_VALIDATION;
   operatingHours: typeof OPERATING_HOURS;
+  timezone: typeof TIMEZONE_CONFIG;
 };

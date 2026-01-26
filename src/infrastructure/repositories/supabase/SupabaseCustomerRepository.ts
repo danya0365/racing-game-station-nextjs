@@ -1,34 +1,57 @@
 import {
-  CreateCustomerData,
-  Customer,
-  CustomerStats,
-  ICustomerRepository,
-  UpdateCustomerData
+    CreateCustomerData,
+    Customer,
+    CustomerListResult,
+    CustomerStats,
+    ICustomerRepository,
+    UpdateCustomerData
 } from '@/src/application/repositories/ICustomerRepository';
 import { CUSTOMER_CONFIG } from '@/src/config/customerConfig';
 import { Database } from '@/src/domain/types/supabase';
 import { SupabaseClient } from '@supabase/supabase-js';
+import dayjs from 'dayjs';
 
 export class SupabaseCustomerRepository implements ICustomerRepository {
   constructor(private readonly supabase: SupabaseClient<Database>) {}
 
-  async getAll(): Promise<Customer[]> {
-    const { data, error } = await this.supabase
-      .rpc('rpc_get_all_customers_admin');
+  async getAll(limit: number = 20, page: number = 1, search?: string, filter?: string): Promise<CustomerListResult> {
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
 
-    if (error) {
-      console.error('Error fetching customers via RPC:', error);
-      // Fallback to direct query if RPC fails (assuming user has rights)
-      const { data: tableData, error: tableError } = await this.supabase
-        .from('customers')
-        .select('*')
-        .order('created_at', { ascending: false });
+    let query = this.supabase
+      .from('customers')
+      .select('*', { count: 'exact' });
 
-      if (tableError) return [];
-      return tableData.map(this.mapToDomain);
+    // Apply filters
+    if (search) {
+      query = query.or(`name.ilike.%${search}%,phone.ilike.%${search}%`);
     }
 
-    return data.map(this.mapToDomain);
+    if (filter === 'vip') {
+      query = query.eq('is_vip', true);
+    } else if (filter === 'new') {
+       // Filter for created today
+       // Need to be careful with timezone, but simple date check:
+       const todayStart = dayjs().startOf('day').toISOString();
+       query = query.gte('created_at', todayStart);
+    } else if (filter === 'regular') {
+       query = query.gte('visit_count', CUSTOMER_CONFIG.REGULAR_CUSTOMER_MIN_VISITS);
+    }
+
+    // Apply pagination
+    const { data, count, error } = await query
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
+    if (error) {
+      console.error('Error fetching customers:', error);
+      return { data: [], total: 0 };
+    }
+
+    return {
+      data: (data || []).map(this.mapToDomain),
+      total: count || 0
+    };
   }
 
   async getById(id: string): Promise<Customer | null> {
@@ -51,17 +74,6 @@ export class SupabaseCustomerRepository implements ICustomerRepository {
 
     if (error || !data) return null;
     return this.mapToDomain(data);
-  }
-
-  async search(query: string): Promise<Customer[]> {
-    const { data, error } = await this.supabase
-      .from('customers')
-      .select('*')
-      .or(`name.ilike.%${query}%,phone.ilike.%${query}%`)
-      .order('name');
-
-    if (error) return [];
-    return data.map(this.mapToDomain);
   }
 
   async create(data: CreateCustomerData): Promise<Customer> {
@@ -133,8 +145,7 @@ export class SupabaseCustomerRepository implements ICustomerRepository {
   }
 
   async getStats(todayStr: string): Promise<CustomerStats> {
-    const today = new Date(todayStr);
-    today.setHours(0, 0, 0, 0);
+    const today = dayjs(todayStr).startOf('day');
 
     const { data, error } = await this.supabase
       .from('customers')
@@ -152,7 +163,7 @@ export class SupabaseCustomerRepository implements ICustomerRepository {
     return {
       totalCustomers: data.length,
       vipCustomers: data.filter(c => c.is_vip).length,
-      newCustomersToday: data.filter(c => new Date(c.created_at || '') >= today).length,
+      newCustomersToday: data.filter(c => dayjs(c.created_at || '').isAfter(today) || dayjs(c.created_at || '').isSame(today)).length,
       // Use centralized config for "returning/regular" customer threshold
       returningCustomers: data.filter(c => (c.visit_count || 0) >= CUSTOMER_CONFIG.REGULAR_CUSTOMER_MIN_VISITS).length,
     };

@@ -13,6 +13,7 @@ import {
     MachineStatus,
     UpdateMachineData,
 } from '@/src/application/repositories/IMachineRepository';
+import dayjs from 'dayjs';
 
 // Mock data for Racing Simulation machines
 const MOCK_MACHINES: Machine[] = [
@@ -35,7 +36,8 @@ const MOCK_MACHINES: Machine[] = [
     imageUrl: '/images/machines/sim-2.jpg',
     isActive: true,
     status: 'occupied',
-    currentQueueId: 'queue-001',
+    type: 'Racing Sim',
+    hourlyRate: 200,
     createdAt: '2025-01-01T00:00:00.000Z',
     updatedAt: '2025-01-07T10:00:00.000Z',
   },
@@ -58,7 +60,8 @@ const MOCK_MACHINES: Machine[] = [
     imageUrl: '/images/machines/sim-4.jpg',
     isActive: true,
     status: 'occupied',
-    currentQueueId: 'queue-002',
+    type: 'Racing Sim',
+    hourlyRate: 250,
     createdAt: '2025-01-01T00:00:00.000Z',
     updatedAt: '2025-01-07T11:00:00.000Z',
   },
@@ -110,12 +113,12 @@ export class MockMachineRepository implements IMachineRepository {
     await this.delay(200);
 
     const newMachine: Machine = {
-      id: `machine-${Date.now()}`,
+      id: `machine-${dayjs().valueOf()}`,
       ...data,
       isActive: true,
       status: 'available',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: dayjs().toISOString(),
+      updatedAt: dayjs().toISOString(),
     };
 
     this.machines.push(newMachine);
@@ -133,7 +136,7 @@ export class MockMachineRepository implements IMachineRepository {
     const updatedMachine: Machine = {
       ...this.machines[index],
       ...data,
-      updatedAt: new Date().toISOString(),
+      updatedAt: dayjs().toISOString(),
     };
 
     this.machines[index] = updatedMachine;
@@ -180,7 +183,7 @@ export class MockMachineRepository implements IMachineRepository {
     const updatedMachine: Machine = {
       ...this.machines[index],
       status,
-      updatedAt: new Date().toISOString(),
+      updatedAt: dayjs().toISOString(),
     };
 
     this.machines[index] = updatedMachine;

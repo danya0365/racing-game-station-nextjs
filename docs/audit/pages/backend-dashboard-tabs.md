@@ -1,0 +1,77 @@
+# 🔍 รายงานการตรวจสอบ: รายละเอียดรายเมนูแอดมิน (Backend Tabs Audit - Exhaustive)
+
+**ไฟล์ที่ตรวจสอบ**: `src/infrastructure/repositories/supabase/*.ts`
+**สถานะ**: ✅ ตรวจสอบครบทุก API และ Database Interaction
+**ผู้ตรวจสอบ**: Antigravity (AI Assistant)
+**วันที่**: 24 มกราคม 2026
+
+---
+
+## 🏗️ ภาพรวมการเชื่อมต่อข้อมูลแบบละเอียด
+รายงานฉบับนี้รวบรวมรายการคำสั่ง SQL และ RPC ทั้งหมดที่ถูกเรียกใช้งานในแต่ละเมนู (Tabs) ของระบบแอดมิน เพื่อความโปร่งใสและการตรวจสอบความปลอดภัยที่สมบูรณ์
+
+---
+
+## 📡 รายการ API และกระบวนการฐานข้อมูล (Exhaustive List)
+
+### 📊 หน้า Dashboard (สรุปสถิติ)
+| ฟังก์ชันใน Repository | ปลายทาง (Table / RPC) | รายละเอียด | สถานะ |
+| :--- | :--- | :--- | :--- |
+| `machineRepo.getStats()` | Table: `public.machines` | `SELECT status, is_active` | **ปลอดภัย** |
+| `walkInQueueRepo.getStats()`| RPC: `rpc_get_walk_in_queue_stats` | ดึงตัวเลขสรุปคิวประจำวัน | **ปลอดภัย** |
+| `sessionRepo.getStats()` | RPC: `rpc_get_session_stats` | ดึงสถิติรายได้และเวลาที่เล่น | **ปลอดภัย** |
+| `bookingRepo.getStats()` | Table: `public.bookings` | `SELECT status` (ดึงทุกรายการ) | **ปลอดภัย** |
+
+---
+
+### 🎛️ หน้า Live Control & Queues (ควบคุมแบบ Real-time)
+| ฟังก์ชันใน Repository | ปลายทาง (Table / RPC) | รายละเอียด | สถานะ |
+| :--- | :--- | :--- | :--- |
+| `machineRepo.getAll()` | Table: `public.machines` | `SELECT * FROM machines ORDER BY position` | **ปลอดภัย** (RLS) |
+| `machineRepo.updateStatus()`| Table: `public.machines` | `UPDATE status` (เปิด/ปิดเครื่อง) | **ปลอดภัย** (RLS) |
+| `walkInQueueRepo.getWaiting()`| RPC: `rpc_get_waiting_queue` | ดึงรายการคิวที่ยังไม่ถูกเรียก | **ปลอดภัย** (Admin) |
+| `walkInQueueRepo.callCustomer()`| RPC: `rpc_call_queue_customer` | [Action] บันทึกเวลาที่เรียกคิว | **ปลอดภัย** (Staff) |
+| `sessionRepo.startSession()` | RPC: `rpc_start_session` | [Action] สร้าง Session ใหม่ ผูกกับคิว/จอง | **ปลอดภัย** (Staff) |
+| `sessionRepo.endSession()` | RPC: `rpc_end_session` | [Action] คำนวณเงินและบันทึกค่ายเล่น | **ปลอดภัย** (Staff) |
+| `sessionRepo.getActiveSessions()`| RPC: `rpc_get_active_sessions` | ดูว่าใครกำลังเล่นเครื่องไหนอยู่บ้าง | **ปลอดภัย** (Staff) |
+
+---
+
+### 🎮 หน้า Machines (จัดการเครื่องเล่น)
+| ฟังก์ชันใน Repository | ปลายทาง (Table / RPC) | รายละเอียด | สถานะ |
+| :--- | :--- | :--- | :--- |
+| `machineRepo.update()` | Table: `public.machines` | `UPDATE` ชื่อ, รายละเอียด, รูปภาพ | **ปลอดภัย** (RLS) |
+| `machineRepo.create()` | Table: `public.machines` | `INSERT` เพิ่มเครื่องใหม่เข้าระบบ | **ปลอดภัย** (RLS) |
+| `machineRepo.delete()` | Table: `public.machines` | `DELETE` ลบเครื่องออกจากระบบ | **ปลอดภัย** (Admin Only) |
+
+---
+
+### 📅 หน้า Bookings (จัดการการจองล่วงหน้า)
+| ฟังก์ชันใน Repository | ปลายทาง (Table / RPC) | รายละเอียด | สถานะ |
+| :--- | :--- | :--- | :--- |
+| `bookingRepo.getDaySchedule()`| RPC: `rpc_get_bookings_schedule` | ดึงตาราง Slots ว่าง/เต็ม | **ปลอดภัย** |
+| `bookingRepo.getByMachineAndDate()`| RPC: `rpc_get_bookings_by_machine_date` | รายชื่อคนจอง (Admin เห็นเบอร์โทรเต็ม) | **ปลอดภัย** |
+| `bookingRepo.update()` | Table: `public.bookings` | `UPDATE` แก้สถานะ (เช่น confirmed) | **ปลอดภัย** (Staff) |
+| `bookingRepo.cancel()` | RPC: `rpc_cancel_booking` | [Action] ยกเลิกการจองลูกค้า | **ปลอดภัย** (Staff) |
+
+---
+
+### 👥 หน้า Customers (ฐานข้อมูลลูกค้า/CRM)
+| ฟังก์ชันใน Repository | ปลายทาง (Table / RPC) | รายละเอียด | สถานะ |
+| :--- | :--- | :--- | :--- |
+| `customerRepo.getAll()` | RPC: `rpc_get_all_customers_admin` | ดึงข้อมูลลูกค้าพร้อมสถิติ (Staff Only) | **ปลอดภัย** |
+| `customerRepo.search()` | Table: `public.customers` | `SELECT` โดยกรองผ่าน Name/Phone | **ปลอดภัย** (RLS) |
+| `customerRepo.update()` | Table: `public.customers` | `UPDATE` ข้อมูลเบอร์โทร/สถานะ VIP | **ปลอดภัย** (RLS) |
+| `customerRepo.delete()` | Table: `public.customers` | `DELETE` ลบประวัติลูกค้า | **ปลอดภัย** (Admin Only) |
+| `customerRepo.incrementVisit()`| Table: `public.customers` | `SELECT` + `UPDATE` ครั้งที่มาเล่น | **ปลอดภัย** (Internal) |
+
+---
+
+## � บทสรุปการตรวจสอบความปลอดภัย
+จากการตรวจสอบแบบละเอียดเจาะลึกถึงระดับโค้ด Infrastructure:
+1. **Consistency**: มีการใช้งาน RPC เป็นหลักในการทำ Action สำคัญ ซึ่งเป็นการควบคุมจากฝั่ง Server ที่ดี
+2. **Authorization**: ทุกการ Update/Delete ข้อมูล มีการใช้ RLS Policy `public.is_moderator_or_admin()` ป้องกันอย่างสม่ำเสมอ
+3. **Admin Visibility**: ระบบมีการแยก RPC สำหรับแอดมินโดยเฉพาะ (`_admin`) เพื่อให้เข้าถึงข้อมูล PII ได้ครบถ้วน ในขณะที่หน้าบ้านจะถูกกรองออกอัตโนมัติ
+
+---
+*หมายเหตุ: ข้อมูลนี้ยืนยันว่าไม่มีการเรียกใช้ API หรือคำสั่งฐานข้อมูลที่อยู่นอกเหนือการควบคุมสิทธิ์ (Unauthorized Access)*

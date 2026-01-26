@@ -1,0 +1,52 @@
+# 🔍 รายงานการตรวจสอบ: แดชบอร์ดแอดมิน (Backend Dashboard)
+
+**ไฟล์ที่ตรวจสอบ**: `app/backend/page.tsx`
+**สถานะ**: ✅ พร้อมใช้งาน (ผ่านการตรวจสอบความปลอดภัย)
+**ผู้ตรวจสอบ**: Antigravity (AI Assistant)
+**วันที่**: 24 มกราคม 2026
+
+---
+
+## 🏗️ ภาพรวม
+หน้าแดชบอร์ดหลังบ้านเป็นศูนย์กลางการควบคุมที่มีสิทธิ์สูง (High Privilege) สำหรับ Admin และ Staff เพื่อใช้จัดการสถานะระบบทั้งหมดแบบ Real-time
+
+---
+
+## 📡 รายการ API และการเชื่อมต่อฐานข้อมูลทั้งหมด (SUMMARY)
+
+เพื่อให้มั่นใจว่าได้ตรวจสอบครบถ้วน 100% รายการด้านล่างคือ API และ SQL/RPC ทั้งหมดที่หน้านี้เรียกใช้งาน:
+
+| ลำดับ | ส่วนประกอบ / ฟังก์ชัน | ปลายทาง (Table / RPC) | ประเภท | สถานะความปลอดภัย |
+| :--- | :--- | :--- | :--- | :--- |
+| 1 | `machineRepo.getAll()` | Table: `public.machines` | `SELECT` | **ปลอดภัย**: มี RLS ควบคุม |
+| 2 | `walkInQueueRepo.getStats()` | RPC: `rpc_get_walk_in_queue_stats` | `EXECUTE` | **ปลอดภัย**: สรุปตัวเลข |
+| 3 | `sessionRepo.getStats()` | RPC: `rpc_get_session_stats` | `EXECUTE` | **ปลอดภัย**: สรุปรายได้/เวลา |
+| 4 | `walkInQueueRepo.getWaiting()` | RPC: `rpc_get_waiting_queue` | `EXECUTE` | **ปลอดภัย**: เฉพาะพนักงาน |
+| 5 | `sessionRepo.getActiveSessions()`| RPC: `rpc_get_active_sessions_admin`| `EXECUTE` | **ปลอดภัย**: เห็นข้อมูลครบ |
+| 6 | `bookingRepo.getByMachineAndDate()`| RPC: `rpc_get_bookings_by_machine_date`| `EXECUTE` | **ปลอดภัย**: พนักงานเห็นเบอร์โทร |
+| 7 | `rpc_call_queue_customer` | RPC Function | `EXECUTE` | [Action] เรียกคิว (Admin Lock) |
+| 8 | `rpc_seat_queue_customer` | RPC Function | `EXECUTE` | [Action] เริ่มเล่น (Admin Lock) |
+
+> [!TIP]
+> สำหรับรายละเอียดรายเมนู (Tabs) เช่น การจัดการลูกค้า (CRM) และการจัดการเครื่องเล่นแบบเจาะลึก สามารถดูต่อได้ที่:
+> [รายงานรายละเอียดรายเมนู (Detailed Tabs Audit)](./backend-dashboard-tabs.md)
+
+---
+
+## 🔒 การตรวจสอบข้อกำหนดความปลอดภัย
+
+### 1. การควบคุมการเข้าถึง (Route Protection)
+- **Next.js Middleware**: มีการดักจับ Route ตั้งแต่ระดับ Server เพื่อบังคับให้ต้องพิสูจน์ตัวตน (Authentication) ก่อนเข้าถึงหน้า Dashboard
+- **Database Level Security**: ใช้ RLS (`ALTER TABLE ... ENABLE RLS`) และ Role-based RPCs เพื่อให้มั่นใจว่าข้อมูลจะไม่รั่วไหลแม้ผู้บุกรุกจะพยายามโจมตีผ่าน API โดยตรง
+
+### 2. การดำเนินการที่สำคัญ (Write Operations)
+- ทุกการแก้ไขสถานะ (Update Status) หรือการเรียกคิว จะรันผ่าน RPC ที่มี Logic การบันทึกเวลาและตรวจสอบสิทธิ์ ทำให้ระบบมีความแม่นยำและถูกบุกรุกได้ยาก
+
+### 3. การปกป้องข้อมูลส่วนบุคคล (PII)
+- หน้านี้ได้รับอนุญาตให้แสดงเบอร์โทรศัพท์ลูกค้า (Unmasked) เพื่อการประสานงานของร้าน ซึ่งเป็นไปตามสิทธิ์ของพนักงาน (Staff Role) และถูกควบคุมไม่ให้ข้อมูลนี้ถูกมองเห็นโดยลูกค้าคนอื่น
+
+---
+
+## 💡 ข้อเสนอแนะเพิ่มเติม
+- **ความปลอดภัย**: ระบบมีความเป็นปึกแผ่น (Robust) สูงเนื่องจากใช้การป้องกันซ้อนกันหลายชั้น (Defense in Depth)
+- **การอัปเกรด**: แนะนำให้ตั้งค่า RLS ในตาราง `profile_roles` เพิ่มเติมเพื่อให้การตรวจสอบ Role ใน Database มีความรัดกุมยิ่งขึ้น (สอดคล้องกับรายงานหน้า Profile)

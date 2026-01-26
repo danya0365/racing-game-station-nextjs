@@ -1,0 +1,28 @@
+# 🛡️ รายงานการตรวจสอบความปลอดภัยและเตรียมความพร้อม (Production Audit)
+
+เอกสารฉบับนี้เป็นศูนย์กลางการเก็บข้อมูลการตรวจสอบระบบทั้งหมดก่อนที่จะนำขึ้นใช้งานจริงบน Production
+
+## 📁 โครงสร้างเอกสาร Audit
+
+- [**การตรวจสอบส่วนหน้า (Pages Audit)**](./pages/) - วิเคราะห์การเรียกข้อมูล API/DB ในแต่ละหน้า
+    - [หน้าแรก (Home Page - app/page.tsx)](./pages/home-page.md) ✅
+    - [หน้าจองเวลา (Time Booking - app/time-booking/page.tsx)](./pages/time-booking.md) ✅
+    - [หน้าสถานะการจอง (Booking Status - app/customer/booking-status/page.tsx)](./pages/booking-status.md) ✅
+    - [หน้าตารางการจองรวม (Booking History - app/customer/booking-history/page.tsx)](./pages/booking-history.md) ✅
+    - [หน้าโปรไฟล์ (Profile - app/profile/page.tsx)](./pages/profile.md) ⚠️ พบช่องโหว่
+    - [หน้าแดชบอร์ดแอดมิน (Backend Dashboard - app/backend/page.tsx)](./pages/backend-dashboard.md) ✅
+    - [รายละเอียดเมนูแอดมิน (Backend Tabs - รายละเอียดเจาะลึก)](./pages/backend-dashboard-tabs.md) ✅
+    - [หน้าห้องควบคุมเกม (Advance Control - app/backend/control/page.tsx)](./pages/control.md) ✅
+    - [หน้าจองคิว Walk-in (Walk-in Queue Audit)](./pages/walk-in-queue.md) ⚠️ ต้องปรับปรุง UI
+- [**การตรวจสอบฐานข้อมูล (Database Audit)**](./database/) - วิเคราะห์ RLS, RPCs และ Schema
+    - *กำลังรอการวิเคราะห์*
+
+## 🛠️ วิธีการตรวจสอบ (Methodology)
+
+1. **Static Code Analysis**: ตรวจสอบการเขียน Repository ว่ามีการยิง DB ตรงๆ หรือใช้ RPC ที่ปลอดภัย
+2. **Access Control Verification**: ทดสอบ RLS Policy ทั้งในสถานะคนทั่วไป (Anonymous) และ Admin
+3. **Data Leakage Check**: มั่นใจว่าข้อมูลส่วนบุคคล (เบอร์โทร, ไอดี, อีเมล) จะไม่หลุดออกไปสู่สาธารณะ
+4. **Logic Integrity**: ตรวจสอบว่าการกระทำสำคัญ (จอง/ยกเลิก) มีการเช็คสิทธิ์อย่างถูกต้อง
+
+---
+*อัปเดตล่าสุด: 24 มกราคม 2026*

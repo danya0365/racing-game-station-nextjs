@@ -1,37 +1,43 @@
 'use client';
 
-import { AdvanceBooking, DaySchedule } from '@/src/application/repositories/IAdvanceBookingRepository';
+import { Booking, BookingDaySchedule } from '@/src/application/repositories/IBookingRepository';
 import { Machine } from '@/src/application/repositories/IMachineRepository';
-import { createAdvanceBookingRepositories } from '@/src/infrastructure/repositories/RepositoryFactory';
+import { createBookingRepositories } from '@/src/infrastructure/repositories/RepositoryFactory';
+import { getShopNow, getShopTodayString, SHOP_TIMEZONE } from '@/src/lib/date';
 import { AnimatedCard } from '@/src/presentation/components/ui/AnimatedCard';
 import { GlowButton } from '@/src/presentation/components/ui/GlowButton';
+import { TimezoneNotice } from '@/src/presentation/components/ui/TimezoneNotice';
 import { HomeViewModel } from '@/src/presentation/presenters/home/HomePresenter';
+import dayjs from 'dayjs';
+import 'dayjs/locale/th';
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+
+const DEFAULT_TIMEZONE = SHOP_TIMEZONE;
+
+
 /**
  * HomeView - Main landing page
- * Redesigned to focus on Advance Booking system
+ * Redesigned to focus on Booking system
+ * 
+ * ✅ Now uses IBookingRepository (TIMESTAMPTZ-based) instead of IAdvanceBookingRepository
  */
 export function HomeView({ initialViewModel }: { initialViewModel?: HomeViewModel }) {
   // Data state
   const [machines, setMachines] = useState<Machine[]>([]);
-  const [allSchedules, setAllSchedules] = useState<Map<string, DaySchedule>>(new Map());
-  const [todayBookings, setTodayBookings] = useState<AdvanceBooking[]>([]);
+  const [allSchedules, setAllSchedules] = useState<Map<string, BookingDaySchedule>>(new Map());
+  const [todayBookings, setTodayBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Get today's date in local YYYY-MM-DD
+  // Get today's date in Shop timezone (YYYY-MM-DD)
   const today = useMemo(() => {
-    const d = new Date();
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return getShopTodayString();
   }, []);
 
-  // ✅ Use factory for repositories
-  const { advanceBookingRepo, machineRepo } = useMemo(
-    () => createAdvanceBookingRepositories(),
+  // ✅ Use factory for repositories - now using new IBookingRepository
+  const { bookingRepo, machineRepo } = useMemo(
+    () => createBookingRepositories(),
     []
   );
 
@@ -42,14 +48,15 @@ export function HomeView({ initialViewModel }: { initialViewModel?: HomeViewMode
       const activeMachines = allMachines.filter(m => m.isActive);
       setMachines(activeMachines);
 
-      // Load today's schedules
-      const schedulesMap = new Map<string, DaySchedule>();
-      const allBookings: AdvanceBooking[] = [];
+      // Load today's schedules - use shop timezone
+      const referenceTime = getShopNow().toISOString();
+      const schedulesMap = new Map<string, BookingDaySchedule>();
+      const allBookings: Booking[] = [];
 
       await Promise.all(activeMachines.map(async (machine) => {
         const [schedule, bookings] = await Promise.all([
-          advanceBookingRepo.getDaySchedule(machine.id, today),
-          advanceBookingRepo.getByMachineAndDate(machine.id, today),
+          bookingRepo.getDaySchedule(machine.id, today, DEFAULT_TIMEZONE, referenceTime),
+          bookingRepo.getByMachineAndDate(machine.id, today),
         ]);
         schedulesMap.set(machine.id, schedule);
         allBookings.push(...bookings);
@@ -62,7 +69,7 @@ export function HomeView({ initialViewModel }: { initialViewModel?: HomeViewMode
     } finally {
       setLoading(false);
     }
-  }, [machineRepo, advanceBookingRepo, today]);
+  }, [machineRepo, bookingRepo, today]);
 
   useEffect(() => {
     loadData();
@@ -73,19 +80,22 @@ export function HomeView({ initialViewModel }: { initialViewModel?: HomeViewMode
   const totalBooked = Array.from(allSchedules.values()).reduce((sum, s) => sum + s.bookedSlots, 0);
   const activeBookings = todayBookings.filter(b => b.status === 'confirmed' || b.status === 'pending').length;
 
-  // Get current time for display and filtering
-  const currentTime = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-  const nowTimeStr = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  // Get current time for display and filtering - use shop timezone
+  const currentTime = getShopNow().locale('th').format('HH:mm');
+  const nowTimeStr = getShopNow().format('HH:mm');
 
   return (
     <div className="min-h-screen bg-background overflow-auto scrollbar-thin">
       {/* Today's Overview */}
       <section className="px-4 md:px-8 py-12 -mt-8 relative z-20">
         <div className="max-w-6xl mx-auto">
+          {/* 🌍 Timezone Notice - Shows when user's timezone differs from shop */}
+          <TimezoneNotice />
+          
           {/* Section Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/30 rounded-full mb-4">
-              <span className="text-sm text-purple-400 font-medium">📆 วันนี้ {new Date().toLocaleDateString('th-TH', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+              <span className="text-sm text-purple-400 font-medium">📆 วันนี้ {dayjs().locale('th').format('ddddที่ D MMMM')}</span>
               <span className="text-sm text-muted">•</span>
               <span className="text-sm text-foreground font-bold">{currentTime}</span>
             </div>
@@ -124,8 +134,8 @@ export function HomeView({ initialViewModel }: { initialViewModel?: HomeViewMode
               const schedule = allSchedules.get(machine.id);
                const allMachineBookings = todayBookings.filter(b => b.machineId === machine.id && (b.status === 'confirmed' || b.status === 'pending'));
                const upcomingBookings = allMachineBookings
-                 .filter(b => b.startTime >= nowTimeStr)
-                 .sort((a, b) => a.startTime.localeCompare(b.startTime));
+                 .filter(b => b.localStartTime >= nowTimeStr)
+                 .sort((a, b) => a.localStartTime.localeCompare(b.localStartTime));
               
               return (
                 <AnimatedCard key={machine.id} className="p-5 hover:border-purple-500/50">
@@ -176,7 +186,7 @@ export function HomeView({ initialViewModel }: { initialViewModel?: HomeViewMode
                        <p className="text-xs text-muted font-medium">การจองถัดไป:</p>
                        {upcomingBookings.slice(0, 2).map((booking) => (
                         <div key={booking.id} className="flex justify-between items-center text-sm p-2 bg-purple-500/10 rounded-lg">
-                          <span className="text-foreground font-medium">{booking.startTime.slice(0, 5)}</span>
+                          <span className="text-foreground font-medium">{booking.localStartTime.slice(0, 5)}</span>
                           <span className="text-muted text-xs">{booking.customerName}</span>
                         </div>
                       ))}
@@ -243,14 +253,19 @@ export function HomeView({ initialViewModel }: { initialViewModel?: HomeViewMode
             เลือกเวลาที่ต้องการและจองเลยตอนนี้!
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/walk-in">
+              <GlowButton color="cyan" size="lg" className="w-full sm:w-auto">
+                🏁 เข้าคิวหน้าร้าน (Walk-in)
+              </GlowButton>
+            </Link>
             <Link href="/time-booking">
-              <GlowButton color="pink" size="lg">
-                📅 จองเลย
+              <GlowButton color="pink" size="lg" className="w-full sm:w-auto">
+                📅 จองล่วงหน้า
               </GlowButton>
             </Link>
             <Link href="/customer/booking-history">
-              <GlowButton color="purple" size="lg">
-                📋 ดูตารางทั้งหมด
+              <GlowButton color="purple" size="lg" className="w-full sm:w-auto">
+                📋 ประวัติการจอง
               </GlowButton>
             </Link>
           </div>

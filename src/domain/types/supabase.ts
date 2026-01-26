@@ -9,91 +9,77 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      advance_bookings: {
+      bookings: {
         Row: {
-          booking_date: string
+          business_timezone: string
           created_at: string | null
           customer_id: string
-          duration: number
-          end_time: string
+          duration_minutes: number
+          end_at: string
           id: string
+          is_cross_midnight: boolean | null
+          local_date: string | null
+          local_end_date: string | null
+          local_end_time: string | null
+          local_start_time: string | null
           machine_id: string
           notes: string | null
-          start_time: string
-          status: Database["public"]["Enums"]["advance_booking_status"]
+          start_at: string
+          status: Database["public"]["Enums"]["booking_status"]
+          total_price: number | null
           updated_at: string | null
         }
         Insert: {
-          booking_date: string
+          business_timezone?: string
           created_at?: string | null
           customer_id: string
-          duration?: number
-          end_time: string
+          duration_minutes?: number
+          end_at: string
           id?: string
+          is_cross_midnight?: boolean | null
+          local_date?: string | null
+          local_end_date?: string | null
+          local_end_time?: string | null
+          local_start_time?: string | null
           machine_id: string
           notes?: string | null
-          start_time: string
-          status?: Database["public"]["Enums"]["advance_booking_status"]
+          start_at: string
+          status?: Database["public"]["Enums"]["booking_status"]
+          total_price?: number | null
           updated_at?: string | null
         }
         Update: {
-          booking_date?: string
+          business_timezone?: string
           created_at?: string | null
           customer_id?: string
-          duration?: number
-          end_time?: string
+          duration_minutes?: number
+          end_at?: string
           id?: string
+          is_cross_midnight?: boolean | null
+          local_date?: string | null
+          local_end_date?: string | null
+          local_end_time?: string | null
+          local_start_time?: string | null
           machine_id?: string
           notes?: string | null
-          start_time?: string
-          status?: Database["public"]["Enums"]["advance_booking_status"]
+          start_at?: string
+          status?: Database["public"]["Enums"]["booking_status"]
+          total_price?: number | null
           updated_at?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "advance_bookings_customer_id_fkey"
+            foreignKeyName: "bookings_customer_id_fkey"
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "advance_bookings_machine_id_fkey"
+            foreignKeyName: "bookings_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
             referencedRelation: "machines"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      booking_session_logs: {
-        Row: {
-          action: string
-          booking_id: string
-          created_by: string | null
-          id: string
-          recorded_at: string | null
-        }
-        Insert: {
-          action: string
-          booking_id: string
-          created_by?: string | null
-          id?: string
-          recorded_at?: string | null
-        }
-        Update: {
-          action?: string
-          booking_id?: string
-          created_by?: string | null
-          id?: string
-          recorded_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "booking_session_logs_booking_id_fkey"
-            columns: ["booking_id"]
-            isOneToOne: false
-            referencedRelation: "advance_bookings"
             referencedColumns: ["id"]
           },
         ]
@@ -154,49 +140,44 @@ export type Database = {
       machines: {
         Row: {
           created_at: string | null
-          current_queue_id: string | null
           description: string | null
+          hourly_rate: number | null
           id: string
           image_url: string | null
           is_active: boolean
           name: string
           position: number
           status: Database["public"]["Enums"]["machine_status"]
+          type: string | null
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
-          current_queue_id?: string | null
           description?: string | null
+          hourly_rate?: number | null
           id?: string
           image_url?: string | null
           is_active?: boolean
           name: string
           position?: number
           status?: Database["public"]["Enums"]["machine_status"]
+          type?: string | null
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
-          current_queue_id?: string | null
           description?: string | null
+          hourly_rate?: number | null
           id?: string
           image_url?: string | null
           is_active?: boolean
           name?: string
           position?: number
           status?: Database["public"]["Enums"]["machine_status"]
+          type?: string | null
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "fk_machines_current_queue"
-            columns: ["current_queue_id"]
-            isOneToOne: false
-            referencedRelation: "queues"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       profile_roles: {
         Row: {
@@ -296,54 +277,133 @@ export type Database = {
         }
         Relationships: []
       }
-      queues: {
+      sessions: {
         Row: {
-          booking_time: string
+          booking_id: string | null
           created_at: string | null
-          customer_id: string
-          duration: number
+          customer_name: string
+          end_time: string | null
+          estimated_end_time: string | null
           id: string
-          machine_id: string
           notes: string | null
-          position: number
-          status: Database["public"]["Enums"]["queue_status"]
+          payment_status: Database["public"]["Enums"]["payment_status"] | null
+          queue_id: string | null
+          start_time: string
+          station_id: string
+          total_amount: number | null
           updated_at: string | null
         }
         Insert: {
-          booking_time?: string
+          booking_id?: string | null
           created_at?: string | null
-          customer_id: string
-          duration?: number
+          customer_name: string
+          end_time?: string | null
+          estimated_end_time?: string | null
           id?: string
-          machine_id: string
           notes?: string | null
-          position?: number
-          status?: Database["public"]["Enums"]["queue_status"]
+          payment_status?: Database["public"]["Enums"]["payment_status"] | null
+          queue_id?: string | null
+          start_time?: string
+          station_id: string
+          total_amount?: number | null
           updated_at?: string | null
         }
         Update: {
-          booking_time?: string
+          booking_id?: string | null
           created_at?: string | null
-          customer_id?: string
-          duration?: number
+          customer_name?: string
+          end_time?: string | null
+          estimated_end_time?: string | null
           id?: string
-          machine_id?: string
           notes?: string | null
-          position?: number
-          status?: Database["public"]["Enums"]["queue_status"]
+          payment_status?: Database["public"]["Enums"]["payment_status"] | null
+          queue_id?: string | null
+          start_time?: string
+          station_id?: string
+          total_amount?: number | null
           updated_at?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "queues_customer_id_fkey"
+            foreignKeyName: "sessions_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_queue_id_fkey"
+            columns: ["queue_id"]
+            isOneToOne: false
+            referencedRelation: "walk_in_queue"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_station_id_fkey"
+            columns: ["station_id"]
+            isOneToOne: false
+            referencedRelation: "machines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      walk_in_queue: {
+        Row: {
+          called_at: string | null
+          created_at: string | null
+          customer_id: string
+          id: string
+          joined_at: string
+          notes: string | null
+          party_size: number
+          preferred_machine_id: string | null
+          preferred_station_type: string | null
+          queue_number: number
+          seated_at: string | null
+          status: Database["public"]["Enums"]["walk_in_status"]
+          updated_at: string | null
+        }
+        Insert: {
+          called_at?: string | null
+          created_at?: string | null
+          customer_id: string
+          id?: string
+          joined_at?: string
+          notes?: string | null
+          party_size?: number
+          preferred_machine_id?: string | null
+          preferred_station_type?: string | null
+          queue_number: number
+          seated_at?: string | null
+          status?: Database["public"]["Enums"]["walk_in_status"]
+          updated_at?: string | null
+        }
+        Update: {
+          called_at?: string | null
+          created_at?: string | null
+          customer_id?: string
+          id?: string
+          joined_at?: string
+          notes?: string | null
+          party_size?: number
+          preferred_machine_id?: string | null
+          preferred_station_type?: string | null
+          queue_number?: number
+          seated_at?: string | null
+          status?: Database["public"]["Enums"]["walk_in_status"]
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "walk_in_queue_customer_id_fkey"
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "queues_machine_id_fkey"
-            columns: ["machine_id"]
+            foreignKeyName: "walk_in_queue_preferred_machine_id_fkey"
+            columns: ["preferred_machine_id"]
             isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["id"]
@@ -356,11 +416,11 @@ export type Database = {
     }
     Functions: {
       create_profile: {
-        Args: { username: string; full_name?: string; avatar_url?: string }
+        Args: { avatar_url?: string; full_name?: string; username: string }
         Returns: string
       }
       get_active_profile: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           address: string | null
           auth_id: string
@@ -382,25 +442,25 @@ export type Database = {
           username: string | null
           verification_status: string
         }[]
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: false
+          isSetofReturn: true
+        }
       }
-      get_active_profile_id: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      get_active_profile_id: { Args: never; Returns: string }
       get_active_profile_role: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: Database["public"]["Enums"]["profile_role"]
       }
-      get_auth_user_by_id: {
-        Args: { p_id: string }
-        Returns: Json
-      }
+      get_auth_user_by_id: { Args: { p_id: string }; Returns: Json }
       get_paginated_users: {
-        Args: { p_page?: number; p_limit?: number }
+        Args: { p_limit?: number; p_page?: number }
         Returns: Json
       }
       get_private_url: {
-        Args: { bucket: string; object_path: string; expires_in?: number }
+        Args: { bucket: string; expires_in?: number; object_path: string }
         Returns: string
       }
       get_profile_role: {
@@ -408,7 +468,7 @@ export type Database = {
         Returns: Database["public"]["Enums"]["profile_role"]
       }
       get_user_profiles: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           address: string | null
           auth_id: string
@@ -430,100 +490,75 @@ export type Database = {
           username: string | null
           verification_status: string
         }[]
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: false
+          isSetofReturn: true
+        }
       }
-      is_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_moderator_or_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_service_role: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      mask_phone: {
-        Args: { p_phone: string }
-        Returns: string
-      }
-      migrate_profile_roles: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      rpc_cancel_advance_booking: {
+      is_admin: { Args: never; Returns: boolean }
+      is_moderator_or_admin: { Args: never; Returns: boolean }
+      is_service_role: { Args: never; Returns: boolean }
+      mask_phone: { Args: { p_phone: string }; Returns: string }
+      migrate_profile_roles: { Args: never; Returns: undefined }
+      rpc_call_queue_customer: { Args: { p_queue_id: string }; Returns: Json }
+      rpc_cancel_booking: {
         Args: { p_booking_id: string; p_customer_id?: string }
         Returns: Json
       }
-      rpc_cancel_queue_guest: {
-        Args: { p_queue_id: string; p_customer_id: string }
-        Returns: boolean
-      }
-      rpc_create_advance_booking: {
-        Args: {
-          p_machine_id: string
-          p_customer_name: string
-          p_customer_phone: string
-          p_booking_date: string
-          p_start_time: string
-          p_duration: number
-          p_notes?: string
-        }
+      rpc_cancel_walk_in_queue: {
+        Args: { p_customer_id?: string; p_queue_id: string }
         Returns: Json
       }
+      rpc_checkin_booking: { Args: { p_booking_id: string }; Returns: Json }
       rpc_create_booking: {
         Args: {
+          p_customer_id?: string
           p_customer_name: string
           p_customer_phone: string
+          p_duration_minutes: number
+          p_local_date: string
+          p_local_start_time: string
           p_machine_id: string
-          p_duration: number
           p_notes?: string
+          p_timezone?: string
         }
         Returns: Json
       }
-      rpc_get_active_and_recent_queues: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          id: string
-          machine_id: string
-          customer_id: string
-          customer_name: string
-          customer_phone: string
-          machine_name: string
-          booking_time: string
-          duration: number
-          status: Database["public"]["Enums"]["queue_status"]
-          queue_position: number
-          notes: string
-          created_at: string
-          updated_at: string
-        }[]
+      rpc_end_session: {
+        Args: { p_session_id: string; p_total_amount?: number }
+        Returns: Json
       }
       rpc_get_active_machines: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
-          id: string
-          name: string
           description: string
-          machine_position: number
-          status: Database["public"]["Enums"]["machine_status"]
+          hourly_rate: number
+          id: string
           is_active: boolean
+          machine_position: number
+          name: string
+          status: Database["public"]["Enums"]["machine_status"]
+          type: string
         }[]
       }
-      rpc_get_advance_schedule: {
-        Args: { p_machine_id: string; p_date: string }
+      rpc_get_active_sessions: {
+        Args: never
         Returns: {
-          booking_id: string
-          start_time: string
-          end_time: string
-          duration: number
-          status: string
           customer_name: string
-          customer_phone: string
+          duration_minutes: number
+          estimated_end_time: string
+          payment_status: string
+          session_id: string
+          source_type: string
+          start_time: string
+          station_id: string
+          station_name: string
         }[]
       }
       rpc_get_all_customers_admin: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           created_at: string | null
           email: string | null
@@ -538,155 +573,218 @@ export type Database = {
           updated_at: string | null
           visit_count: number
         }[]
+        SetofOptions: {
+          from: "*"
+          to: "customers"
+          isOneToOne: false
+          isSetofReturn: true
+        }
       }
-      rpc_get_backend_dashboard_stats: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          total_machines: number
-          available_machines: number
-          occupied_machines: number
-          maintenance_machines: number
-          total_queues: number
-          waiting_queues: number
-          playing_queues: number
-          completed_queues: number
-          cancelled_queues: number
-        }[]
-      }
-      rpc_get_booking_session_logs: {
-        Args: { p_booking_ids: string[] }
+      rpc_get_backend_stats: { Args: never; Returns: Json }
+      rpc_get_booking_stats: { Args: never; Returns: Json }
+      rpc_get_bookings_by_date: {
+        Args: { p_customer_id?: string; p_date: string }
         Returns: {
           booking_id: string
-          action: string
-          recorded_at: string
-        }[]
-      }
-      rpc_get_customer_advance_bookings: {
-        Args: { p_phone: string }
-        Returns: {
-          booking_id: string
-          machine_id: string
-          machine_name: string
-          booking_date: string
-          start_time: string
-          end_time: string
-          duration: number
-          status: string
+          business_timezone: string
           created_at: string
-        }[]
-      }
-      rpc_get_machine_dashboard_info: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          machine_id: string
-          waiting_count: number
-          playing_count: number
-          estimated_wait_minutes: number
-          next_position: number
-        }[]
-      }
-      rpc_get_my_queue_status: {
-        Args: { p_queue_ids: string[] }
-        Returns: {
-          id: string
-          machine_id: string
           customer_id: string
-          machine_name: string
           customer_name: string
           customer_phone: string
-          booking_time: string
-          duration: number
+          duration_minutes: number
+          end_at: string
+          is_cross_midnight: boolean
+          is_owner: boolean
+          local_date: string
+          local_end_time: string
+          local_start_time: string
+          machine_id: string
+          machine_name: string
+          start_at: string
           status: string
-          queue_position: number
-          queue_ahead: number
-          estimated_wait_minutes: number
         }[]
       }
-      rpc_get_queue_details: {
-        Args: { p_queue_id: string }
+      rpc_get_bookings_by_machine_date: {
+        Args: { p_customer_id?: string; p_date: string; p_machine_id: string }
         Returns: {
-          id: string
-          machine_id: string
-          customer_id: string
-          machine_name: string
-          customer_name: string
-          customer_phone_masked: string
-          booking_time: string
-          duration: number
-          status: Database["public"]["Enums"]["queue_status"]
-          queue_position: number
-          notes: string
+          booking_id: string
+          business_timezone: string
           created_at: string
-          updated_at: string
-        }[]
-      }
-      rpc_get_today_queues: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          id: string
           customer_name: string
-          customer_phone_masked: string
-          machine_name: string
-          booking_time: string
-          duration: number
-          status: Database["public"]["Enums"]["queue_status"]
-          queue_position: number
-        }[]
-      }
-      rpc_log_booking_session: {
-        Args: { p_booking_id: string; p_action: string }
-        Returns: Json
-      }
-      rpc_reset_machine_queue: {
-        Args: { p_machine_id: string }
-        Returns: Json
-      }
-      rpc_search_queues_by_phone: {
-        Args: { p_phone: string; p_local_customer_id?: string }
-        Returns: {
-          id: string
+          customer_phone: string
+          duration_minutes: number
+          end_at: string
+          is_cross_midnight: boolean
+          is_owner: boolean
+          local_date: string
+          local_end_time: string
+          local_start_time: string
           machine_id: string
-          customer_id: string
-          machine_name: string
-          customer_name: string
-          customer_phone_masked: string
-          booking_time: string
-          duration: number
-          status: Database["public"]["Enums"]["queue_status"]
-          queue_position: number
-          notes: string
-          created_at: string
-          updated_at: string
+          start_at: string
+          status: string
         }[]
       }
-      rpc_update_queue_status_admin: {
+      rpc_get_bookings_schedule: {
         Args: {
-          p_queue_id: string
-          p_status: Database["public"]["Enums"]["queue_status"]
+          p_customer_id?: string
+          p_date: string
+          p_machine_id: string
+          p_timezone?: string
+        }
+        Returns: {
+          booking_id: string
+          customer_name: string
+          customer_phone: string
+          duration_minutes: number
+          end_at: string
+          is_cross_midnight: boolean
+          is_owner: boolean
+          local_end_time: string
+          local_start_time: string
+          start_at: string
+          status: string
+          total_price: number
+        }[]
+      }
+      rpc_get_my_bookings: {
+        Args: { p_customer_id: string }
+        Returns: {
+          booking_id: string
+          business_timezone: string
+          created_at: string
+          customer_name: string
+          customer_phone: string
+          duration_minutes: number
+          end_at: string
+          is_cross_midnight: boolean
+          local_date: string
+          local_end_time: string
+          local_start_time: string
+          machine_id: string
+          machine_name: string
+          start_at: string
+          status: string
+          total_price: number
+        }[]
+      }
+      rpc_get_my_walk_in_queue: {
+        Args: { p_customer_id: string }
+        Returns: {
+          called_at: string
+          customer_name: string
+          customer_phone: string
+          estimated_wait_minutes: number
+          joined_at: string
+          notes: string
+          party_size: number
+          preferred_machine_name: string
+          preferred_station_type: string
+          queue_id: string
+          queue_number: number
+          queues_ahead: number
+          status: string
+        }[]
+      }
+      rpc_get_session_stats: {
+        Args: { p_end_date?: string; p_start_date?: string }
+        Returns: Json
+      }
+      rpc_get_today_sessions: {
+        Args: never
+        Returns: {
+          customer_name: string
+          duration_minutes: number
+          end_time: string
+          payment_status: string
+          session_id: string
+          source_type: string
+          start_time: string
+          station_id: string
+          station_name: string
+          total_amount: number
+        }[]
+      }
+      rpc_get_waiting_queue: {
+        Args: never
+        Returns: {
+          customer_name: string
+          customer_phone_masked: string
+          joined_at: string
+          party_size: number
+          preferred_machine_name: string
+          preferred_station_type: string
+          queue_id: string
+          queue_number: number
+          status: string
+          wait_time_minutes: number
+        }[]
+      }
+      rpc_get_walk_in_queue_stats: { Args: never; Returns: Json }
+      rpc_is_booking_slot_available: {
+        Args: {
+          p_duration_minutes: number
+          p_local_date: string
+          p_local_start_time: string
+          p_machine_id: string
+          p_timezone?: string
         }
         Returns: boolean
       }
-      set_profile_active: {
-        Args: { profile_id: string }
-        Returns: boolean
+      rpc_join_walk_in_queue: {
+        Args: {
+          p_customer_id?: string
+          p_customer_name: string
+          p_customer_phone: string
+          p_notes?: string
+          p_party_size?: number
+          p_preferred_machine_id?: string
+          p_preferred_station_type?: string
+        }
+        Returns: Json
       }
+      rpc_start_session: {
+        Args: {
+          p_booking_id?: string
+          p_customer_name: string
+          p_estimated_duration_minutes?: number
+          p_notes?: string
+          p_queue_id?: string
+          p_station_id: string
+        }
+        Returns: Json
+      }
+      rpc_update_session_amount: {
+        Args: { p_session_id: string; p_total_amount: number }
+        Returns: Json
+      }
+      rpc_update_session_payment: {
+        Args: {
+          p_payment_status: Database["public"]["Enums"]["payment_status"]
+          p_session_id: string
+        }
+        Returns: Json
+      }
+      set_profile_active: { Args: { profile_id: string }; Returns: boolean }
       set_profile_role: {
         Args: {
-          target_profile_id: string
           new_role: Database["public"]["Enums"]["profile_role"]
+          target_profile_id: string
         }
         Returns: boolean
       }
     }
     Enums: {
-      advance_booking_status:
+      booking_status:
         | "pending"
         | "confirmed"
-        | "cancelled"
+        | "seated"
         | "completed"
+        | "cancelled"
+        | "checked_in"
       machine_status: "available" | "occupied" | "maintenance"
+      payment_status: "unpaid" | "paid" | "partial"
       profile_role: "user" | "moderator" | "admin"
-      queue_status: "waiting" | "playing" | "completed" | "cancelled"
+      walk_in_status: "waiting" | "called" | "seated" | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -694,21 +792,25 @@ export type Database = {
   }
 }
 
-type DefaultSchema = Database[Extract<keyof Database, "public">]
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
@@ -726,14 +828,16 @@ export type Tables<
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
@@ -749,14 +853,16 @@ export type TablesInsert<
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
@@ -772,14 +878,16 @@ export type TablesUpdate<
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
@@ -787,14 +895,16 @@ export type Enums<
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
-> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
@@ -802,15 +912,18 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      advance_booking_status: [
+      booking_status: [
         "pending",
         "confirmed",
-        "cancelled",
+        "seated",
         "completed",
+        "cancelled",
+        "checked_in",
       ],
       machine_status: ["available", "occupied", "maintenance"],
+      payment_status: ["unpaid", "paid", "partial"],
       profile_role: ["user", "moderator", "admin"],
-      queue_status: ["waiting", "playing", "completed", "cancelled"],
+      walk_in_status: ["waiting", "called", "seated", "cancelled"],
     },
   },
 } as const

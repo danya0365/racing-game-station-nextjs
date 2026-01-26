@@ -6,11 +6,13 @@
 import {
     CreateCustomerData,
     Customer,
+    CustomerListResult,
     CustomerStats,
     ICustomerRepository,
     UpdateCustomerData,
 } from '@/src/application/repositories/ICustomerRepository';
 import { CUSTOMER_CONFIG } from '@/src/config/customerConfig';
+import dayjs from 'dayjs';
 
 // Mock data with sample customers
 const mockCustomers: Customer[] = [
@@ -21,9 +23,9 @@ const mockCustomers: Customer[] = [
     email: 'somchai@example.com',
     visitCount: 12,
     totalPlayTime: 720,
-    lastVisit: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
-    updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    lastVisit: dayjs().subtract(2, 'day').toISOString(),
+    createdAt: dayjs().subtract(60, 'day').toISOString(),
+    updatedAt: dayjs().subtract(2, 'day').toISOString(),
     notes: 'ลูกค้าประจำ ชอบเครื่อง 1',
     isVip: true,
   },
@@ -33,9 +35,9 @@ const mockCustomers: Customer[] = [
     phone: '082-345-6789',
     visitCount: 8,
     totalPlayTime: 480,
-    lastVisit: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    createdAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
-    updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    lastVisit: dayjs().subtract(5, 'day').toISOString(),
+    createdAt: dayjs().subtract(45, 'day').toISOString(),
+    updatedAt: dayjs().subtract(5, 'day').toISOString(),
     isVip: true,
   },
   {
@@ -44,9 +46,9 @@ const mockCustomers: Customer[] = [
     phone: '083-456-7890',
     visitCount: 5,
     totalPlayTime: 300,
-    lastVisit: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-    updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    lastVisit: dayjs().subtract(7, 'day').toISOString(),
+    createdAt: dayjs().subtract(30, 'day').toISOString(),
+    updatedAt: dayjs().subtract(7, 'day').toISOString(),
     isVip: false,
   },
   {
@@ -55,9 +57,9 @@ const mockCustomers: Customer[] = [
     phone: '084-567-8901',
     visitCount: 3,
     totalPlayTime: 180,
-    lastVisit: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
-    createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
-    updatedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+    lastVisit: dayjs().subtract(14, 'day').toISOString(),
+    createdAt: dayjs().subtract(20, 'day').toISOString(),
+    updatedAt: dayjs().subtract(14, 'day').toISOString(),
     isVip: false,
   },
   {
@@ -67,9 +69,9 @@ const mockCustomers: Customer[] = [
     email: 'nattapon@example.com',
     visitCount: 1,
     totalPlayTime: 60,
-    lastVisit: new Date().toISOString(),
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    lastVisit: dayjs().toISOString(),
+    createdAt: dayjs().toISOString(),
+    updatedAt: dayjs().toISOString(),
     notes: 'ลูกค้าใหม่',
     isVip: false,
   },
@@ -78,13 +80,41 @@ const mockCustomers: Customer[] = [
 export class MockCustomerRepository implements ICustomerRepository {
   private customers: Customer[] = [...mockCustomers];
 
-  async getAll(): Promise<Customer[]> {
+  async getAll(limit: number = 20, page: number = 1, search?: string, filter?: string): Promise<CustomerListResult> {
+    let filtered = [...this.customers];
+
+    // Search
+    if (search) {
+      const lowerQuery = search.toLowerCase();
+      filtered = filtered.filter(
+        (c) =>
+          c.name.toLowerCase().includes(lowerQuery) ||
+          c.phone.includes(search)
+      );
+    }
+
+    // Filter
+    const today = dayjs().startOf('day');
+    if (filter === 'vip') {
+      filtered = filtered.filter(c => c.isVip);
+    } else if (filter === 'new') {
+      filtered = filtered.filter(c => dayjs(c.createdAt).isAfter(today.subtract(1, 'minute'))); 
+    } else if (filter === 'regular') {
+      filtered = filtered.filter(c => c.visitCount >= CUSTOMER_CONFIG.REGULAR_CUSTOMER_MIN_VISITS);
+    }
+
     // Sort by last visit, most recent first
-    return [...this.customers].sort((a, b) => {
+    filtered.sort((a, b) => {
       if (!a.lastVisit) return 1;
       if (!b.lastVisit) return -1;
-      return new Date(b.lastVisit).getTime() - new Date(a.lastVisit).getTime();
+      return dayjs(b.lastVisit).unix() - dayjs(a.lastVisit).unix();
     });
+
+    const total = filtered.length;
+    const start = (page - 1) * limit;
+    const data = filtered.slice(start, start + limit);
+
+    return { data, total };
   }
 
   async getById(id: string): Promise<Customer | null> {
@@ -99,15 +129,6 @@ export class MockCustomerRepository implements ICustomerRepository {
     ) || null;
   }
 
-  async search(query: string): Promise<Customer[]> {
-    const lowerQuery = query.toLowerCase();
-    return this.customers.filter(
-      (c) =>
-        c.name.toLowerCase().includes(lowerQuery) ||
-        c.phone.includes(query)
-    );
-  }
-
   async create(data: CreateCustomerData): Promise<Customer> {
     const newCustomer: Customer = {
       id: `cust-${Date.now()}`,
@@ -116,8 +137,8 @@ export class MockCustomerRepository implements ICustomerRepository {
       email: data.email,
       visitCount: 0,
       totalPlayTime: 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: dayjs().toISOString(),
+      updatedAt: dayjs().toISOString(),
       notes: data.notes,
       isVip: false,
     };
@@ -135,7 +156,7 @@ export class MockCustomerRepository implements ICustomerRepository {
     this.customers[index] = {
       ...this.customers[index],
       ...data,
-      updatedAt: new Date().toISOString(),
+      updatedAt: dayjs().toISOString(),
     };
 
     return this.customers[index];
@@ -170,12 +191,11 @@ export class MockCustomerRepository implements ICustomerRepository {
   }
 
   async getStats(todayStr: string): Promise<CustomerStats> {
-    const today = new Date(todayStr);
-    today.setHours(0, 0, 0, 0);
-
+    const today = dayjs(todayStr).startOf('day');
+ 
     const newToday = this.customers.filter((c) => {
-      const createdAt = new Date(c.createdAt);
-      return createdAt >= today;
+      const createdAt = dayjs(c.createdAt);
+      return createdAt.isSame(today, 'day') || createdAt.isAfter(today);
     }).length;
 
     return {
