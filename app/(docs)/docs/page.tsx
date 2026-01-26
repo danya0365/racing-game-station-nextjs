@@ -26,13 +26,7 @@ export default function DocsPage() {
         </p>
         <div className="mt-8 flex flex-col items-center gap-4">
           <div className="flex items-center gap-3">
-            <Link 
-              href="/"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 rounded-xl text-gray-700 hover:text-gray-900 dark:text-white/70 dark:hover:text-white transition-all font-medium border border-gray-200 dark:border-white/10"
-            >
-              ← กลับหน้าแรก
-            </Link>
-            
+
             <Link 
               href="/docs/print"
               className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-xl shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 transition-all font-medium"

@@ -8,6 +8,7 @@ import { AnimatedCard } from '@/src/presentation/components/ui/AnimatedCard';
 import { ConfirmationModal } from '@/src/presentation/components/ui/ConfirmationModal';
 import { CustomerInfoCard } from '@/src/presentation/components/ui/CustomerInfoCard';
 import { GlowButton } from '@/src/presentation/components/ui/GlowButton';
+import { PageHeader } from '@/src/presentation/components/ui/PageHeader';
 import { TimezoneNotice } from '@/src/presentation/components/ui/TimezoneNotice';
 import { useCustomerStore } from '@/src/presentation/stores/useCustomerStore';
 import Link from 'next/link';
@@ -130,14 +131,13 @@ export function BookingStatusView() {
   const hasCustomerId = !!customerInfo.id;
 
   return (
-    <div className="min-h-screen bg-background py-8 px-4">
-      <div className="max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">📅 การจองของฉัน</h1>
-          <p className="text-muted">ดูสถานะการจองเวลาทั้งหมด</p>
-        </div>
+    <div className="min-h-screen bg-background overflow-auto scrollbar-thin">
+      <PageHeader
+        title="สถานะการจอง"
+        showHomeButton={true}
+      />
 
+      <div className="max-w-2xl mx-auto px-4 py-8">
         {/* 🌍 Timezone Notice */}
         <TimezoneNotice />
 

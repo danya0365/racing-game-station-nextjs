@@ -1,12 +1,12 @@
 'use client';
 
 import { Machine } from '@/src/application/repositories/IMachineRepository';
-import { getShopNow, SHOP_TIMEZONE } from '@/src/lib/date';
+import { SHOP_TIMEZONE } from '@/src/lib/date';
 import { HomeViewModel } from '@/src/presentation/presenters/home/HomePresenter';
 import { useHomePresenter } from '@/src/presentation/presenters/home/useHomePresenter';
 import 'dayjs/locale/th';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { PageHeader } from '../ui/PageHeader';
 
 const DEFAULT_TIMEZONE = SHOP_TIMEZONE;
 
@@ -40,15 +40,6 @@ interface DashboardStats {
  */
 export function HomeView({ initialViewModel }: { initialViewModel?: HomeViewModel }) {
   const [{ viewModel, loading: isLoading }, { refreshData }] = useHomePresenter(initialViewModel);
-  const [currentTime, setCurrentTime] = useState(getShopNow());
-
-  // Update current time every minute
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(getShopNow());
-    }, 60000);
-    return () => clearInterval(interval);
-  }, []);
 
   // Derive stats from viewModel
   const machines = viewModel?.machines || [];
@@ -69,46 +60,26 @@ export function HomeView({ initialViewModel }: { initialViewModel?: HomeViewMode
 
   return (
     <div className="bg-background overflow-auto scrollbar-thin">
-      {/* Hero Section - Compact & Informational */}
-      <section className="relative overflow-hidden bg-surface border-b border-border">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 via-background to-background" />
-        
-        <div className="relative px-4 py-6 md:py-8 max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-3xl shadow-lg shadow-purple-500/20">
-              🏎️
+      <PageHeader
+        title="Racing Game Station"
+        rightContent={
+          <>
+            <div className="px-4 py-2 rounded-xl bg-surface border border-border flex flex-col items-center min-w-[100px]">
+              <span className="text-xs text-muted mb-1">เครื่องว่าง</span>
+              <span className="text-xl font-bold text-emerald-500">
+                {loading ? '-' : stats.availableMachines}
+                <span className="text-sm text-muted font-normal ml-1">/ {stats.totalMachines}</span>
+              </span>
             </div>
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Racing Game Station
-              </h1>
-              <div className="flex items-center gap-2 text-muted text-sm mt-1">
-                <span>📅 {currentTime.locale('th').format('D MMM BB')}</span>
-                <span>•</span>
-                <span>⏰ {currentTime.format('HH:mm')}</span>
-              </div>
+            <div className="px-4 py-2 rounded-xl bg-surface border border-border flex flex-col items-center min-w-[100px]">
+              <span className="text-xs text-muted mb-1">คิวรอ</span>
+              <span className="text-xl font-bold text-amber-500">
+                {loading ? '-' : stats.waitingInQueue}
+              </span>
             </div>
-          </div>
-
-          {/* Status Badge */}
-          <div className="flex gap-3">
-             <div className="px-4 py-2 rounded-xl bg-surface border border-border flex flex-col items-center min-w-[100px]">
-               <span className="text-xs text-muted mb-1">เครื่องว่าง</span>
-               <span className="text-xl font-bold text-emerald-500">
-                 {loading ? '-' : stats.availableMachines}
-                 <span className="text-sm text-muted font-normal ml-1">/ {stats.totalMachines}</span>
-               </span>
-             </div>
-             <div className="px-4 py-2 rounded-xl bg-surface border border-border flex flex-col items-center min-w-[100px]">
-               <span className="text-xs text-muted mb-1">คิวรอ</span>
-               <span className="text-xl font-bold text-amber-500">
-                 {loading ? '-' : stats.waitingInQueue}
-               </span>
-             </div>
-          </div>
-        </div>
-      </section>
+          </>
+        }
+      />
 
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
         
