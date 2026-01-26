@@ -3,6 +3,8 @@
 -- Author: Marosdee Uma
 -- Description: Sample user data for testing Shop Queue application
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- Set app password for testing
 set session my.app_password = '12345678';
 
@@ -117,7 +119,7 @@ INSERT INTO
         updated_at
     )
 SELECT
-    uuid_generate_v4(),
+    extensions.uuid_generate_v4(),
     id,
     id,
     format('{"sub":"%s","email":"%s"}', id::text, email)::jsonb,
