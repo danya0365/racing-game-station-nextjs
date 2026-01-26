@@ -32,7 +32,7 @@ END $$;
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS public.machines (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT extensions.uuid_generate_v4(),
     name TEXT NOT NULL,
     description TEXT,
     position INTEGER NOT NULL DEFAULT 0,
@@ -78,7 +78,7 @@ CREATE TRIGGER update_machines_updated_at
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS public.customers (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT extensions.uuid_generate_v4(),
     profile_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
     name TEXT NOT NULL,
     phone TEXT NOT NULL,
@@ -129,7 +129,7 @@ CREATE TRIGGER update_customers_updated_at
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS public.bookings (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT extensions.uuid_generate_v4(),
     machine_id UUID REFERENCES public.machines(id) ON DELETE CASCADE NOT NULL,
     customer_id UUID REFERENCES public.customers(id) ON DELETE CASCADE NOT NULL,
     
@@ -290,7 +290,7 @@ CREATE TRIGGER calculate_booking_price
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS public.walk_in_queue (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT extensions.uuid_generate_v4(),
     
     -- Customer reference
     customer_id UUID REFERENCES public.customers(id) ON DELETE CASCADE NOT NULL,
@@ -371,7 +371,7 @@ CREATE TRIGGER update_walk_in_queue_updated_at
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS public.sessions (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT extensions.uuid_generate_v4(),
     
     -- Machine reference
     station_id UUID REFERENCES public.machines(id) ON DELETE CASCADE NOT NULL,
