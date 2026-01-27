@@ -2,7 +2,7 @@
 
 import { MouseEvent, ReactNode } from 'react';
 
-type GlowColor = 'cyan' | 'purple' | 'pink' | 'green' | 'red' | 'orange';
+type GlowColor = 'cyan' | 'purple' | 'pink' | 'green' | 'red' | 'orange' | 'emerald-dark' | 'red-dark';
 
 interface GlowButtonProps {
   children: ReactNode;
@@ -44,6 +44,16 @@ const glowColors: Record<GlowColor, { base: string; glow: string; hover: string 
     base: 'from-orange-400 to-orange-600',
     glow: 'shadow-orange-500/50 hover:shadow-orange-400/60',
     hover: 'hover:from-orange-300 hover:to-orange-500',
+  },
+  'emerald-dark': {
+    base: 'from-emerald-800 to-emerald-950',
+    glow: 'shadow-emerald-900/30 hover:shadow-emerald-800/40',
+    hover: 'hover:from-emerald-700 hover:to-emerald-900',
+  },
+  'red-dark': {
+    base: 'from-red-800 to-red-950',
+    glow: 'shadow-red-900/30 hover:shadow-red-800/40',
+    hover: 'hover:from-red-700 hover:to-red-900',
   },
 };
 

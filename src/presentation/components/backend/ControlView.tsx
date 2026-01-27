@@ -88,7 +88,7 @@ export function ControlView({ initialViewModel }: ControlViewProps) {
   // ============================================================
 
   return (
-    <div className="fixed inset-0 z-[100] bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-auto">
+    <div className="fixed inset-0 z-[100] bg-neutral-900 overflow-auto">
       {/* Header - Mobile Optimized */}
       <header className="sticky top-0 z-50 backdrop-blur-md bg-black/40 border-b border-white/10">
         {/* Row 1: Back, Title, Time */}
@@ -226,7 +226,7 @@ export function ControlView({ initialViewModel }: ControlViewProps) {
                   ยกเลิก
                 </GlowButton>
                 <GlowButton
-                  color="green"
+                  color="emerald-dark"
                   className="flex-1"
                   disabled={!manualCustomerName.trim() || state.isUpdating || estimatedDuration <= 0}
                   onClick={() => {
@@ -422,10 +422,10 @@ function MiniStat({
   color: 'emerald' | 'orange' | 'yellow' | 'cyan';
 }) {
   const colorMap = {
-    emerald: 'bg-emerald-500/30 border-emerald-500/50 text-emerald-300',
-    orange: 'bg-orange-500/30 border-orange-500/50 text-orange-300',
-    yellow: 'bg-yellow-500/30 border-yellow-500/50 text-yellow-300',
-    cyan: 'bg-cyan-500/30 border-cyan-500/50 text-cyan-300',
+    emerald: 'bg-emerald-900/40 border-emerald-700/50 text-emerald-400',
+    orange: 'bg-orange-900/40 border-orange-700/50 text-orange-400',
+    yellow: 'bg-yellow-900/40 border-yellow-700/50 text-yellow-400',
+    cyan: 'bg-cyan-900/40 border-cyan-700/50 text-cyan-400',
   };
 
   return (
@@ -471,21 +471,21 @@ function StationCard({
 
   // Color mapping
   const stateColors = {
-    available: 'border-emerald-500/40 bg-emerald-500/5',
-    in_use: 'border-orange-500/40 bg-orange-500/10',
-    reserved: isOverdue ? 'border-red-500/40 bg-red-500/10' : 'border-yellow-500/40 bg-yellow-500/5',
+    available: 'border-emerald-600/40 bg-zinc-900/80 shadow-lg shadow-emerald-900/10 hover:border-emerald-500/60 hover:shadow-emerald-900/30 hover:bg-zinc-800 transition-all duration-300',
+    in_use: 'border-orange-600/40 bg-zinc-900/80 shadow-lg shadow-orange-900/10 hover:border-orange-500/60 hover:shadow-orange-900/30 hover:bg-zinc-800 transition-all duration-300',
+    reserved: isOverdue ? 'border-red-600/40 bg-zinc-900/80 shadow-lg shadow-red-900/10 hover:border-red-500/60' : 'border-yellow-600/40 bg-zinc-900/80 shadow-lg shadow-yellow-900/10 hover:border-yellow-500/60',
   };
 
   const headerColors = {
-    available: 'from-emerald-500 to-green-600',
-    in_use: 'from-orange-500 to-red-600',
-    reserved: isOverdue ? 'from-red-500 to-rose-600' : 'from-yellow-500 to-orange-600',
+    available: 'from-emerald-700 to-emerald-900 text-emerald-100',
+    in_use: 'from-orange-700 to-red-900 text-orange-100',
+    reserved: isOverdue ? 'from-red-700 to-rose-900 text-red-100' : 'from-yellow-600 to-orange-800 text-yellow-100',
   };
 
   const badgeColors = {
-    available: 'bg-emerald-500 text-white',
-    in_use: 'bg-orange-500 text-white animate-pulse',
-    reserved: isOverdue ? 'bg-red-500 text-white animate-bounce' : 'bg-yellow-500 text-black',
+    available: 'bg-emerald-950/50 border border-emerald-800 text-emerald-400',
+    in_use: 'bg-orange-950/50 border border-orange-800 text-orange-400 animate-pulse',
+    reserved: isOverdue ? 'bg-red-950/50 border border-red-800 text-red-400 animate-bounce' : 'bg-yellow-950/50 border border-yellow-800 text-yellow-400',
   };
 
   const stateLabels = {
@@ -543,7 +543,7 @@ function StationCard({
                 </div>
                 
                 <GlowButton
-                  color={isOverdue ? 'red' : 'green'}
+                  color={isOverdue ? 'red-dark' : 'emerald-dark'}
                   className="w-full py-3"
                   onClick={onCheckIn}
                   disabled={isUpdating}
@@ -556,7 +556,7 @@ function StationCard({
             {/* MANUAL & QUEUE ACTIONS (Always visible when not in use) */}
             <div className="space-y-2">
               <GlowButton
-                color="green"
+                color="emerald-dark"
                 className="w-full py-3"
                 onClick={onStartManual}
                 disabled={isUpdating}
@@ -599,7 +599,7 @@ function StationCard({
             />
             
             <GlowButton
-              color="red"
+              color="red-dark"
               className="w-full py-3"
               onClick={onEndSession}
               disabled={isUpdating}
@@ -631,8 +631,8 @@ function StationCard({
                // Determine color based on status
                let bgClass = 'bg-white/10'; // Default/Unknown
                if (slot.status === 'passed') bgClass = 'bg-white/5';
-               else if (slot.status === 'booked') bgClass = 'bg-red-500';
-               else if (slot.status === 'available') bgClass = 'bg-emerald-500';
+               else if (slot.status === 'booked') bgClass = 'bg-red-900';
+               else if (slot.status === 'available') bgClass = 'bg-emerald-900';
                
                return (
                  <div 
@@ -743,8 +743,8 @@ function HistoryModal({
                         </div>
                       </div>
                       <div className="text-right">
-                         <div className="text-emerald-400 font-bold">฿{session.totalAmount || 0}</div>
-                         <div className={`text-xs ${session.paymentStatus === 'paid' ? 'text-green-500' : 'text-red-500'}`}>
+                         <div className="text-emerald-600 font-bold">฿{session.totalAmount || 0}</div>
+                         <div className={`text-xs ${session.paymentStatus === 'paid' ? 'text-emerald-600' : 'text-red-500'}`}>
                            {session.paymentStatus === 'paid' ? 'จ่ายแล้ว' : 'ยังไม่จ่าย'}
                          </div>
                       </div>
