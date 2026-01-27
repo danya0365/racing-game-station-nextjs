@@ -228,7 +228,7 @@ export function ControlView({ initialViewModel }: ControlViewProps) {
               <div className="mb-6">
                 <label className="text-white/60 text-sm mb-2 block">เวลาเล่น (นาที)</label>
                 <div className="flex flex-wrap gap-2">
-                  {[30, 60, 90, 120].map((mins) => (
+                  {[30, 60, 90, 120, 180].map((mins) => (
                     <button
                       key={mins}
                       onClick={() => setEstimatedDuration(mins)}
