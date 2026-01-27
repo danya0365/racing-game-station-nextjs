@@ -511,49 +511,137 @@ function StationCard({
   
   // Check if booking is overdue
   const isOverdue = reservedBooking && reservedBooking.localStartTime < currentTime.format('HH:mm');
-  const isSunrise = theme?.id === 'sunrise';
+  const themeId = theme?.id || 'neutral';
+  const isSunrise = themeId === 'sunrise';
 
-  // Color mapping
-  const darkStateColors = {
-    available: 'border-emerald-600/40 shadow-lg shadow-emerald-900/10 hover:border-emerald-500/60 hover:shadow-emerald-900/30 transition-all duration-300',
-    in_use: 'border-orange-600/40 bg-zinc-900/80 shadow-lg shadow-orange-900/10 hover:border-orange-500/60 hover:shadow-orange-900/30 hover:bg-zinc-800 transition-all duration-300',
-    reserved: isOverdue ? 'border-red-600/40 shadow-lg shadow-red-900/10 hover:border-red-500/60' : 'border-yellow-600/40 shadow-lg shadow-yellow-900/10 hover:border-yellow-500/60',
+  // =================================================================================
+  // THEME SPECIFIC STYLES
+  // =================================================================================
+  
+  type ThemeStyle = {
+    card: {
+      available: string;
+      in_use: string;
+      reserved: string;
+    };
+    header: {
+      available: string;
+      in_use: string;
+      reserved: string;
+    };
+    badge: {
+      available: string;
+      in_use: string;
+      reserved: string;
+    };
+    gradient: string; // For in-use background animation
   };
 
-  const sunriseStateColors = {
-    available: 'border-emerald-200 bg-emerald-50/50 shadow-lg shadow-emerald-100/50 hover:border-emerald-300 hover:shadow-emerald-100/80 transition-all duration-300',
-    in_use: 'border-orange-200 bg-orange-50/50 shadow-lg shadow-orange-100/50 hover:border-orange-300 hover:shadow-orange-100/80 hover:bg-orange-50 transition-all duration-300',
-    reserved: isOverdue ? 'border-red-200 bg-red-50/50 shadow-lg shadow-red-100/50 hover:border-red-300' : 'border-yellow-200 bg-yellow-50/50 shadow-lg shadow-yellow-100/50 hover:border-yellow-300',
+  const THEME_STYLES: Record<string, ThemeStyle> = {
+    neutral: {
+      card: {
+        available: 'border-emerald-600/40 shadow-lg shadow-emerald-900/10 hover:border-emerald-500/60 hover:shadow-emerald-900/30 bg-zinc-900/80',
+        in_use: 'border-orange-600/40 bg-zinc-900/90 shadow-lg shadow-orange-900/20 hover:border-orange-500/60 hover:shadow-orange-900/40',
+        reserved: isOverdue 
+          ? 'border-red-600/40 bg-zinc-900/80 hover:border-red-500/60'
+          : 'border-yellow-600/40 bg-zinc-900/80 hover:border-yellow-500/60',
+      },
+      header: {
+        available: 'from-emerald-700 to-emerald-900 text-emerald-100',
+        in_use: 'from-orange-700 to-red-900 text-orange-100',
+        reserved: isOverdue ? 'from-red-700 to-rose-900 text-red-100' : 'from-yellow-600 to-orange-800 text-yellow-100',
+      },
+      badge: {
+        available: 'bg-emerald-950/50 border border-emerald-800 text-emerald-400',
+        in_use: 'bg-orange-950/50 border border-orange-800 text-orange-400 animate-pulse',
+        reserved: isOverdue ? 'bg-red-950/50 border border-red-800 text-red-400 animate-bounce' : 'bg-yellow-950/50 border border-yellow-800 text-yellow-400',
+      },
+      gradient: 'bg-gradient-to-r from-orange-900/30 via-red-900/30 to-orange-900/30',
+    },
+    midnight: {
+      card: {
+        available: 'border-emerald-800/40 shadow-lg shadow-emerald-900/20 bg-black/80 hover:border-emerald-700/60',
+        in_use: 'border-orange-800/60 bg-black/90 shadow-lg shadow-orange-900/30 hover:border-orange-600/80',
+        reserved: isOverdue
+          ? 'border-red-800/40 bg-black/80 hover:border-red-700/60'
+          : 'border-yellow-800/40 bg-black/80 hover:border-yellow-700/60',
+      },
+      header: {
+        available: 'from-emerald-900 to-black text-emerald-200 border border-emerald-800/30',
+        in_use: 'from-orange-900 to-black text-orange-200 border border-orange-800/30',
+        reserved: isOverdue ? 'from-red-900 to-black text-red-200' : 'from-yellow-900 to-black text-yellow-200',
+      },
+      badge: {
+        available: 'bg-emerald-950/80 border border-emerald-900 text-emerald-500',
+        in_use: 'bg-orange-950/80 border border-orange-900 text-orange-500 animate-pulse',
+        reserved: isOverdue ? 'bg-red-950/80 border border-red-900 text-red-500' : 'bg-yellow-950/80 border border-yellow-900 text-yellow-500',
+      },
+      gradient: 'bg-gradient-to-r from-orange-950/50 via-red-950/50 to-orange-950/50',
+    },
+    ocean: {
+      card: {
+        available: 'border-cyan-500/30 shadow-lg shadow-cyan-900/20 bg-slate-800/70 hover:border-cyan-400/50',
+        in_use: 'border-blue-500/50 bg-slate-800/90 shadow-lg shadow-blue-900/30 hover:border-blue-400/70',
+        reserved: isOverdue
+          ? 'border-rose-500/30 bg-slate-800/70 hover:border-rose-400/50'
+          : 'border-amber-500/30 bg-slate-800/70 hover:border-amber-400/50',
+      },
+      header: {
+        available: 'from-cyan-800 to-slate-900 text-cyan-100',
+        in_use: 'from-blue-700 to-indigo-900 text-blue-100',
+        reserved: isOverdue ? 'from-rose-800 to-slate-900 text-rose-100' : 'from-amber-700 to-slate-900 text-amber-100',
+      },
+      badge: {
+        available: 'bg-cyan-950/50 border border-cyan-800 text-cyan-300',
+        in_use: 'bg-blue-950/50 border border-blue-700 text-blue-300 animate-pulse',
+        reserved: isOverdue ? 'bg-rose-950/50 border border-rose-800 text-rose-300' : 'bg-amber-950/50 border border-amber-800 text-amber-300',
+      },
+      gradient: 'bg-gradient-to-r from-blue-900/30 via-indigo-900/30 to-blue-900/30',
+    },
+    sunrise: {
+      card: {
+        available: 'border-emerald-200 bg-emerald-50/50 shadow-lg shadow-emerald-100/50 hover:border-emerald-300',
+        in_use: 'border-orange-200 bg-orange-50/50 shadow-lg shadow-orange-100/50 hover:border-orange-300 hover:bg-orange-50',
+        reserved: isOverdue
+          ? 'border-red-200 bg-red-50/50 shadow-lg shadow-red-100/50 hover:border-red-300'
+          : 'border-yellow-200 bg-yellow-50/50 shadow-lg shadow-yellow-100/50 hover:border-yellow-300',
+      },
+      header: {
+        available: 'from-emerald-400 to-emerald-500 text-white shadow-emerald-200/50 shadow-md',
+        in_use: 'from-orange-400 to-orange-500 text-white shadow-orange-200/50 shadow-md',
+        reserved: isOverdue ? 'from-red-400 to-red-500 text-white' : 'from-yellow-400 to-yellow-500 text-white',
+      },
+      badge: {
+        available: 'bg-emerald-100 border border-emerald-200 text-emerald-700',
+        in_use: 'bg-orange-100 border border-orange-200 text-orange-700 animate-pulse',
+        reserved: isOverdue ? 'bg-red-100 border border-red-200 text-red-700' : 'bg-yellow-100 border border-yellow-200 text-yellow-700',
+      },
+      gradient: 'bg-gradient-to-r from-orange-200 via-yellow-100 to-orange-200',
+    },
+    neon: {
+      card: {
+        available: 'border-fuchsia-500/40 bg-purple-900/40 shadow-[0_0_15px_rgba(217,70,239,0.1)] hover:border-fuchsia-400/60 hover:shadow-[0_0_20px_rgba(217,70,239,0.2)]',
+        in_use: 'border-pink-500/60 bg-purple-900/60 shadow-[0_0_20px_rgba(236,72,153,0.2)] hover:border-pink-400/80 hover:shadow-[0_0_30px_rgba(236,72,153,0.3)]',
+        reserved: isOverdue
+          ? 'border-red-500/60 bg-purple-900/40 hover:border-red-400/80'
+          : 'border-yellow-400/60 bg-purple-900/40 hover:border-yellow-300/80',
+      },
+      header: {
+        available: 'from-fuchsia-600 to-purple-800 text-white',
+        in_use: 'from-pink-600 to-rose-600 text-white animate-pulse-slow',
+        reserved: isOverdue ? 'from-red-600 to-rose-800 text-white' : 'from-yellow-500 to-orange-600 text-white',
+      },
+      badge: {
+        available: 'bg-fuchsia-950/60 border border-fuchsia-500 text-fuchsia-300',
+        in_use: 'bg-pink-950/60 border border-pink-500 text-pink-300 animate-pulse',
+        reserved: isOverdue ? 'bg-red-950/60 border border-red-500 text-red-300' : 'bg-yellow-950/60 border border-yellow-500 text-yellow-300',
+      },
+      gradient: 'bg-gradient-to-r from-pink-600/20 via-purple-600/20 to-pink-600/20',
+    }
   };
 
-  const darkHeaderColors = {
-    available: 'from-emerald-700 to-emerald-900 text-emerald-100',
-    in_use: 'from-orange-700 to-red-900 text-orange-100',
-    reserved: isOverdue ? 'from-red-700 to-rose-900 text-red-100' : 'from-yellow-600 to-orange-800 text-yellow-100',
-  };
-
-  const sunriseHeaderColors = {
-    available: 'from-emerald-400 to-emerald-500 text-white shadow-emerald-200/50 shadow-md',
-    in_use: 'from-orange-400 to-orange-500 text-white shadow-orange-200/50 shadow-md',
-    reserved: isOverdue ? 'from-red-400 to-red-500 text-white shadow-red-200/50 shadow-md' : 'from-yellow-400 to-yellow-500 text-white shadow-yellow-200/50 shadow-md',
-  };
-
-  const darkBadgeColors = {
-    available: 'bg-emerald-950/50 border border-emerald-800 text-emerald-400',
-    in_use: 'bg-orange-950/50 border border-orange-800 text-orange-400 animate-pulse',
-    reserved: isOverdue ? 'bg-red-950/50 border border-red-800 text-red-400 animate-bounce' : 'bg-yellow-950/50 border border-yellow-800 text-yellow-400',
-  };
-
-  const sunriseBadgeColors = {
-    available: 'bg-emerald-100 border border-emerald-200 text-emerald-700',
-    in_use: 'bg-orange-100 border border-orange-200 text-orange-700 animate-pulse',
-    reserved: isOverdue ? 'bg-red-100 border border-red-200 text-red-700 animate-bounce' : 'bg-yellow-100 border border-yellow-200 text-yellow-700',
-  };
-
-  const stateColors = isSunrise ? sunriseStateColors : darkStateColors;
-  const headerColors = isSunrise ? sunriseHeaderColors : darkHeaderColors;
-  const badgeColors = isSunrise ? sunriseBadgeColors : darkBadgeColors;
-
+  const currentStyle = THEME_STYLES[themeId] || THEME_STYLES['neutral'];
+  
   const stateLabels = {
     available: '✅ ว่าง',
     in_use: '🏁 เล่นอยู่',
@@ -561,16 +649,16 @@ function StationCard({
   };
 
   return (
-    <div className={`rounded-xl border backdrop-blur-sm transition-all duration-300 ${stateColors[stationState]} ${stationState === 'in_use' && !isSunrise ? '' : theme?.colors?.card?.base || 'bg-zinc-900/80'} ${theme?.colors?.card?.hover || ''}`}>
+    <div className={`rounded-xl border backdrop-blur-sm transition-all duration-300 ${currentStyle.card[stationState]}`}>
       {/* Header - Compact */}
       <div className={`px-3 py-2 border-b ${
         isSunrise 
           ? (stationState === 'in_use' ? 'border-orange-200' : stationState === 'reserved' ? 'border-yellow-200' : 'border-emerald-200')
-          : (stationState === 'in_use' ? 'border-orange-500/30' : stationState === 'reserved' ? 'border-yellow-500/30' : 'border-emerald-500/30')
+          : (themeId === 'ocean' ? 'border-white/5' : themeId === 'neon' ? 'border-white/10' : 'border-white/10')
       }`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-xl bg-gradient-to-br ${headerColors[stationState]}`}>
+            <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-xl bg-gradient-to-br ${currentStyle.header[stationState]}`}>
               🎮
             </div>
             <div>
@@ -578,7 +666,7 @@ function StationCard({
               <p className={`text-xs ${theme?.colors?.text?.secondary || 'text-white/50'}`}>#{machine.position}</p>
             </div>
           </div>
-          <span className={`px-2 py-1 rounded-full text-xs font-bold ${badgeColors[stationState]}`}>
+          <span className={`px-2 py-1 rounded-full text-xs font-bold ${currentStyle.badge[stationState]}`}>
             {stateLabels[stationState]}
           </span>
           <button 
@@ -586,7 +674,7 @@ function StationCard({
               e.stopPropagation();
               onViewHistory();
             }}
-            className={`ml-2 w-8 h-8 rounded-full ${theme?.id === 'sunrise' ? 'bg-orange-100/70 hover:bg-orange-200 text-orange-600' : 'bg-white/10 hover:bg-white/20'} flex items-center justify-center text-xs`}
+            className={`ml-2 w-8 h-8 rounded-full ${themeId === 'sunrise' ? 'bg-orange-100/70 hover:bg-orange-200 text-orange-600' : 'bg-white/10 hover:bg-white/20'} flex items-center justify-center text-xs`}
             title="ดูประวัติ"
           >
             🕒
@@ -595,10 +683,16 @@ function StationCard({
       </div>
 
       {/* Content */}
-      <div className="p-3 space-y-2">
+      <div className="p-3 space-y-2 relative">
+        {/* Background Animation for In-Use */}
+        {stationState === 'in_use' && (
+           <div className={`absolute inset-0 opacity-20 pointer-events-none overflow-hidden rounded-b-xl ${currentStyle.gradient} animate-gradient-x`} 
+                style={{ backgroundSize: '200% 100%' }} />
+        )}
+
         {/* NOT IN USE STATE (Available or Reserved) */}
         {stationState !== 'in_use' && (
-          <div className="space-y-3">
+          <div className="space-y-3 relative z-10">
             {/* RESERVED INFO & CHECK-IN */}
             {stationState === 'reserved' && reservedBooking && (
               <div className={`space-y-3 pb-3 border-b ${isSunrise ? 'border-gray-200' : 'border-white/10'}`}>
@@ -653,25 +747,45 @@ function StationCard({
 
         {/* IN USE STATE */}
         {stationState === 'in_use' && activeSession && (
-          <div className="space-y-3">
+          <div className="space-y-3 relative z-10">
             <div 
-              className={`${isSunrise ? 'bg-orange-50 border-orange-200 hover:bg-orange-100' : 'bg-orange-500/20 border-orange-500/30 hover:bg-orange-500/30'} border rounded-xl p-3 cursor-pointer transition-colors`}
+              className={`${isSunrise ? 'bg-orange-50 border-orange-200 hover:bg-orange-100' : 'bg-orange-500/10 border-orange-500/30 hover:bg-orange-500/20'} border rounded-xl p-3 cursor-pointer transition-colors relative overflow-hidden group`}
               onClick={() => onViewDetails(activeSession)}
             >
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className={`text-xs ${isSunrise ? 'text-orange-600' : 'text-orange-400'} mb-1`}>👤 ผู้เล่น (กดเพื่อดูรายละเอียด)</p>
-                  <p className={`text-lg font-bold ${theme?.colors?.text?.primary || 'text-white'}`}>{activeSession.customerName}</p>
+              {/* Active Pulse Border Effect */}
+              <div className="absolute inset-0 rounded-xl border border-orange-500/50 animate-pulse" />
+              
+              <div className="flex justify-between items-start relative z-10">
+                <div className="w-full pr-8">
+                  <div className="flex items-center gap-2 mb-1">
+                     <p className={`text-xs ${isSunrise ? 'text-orange-600' : 'text-orange-400'}`}>👤 ผู้เล่น</p>
+                     <span className="flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-orange-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+                     </span>
+                  </div>
+                  <p className={`text-lg font-bold truncate ${theme?.colors?.text?.primary || 'text-white'}`}>{activeSession.customerName}</p>
                 </div>
-                <span className="text-lg">ℹ️</span>
+                <span className="text-lg opacity-60 group-hover:opacity-100 transition-opacity absolute right-0 top-0">ℹ️</span>
               </div>
             </div>
             
-            <SessionTimer 
-              startTime={activeSession.startTime} 
-              estimatedEndTime={activeSession.estimatedEndTime}
-              theme={theme}
-            />
+            <div className="relative">
+                <SessionTimer 
+                  startTime={activeSession.startTime} 
+                  estimatedEndTime={activeSession.estimatedEndTime}
+                  theme={theme}
+                />
+                
+                {/* Progress Bar */}
+                <div className="mt-2 h-1.5 w-full bg-gray-200/20 rounded-full overflow-hidden">
+                    <ProgressBar 
+                        startTime={activeSession.startTime} 
+                        durationMinutes={activeSession.durationMinutes || 60} 
+                        isSunrise={isSunrise}
+                    />
+                </div>
+            </div>
             
             <GlowButton
               color={isSunrise ? 'red' : 'red-dark'}
@@ -686,7 +800,7 @@ function StationCard({
 
         {/* Upcoming Bookings */}
         {station.upcomingBookings.length > 0 && (
-          <div className={`pt-2 border-t ${theme?.id === 'sunrise' ? 'border-gray-200' : 'border-white/10'}`}>
+          <div className={`pt-2 border-t relative z-10 ${theme?.id === 'sunrise' ? 'border-gray-200' : 'border-white/10'}`}>
             <p className={`text-xs ${theme?.id === 'sunrise' ? 'text-gray-500' : 'text-white/40'} mb-2`}>การจองถัดไป</p>
             <div className="space-y-1">
               {station.upcomingBookings.map(b => (
@@ -700,7 +814,7 @@ function StationCard({
         )}
         
         {/* Schedule Slots Bar */}
-        <div className={`pt-2 border-t ${theme?.id === 'sunrise' ? 'border-gray-200' : 'border-white/10'}`}>
+        <div className={`pt-2 border-t relative z-10 ${theme?.id === 'sunrise' ? 'border-gray-200' : 'border-white/10'}`}>
            <div className="flex gap-[1px] h-2 w-full rounded-full overflow-hidden mb-1">
              {station.slots.map((slot) => {
                // Determine color based on status and theme
@@ -1072,5 +1186,49 @@ export function StationCardSkeleton() {
         </div>
       </div>
     </div>
+  );
+}
+
+function ProgressBar({
+  startTime,
+  durationMinutes,
+  isSunrise
+}: {
+  startTime: string;
+  durationMinutes: number;
+  isSunrise: boolean;
+}) {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const calculateProgress = () => {
+      const start = dayjs(startTime);
+      const now = dayjs();
+      const end = start.add(durationMinutes, 'minute');
+      const totalMs = end.diff(start);
+      const elapsedMs = now.diff(start);
+      
+      if (totalMs <= 0) return 0;
+      
+      const p = (elapsedMs / totalMs) * 100;
+      return Math.min(Math.max(p, 0), 100);
+    };
+
+    setProgress(calculateProgress());
+    
+    const interval = setInterval(() => {
+      setProgress(calculateProgress());
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, [startTime, durationMinutes]);
+
+  return (
+    <div 
+      className={`h-full transition-all duration-1000 ease-linear ${
+        isSunrise ? 'bg-orange-500' : 'bg-gradient-to-r from-orange-600 to-red-600'
+      }`}
+      style={{ width: `${progress}%` }}
+    />
   );
 }
