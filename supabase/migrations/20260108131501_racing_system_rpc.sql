@@ -841,7 +841,9 @@ BEGIN
         IF v_booking_machine_id != p_station_id THEN
             RETURN json_build_object('success', false, 'error', 'Booking นี้ไม่ได้จองเครื่องนี้');
         END IF;
-        v_estimated_end := NULL;
+        
+        -- Use passed duration for estimated end time
+        v_estimated_end := NOW() + (p_estimated_duration_minutes || ' minutes')::INTERVAL;
     ELSE
         v_estimated_end := NOW() + (p_estimated_duration_minutes || ' minutes')::INTERVAL;
     END IF;
