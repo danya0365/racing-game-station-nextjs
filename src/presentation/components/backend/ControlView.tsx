@@ -207,9 +207,19 @@ export function ControlView({ initialViewModel }: ControlViewProps) {
               <p className="text-white/60 mb-4">
                 เครื่อง: {viewModel.stations.find(s => s.machine.id === state.manualStartModal.machineId)?.machine.name}
               </p>
-              <input
+                <div className="flex justify-between items-center mb-1">
+                 <label className="text-white/60 text-sm">ชื่อลูกค้า</label>
+                 <button 
+                   type="button"
+                   onClick={() => setManualCustomerName('มาหน้าร้าน')}
+                   className="text-xs text-emerald-400 hover:text-emerald-300 underline"
+                 >
+                   + มาหน้าร้าน
+                 </button>
+               </div>
+               <input
                 type="text"
-                placeholder="ชื่อลูกค้า"
+                placeholder="ระบุชื่อลูกค้า..."
                 className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-purple-500 mb-4"
                 value={manualCustomerName}
                 onChange={(e) => setManualCustomerName(e.target.value)}
@@ -667,19 +677,21 @@ function StationCard({
               <p className={`text-xs ${theme?.colors?.text?.secondary || 'text-white/50'}`}>#{machine.position}</p>
             </div>
           </div>
-          <span className={`px-2 py-1 rounded-full text-xs font-bold ${currentStyle.badge[stationState]}`}>
-            {stateLabels[stationState]}
-          </span>
-          <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              onViewHistory();
-            }}
-            className={`ml-2 w-8 h-8 rounded-full ${themeId === 'sunrise' ? 'bg-orange-100/70 hover:bg-orange-200 text-orange-600' : 'bg-white/10 hover:bg-white/20'} flex items-center justify-center text-xs`}
-            title="ดูประวัติ"
-          >
-            🕒
-          </button>
+          <div className="flex items-center gap-2">
+            <span className={`px-2 py-1 rounded-full text-xs font-bold ${currentStyle.badge[stationState]}`}>
+              {stateLabels[stationState]}
+            </span>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                onViewHistory();
+              }}
+              className={`w-8 h-8 rounded-full ${themeId === 'sunrise' ? 'bg-orange-100/70 hover:bg-orange-200 text-orange-600' : 'bg-white/10 hover:bg-white/20'} flex items-center justify-center text-xs`}
+              title="ดูประวัติ"
+            >
+              🕒
+            </button>
+          </div>
         </div>
       </div>
 
