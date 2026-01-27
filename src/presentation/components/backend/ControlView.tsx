@@ -10,6 +10,7 @@ import { GlowButton } from '@/src/presentation/components/ui/GlowButton';
 import { Portal } from '@/src/presentation/components/ui/Portal';
 import { ControlViewModel, StationViewModel } from '@/src/presentation/presenters/backend/ControlPresenter';
 import { useControlPresenter } from '@/src/presentation/presenters/backend/useControlPresenter';
+import { ThemeConfig, useControlThemeStore } from '@/src/presentation/stores/useControlThemeStore';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import Link from 'next/link';
@@ -33,6 +34,10 @@ export function ControlView({ initialViewModel }: ControlViewProps) {
   const [state, actions] = useControlPresenter(initialViewModel);
   const [currentTime, setCurrentTime] = useState(dayjs());
   
+  // Theme Store
+  const { cycleTheme, getThemeConfig } = useControlThemeStore();
+  const theme = getThemeConfig();
+  
   // Manual start modal form state
   const [manualCustomerName, setManualCustomerName] = useState('');
   const [estimatedDuration, setEstimatedDuration] = useState<number>(60);
@@ -54,7 +59,7 @@ export function ControlView({ initialViewModel }: ControlViewProps) {
 
   if (state.loading && !state.viewModel) {
     return (
-      <div className="fixed inset-0 z-[100] bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+      <div className={`fixed inset-0 z-[100] flex items-center justify-center bg-black/90`}>
         <div className="text-center">
           <div className="w-20 h-20 border-4 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-6" />
           <p className="text-white/60 text-lg">กำลังโหลดข้อมูล...</p>
@@ -69,7 +74,7 @@ export function ControlView({ initialViewModel }: ControlViewProps) {
 
   if (state.error && !state.viewModel) {
     return (
-      <div className="fixed inset-0 z-[100] bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+      <div className={`fixed inset-0 z-[100] flex items-center justify-center bg-black/90`}>
         <div className="text-center">
           <div className="text-6xl mb-4">⚠️</div>
           <p className="text-xl text-white mb-4">{state.error}</p>
@@ -88,9 +93,9 @@ export function ControlView({ initialViewModel }: ControlViewProps) {
   // ============================================================
 
   return (
-    <div className="fixed inset-0 z-[100] bg-neutral-900 overflow-auto">
+    <div className={`fixed inset-0 z-[100] overflow-auto transition-colors duration-500 ${theme.colors.bg}`}>
       {/* Header - Mobile Optimized */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-black/40 border-b border-white/10">
+      <header className={`sticky top-0 z-50 backdrop-blur-md transition-colors duration-500 ${theme.colors.header}`}>
         {/* Row 1: Back, Title, Time */}
         <div className="px-3 py-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -111,6 +116,15 @@ export function ControlView({ initialViewModel }: ControlViewProps) {
                 {currentTime.format('HH:mm:ss')}
               </p>
             </div>
+            
+            {/* Theme Switcher */}
+            <button
+              onClick={cycleTheme}
+              className="px-3 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center gap-2 text-sm text-white font-medium hover:bg-white/20 transition-all"
+            >
+              <span>🎨</span>
+              <span className="hidden md:inline">{theme.name}</span>
+            </button>
             
             {/* Refresh */}
             <button
@@ -157,6 +171,7 @@ export function ControlView({ initialViewModel }: ControlViewProps) {
               onViewDetails={(session) => actions.openSessionDetailModal(session)}
               onViewHistory={() => actions.openHistoryModal(station.machine.id)}
               onViewBookingDetail={(booking) => setDetailModalBooking(booking)}
+              theme={theme}
             />
           ))}
         </div>
@@ -451,6 +466,7 @@ function StationCard({
   onViewDetails,
   onViewHistory,
   onViewBookingDetail,
+  theme,
 }: {
   station: StationViewModel;
   currentTime: dayjs.Dayjs;
@@ -463,6 +479,7 @@ function StationCard({
   onViewDetails: (session: Session) => void;
   onViewHistory: () => void;
   onViewBookingDetail: (booking: Booking) => void;
+  theme: ThemeConfig;
 }) {
   const { machine, state: stationState, activeSession, reservedBooking } = station;
   
@@ -471,9 +488,9 @@ function StationCard({
 
   // Color mapping
   const stateColors = {
-    available: 'border-emerald-600/40 bg-zinc-900/80 shadow-lg shadow-emerald-900/10 hover:border-emerald-500/60 hover:shadow-emerald-900/30 hover:bg-zinc-800 transition-all duration-300',
+    available: 'border-emerald-600/40 shadow-lg shadow-emerald-900/10 hover:border-emerald-500/60 hover:shadow-emerald-900/30 transition-all duration-300',
     in_use: 'border-orange-600/40 bg-zinc-900/80 shadow-lg shadow-orange-900/10 hover:border-orange-500/60 hover:shadow-orange-900/30 hover:bg-zinc-800 transition-all duration-300',
-    reserved: isOverdue ? 'border-red-600/40 bg-zinc-900/80 shadow-lg shadow-red-900/10 hover:border-red-500/60' : 'border-yellow-600/40 bg-zinc-900/80 shadow-lg shadow-yellow-900/10 hover:border-yellow-500/60',
+    reserved: isOverdue ? 'border-red-600/40 shadow-lg shadow-red-900/10 hover:border-red-500/60' : 'border-yellow-600/40 shadow-lg shadow-yellow-900/10 hover:border-yellow-500/60',
   };
 
   const headerColors = {
@@ -495,7 +512,7 @@ function StationCard({
   };
 
   return (
-    <div className={`rounded-xl border backdrop-blur-sm transition-all duration-300 ${stateColors[stationState]}`}>
+    <div className={`rounded-xl border backdrop-blur-sm transition-all duration-300 ${stateColors[stationState]} ${stationState === 'in_use' ? '' : theme.colors.card.base} ${theme.colors.card.hover}`}>
       {/* Header - Compact */}
       <div className={`px-3 py-2 border-b ${stationState === 'in_use' ? 'border-orange-500/30' : stationState === 'reserved' ? 'border-yellow-500/30' : 'border-emerald-500/30'}`}>
         <div className="flex items-center justify-between">
