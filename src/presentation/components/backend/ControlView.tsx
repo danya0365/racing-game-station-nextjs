@@ -4,7 +4,8 @@ import { Booking } from '@/src/application/repositories/IBookingRepository';
 import { Session } from '@/src/application/repositories/ISessionRepository';
 import { WalkInQueue } from '@/src/application/repositories/IWalkInQueueRepository';
 import { BookingDetailModal } from '@/src/presentation/components/backend/BookingDetailModal';
-import { SessionDetailModal, SessionTimer } from '@/src/presentation/components/backend/SessionDetailModal';
+import { ControlSessionTimer } from '@/src/presentation/components/backend/ControlSessionTimer';
+import { SessionDetailModal } from '@/src/presentation/components/backend/SessionDetailModal';
 import { ConfirmationModal } from '@/src/presentation/components/ui/ConfirmationModal';
 import { GlowButton } from '@/src/presentation/components/ui/GlowButton';
 import { Portal } from '@/src/presentation/components/ui/Portal';
@@ -771,10 +772,9 @@ function StationCard({
             </div>
             
             <div className="relative">
-                <SessionTimer 
+                <ControlSessionTimer 
                   startTime={activeSession.startTime} 
                   estimatedEndTime={activeSession.estimatedEndTime}
-                  theme={theme}
                 />
                 
                 {/* Progress Bar */}

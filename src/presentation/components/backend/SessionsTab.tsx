@@ -180,7 +180,7 @@ export function SessionsTab({
                            <span className="text-emerald-500 font-bold text-sm">กำลังเล่น</span>
                          </div>
                          <div>
-                            <SessionTimer startTime={session.startTime} estimatedEndTime={session.estimatedEndTime} compact={true} />
+                            <SessionTimer startTime={session.startTime} estimatedEndTime={session.estimatedEndTime} />
                          </div>
                        </div>
                      ) : (

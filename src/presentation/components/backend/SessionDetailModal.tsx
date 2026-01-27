@@ -230,21 +230,15 @@ export function SessionDetailModal({
   );
 }
 
-import { ThemeConfig } from '@/src/presentation/stores/useControlThemeStore';
-
+// Simplified SessionTimer for Modal usage only (No theming logic needed)
 export function SessionTimer({ 
   startTime, 
   estimatedEndTime,
-  compact = false,
-  theme
 }: { 
   startTime: string; 
   estimatedEndTime?: string;
-  compact?: boolean;
-  theme?: ThemeConfig | null;
 }) {
   const [now, setNow] = useState(dayjs());
-  const isSunrise = theme?.id === 'sunrise';
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -288,36 +282,20 @@ export function SessionTimer({
       : `-${timeString}`;
   }
 
-  // Compact View (for Lists)
-  if (compact) {
-    return (
-      <div className="flex flex-col items-end">
-        <span className={`font-mono font-bold text-lg ${isSunrise ? 'text-emerald-600' : 'text-emerald-400'} animate-pulse tabular-nums`}>
-          {timeStr}
-        </span>
-        {remainingStr && (
-           <span className={`text-[10px] font-bold ${isOvertime ? (isSunrise ? 'text-red-600' : 'text-red-400') : (isSunrise ? 'text-blue-600' : 'text-blue-300')}`}>
-             {remainingStr}
-           </span>
-        )}
-      </div>
-    );
-  }
-
-  // Full View (for Modal)
+  // Full View (Default Modal Style)
   return (
-    <div className={`${isSunrise ? 'bg-black/5 border border-black/5' : 'bg-black/20'} rounded-lg p-3 flex flex-col gap-1`}>
+    <div className="bg-black/20 rounded-lg p-3 flex flex-col gap-1">
       <div className="flex justify-between items-center gap-2">
-        <span className={`text-sm ${isSunrise ? 'text-gray-600' : 'text-white/60'}`}>⏱️ เวลาที่เล่น</span>
-        <span className={`font-mono font-bold text-xl ${isSunrise ? 'text-emerald-600' : 'text-emerald-400'} animate-pulse`}>
+        <span className="text-sm text-white/60">⏱️ เวลาที่เล่น</span>
+        <span className="font-mono font-bold text-xl text-emerald-400 animate-pulse">
           {timeStr}
         </span>
       </div>
       
       {remainingStr && (
-        <div className={`flex justify-between items-center border-t ${isSunrise ? 'border-gray-300' : 'border-white/10'} pt-1 mt-1`}>
-           <span className={`text-xs ${isSunrise ? 'text-gray-500' : 'text-white/40'}`}>เหลือเวลา</span>
-           <span className={`font-mono text-sm font-bold ${isOvertime ? (isSunrise ? 'text-red-600' : 'text-red-400') : (isSunrise ? 'text-blue-600' : 'text-blue-300')}`}>
+        <div className="flex justify-between items-center border-t border-white/10 pt-1 mt-1">
+           <span className="text-xs text-white/40">เหลือเวลา</span>
+           <span className={`font-mono text-sm font-bold ${isOvertime ? 'text-red-400' : 'text-blue-300'}`}>
              {remainingStr}
            </span>
         </div>
