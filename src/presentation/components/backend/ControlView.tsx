@@ -242,7 +242,7 @@ export function ControlView({ initialViewModel }: ControlViewProps) {
                     </button>
                   ))}
                   <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 min-w-[100px]">
-                     <span className="text-white/40 text-xs">กำหนดเอง:</span>
+                     <span className="text-white/40 text-xs whitespace-nowrap">กำหนดเอง:</span>
                      <input 
                         type="number"
                         className="w-full bg-transparent text-white text-sm py-2 focus:outline-none"
