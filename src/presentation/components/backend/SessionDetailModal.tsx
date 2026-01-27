@@ -277,10 +277,15 @@ export function SessionTimer({
     const remainingDur = dayjs.duration(Math.abs(remainingMs));
     const rHours = Math.floor(remainingDur.asHours());
     const rMins = remainingDur.minutes();
+    const rSecs = remainingDur.seconds();
+
+    const timeString = rHours > 0
+      ? `${rHours}:${rMins.toString().padStart(2, '0')}:${rSecs.toString().padStart(2, '0')}`
+      : `${rMins}:${rSecs.toString().padStart(2, '0')}`;
     
     remainingStr = isOvertime 
-      ? `+${rHours > 0 ? rHours + ':' : ''}${rMins}m`
-      : `-${rHours > 0 ? rHours + ':' : ''}${rMins}m`;
+      ? `+${timeString}`
+      : `-${timeString}`;
   }
 
   // Compact View (for Lists)
