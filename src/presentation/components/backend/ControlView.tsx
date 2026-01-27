@@ -15,6 +15,7 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { TailwindPreloader } from './TailwindPreloader';
 
 dayjs.extend(duration);
 
@@ -34,9 +35,18 @@ export function ControlView({ initialViewModel }: ControlViewProps) {
   const [state, actions] = useControlPresenter(initialViewModel);
   const [currentTime, setCurrentTime] = useState(dayjs());
   
-  // Theme Store
-  const { cycleTheme, getThemeConfig } = useControlThemeStore();
-  const theme = getThemeConfig();
+  // Theme Store - Wait for hydration to complete
+  const themeStore = useControlThemeStore();
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  // Use default theme during SSR/initial hydration, then switch to stored theme
+  const theme: ThemeConfig | null = (mounted && themeStore.isInitialized 
+    ? themeStore.getThemeConfig() 
+    : null); // null during hydration to show skeleton
   
   // Manual start modal form state
   const [manualCustomerName, setManualCustomerName] = useState('');
@@ -58,14 +68,7 @@ export function ControlView({ initialViewModel }: ControlViewProps) {
   // ============================================================
 
   if (state.loading && !state.viewModel) {
-    return (
-      <div className={`fixed inset-0 z-[100] flex items-center justify-center bg-black/90`}>
-        <div className="text-center">
-          <div className="w-20 h-20 border-4 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-6" />
-          <p className="text-white/60 text-lg">กำลังโหลดข้อมูล...</p>
-        </div>
-      </div>
-    );
+    return <ControlViewSkeleton />;
   }
 
   // ============================================================
@@ -86,6 +89,14 @@ export function ControlView({ initialViewModel }: ControlViewProps) {
     );
   }
 
+  // ============================================================
+  // SKELETON STATE (Theme not loaded yet)
+  // ============================================================
+
+  if (!theme) {
+    return <ControlViewSkeleton />;
+  }
+
   const viewModel = state.viewModel!;
 
   // ============================================================
@@ -93,44 +104,47 @@ export function ControlView({ initialViewModel }: ControlViewProps) {
   // ============================================================
 
   return (
-    <div className={`fixed inset-0 z-[100] overflow-auto transition-colors duration-500 ${theme.colors.bg}`}>
+    <div className={`fixed inset-0 z-[100] overflow-auto transition-colors duration-500 ${theme?.colors?.bg || 'bg-neutral-900'}`}>
+      {/* Tailwind Preloader - Hidden component to ensure all theme classes are included */}
+      <TailwindPreloader />
+      
       {/* Header - Mobile Optimized */}
-      <header className={`sticky top-0 z-50 backdrop-blur-md transition-colors duration-500 ${theme.colors.header}`}>
+      <header className={`sticky top-0 z-50 backdrop-blur-md transition-colors duration-500 ${theme?.colors?.header || 'bg-black/40 border-white/10'}`}>
         {/* Row 1: Back, Title, Time */}
         <div className="px-3 py-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Link href="/backend">
-              <button className="w-10 h-10 rounded-xl bg-purple-500/30 border border-purple-500/50 flex items-center justify-center text-white font-bold">
+              <button className={`w-10 h-10 rounded-xl bg-purple-500/30 border border-purple-500/50 flex items-center justify-center ${theme?.colors?.text?.primary || 'text-white'} font-bold`}>
                 ←
               </button>
             </Link>
-            <h1 className="text-lg md:text-xl font-bold text-white">
+            <h1 className={`text-lg md:text-xl font-bold ${theme?.colors?.text?.primary || 'text-white'}`}>
               🎮 ควบคุมการเล่น
             </h1>
           </div>
 
           <div className="flex items-center gap-2">
             {/* Time - Compact on mobile */}
-            <div className="bg-white/10 rounded-lg px-3 py-1.5 border border-white/20">
-              <p className="text-lg md:text-xl font-bold text-white font-mono">
+            <div className={`${theme?.id === 'sunrise' ? 'bg-orange-100/50 border-orange-300/50' : 'bg-white/10 border-white/20'} rounded-lg px-3 py-1.5 border`}>
+              <p className={`text-lg md:text-xl font-bold ${theme?.colors?.text?.primary || 'text-white'} font-mono`}>
                 {currentTime.format('HH:mm:ss')}
               </p>
             </div>
             
             {/* Theme Switcher */}
             <button
-              onClick={cycleTheme}
-              className="px-3 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center gap-2 text-sm text-white font-medium hover:bg-white/20 transition-all"
+              onClick={themeStore.cycleTheme}
+              className={`px-3 h-10 rounded-xl ${theme?.id === 'sunrise' ? 'bg-orange-100/50 border-orange-300/50' : 'bg-white/10 border-white/20'} border flex items-center gap-2 text-sm ${theme?.colors?.text?.primary || 'text-white'} font-medium ${theme?.id === 'sunrise' ? 'hover:bg-orange-200/50' : 'hover:bg-white/20'} transition-all`}
             >
               <span>🎨</span>
-              <span className="hidden md:inline">{theme.name}</span>
+              <span className="hidden md:inline">{theme?.name || 'Theme'}</span>
             </button>
             
             {/* Refresh */}
             <button
               onClick={() => actions.loadData()}
               disabled={state.isUpdating}
-              className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-lg disabled:opacity-50"
+              className={`w-10 h-10 rounded-xl ${theme?.id === 'sunrise' ? 'bg-orange-100/50 border-orange-300/50' : 'bg-white/10 border-white/20'} border flex items-center justify-center text-lg disabled:opacity-50`}
             >
               🔄
             </button>
@@ -139,10 +153,10 @@ export function ControlView({ initialViewModel }: ControlViewProps) {
         
         {/* Row 2: Full Width Stats Grid */}
         <div className="px-3 pb-2 grid grid-cols-2 md:grid-cols-4 gap-2">
-          <MiniStat icon="🟢" value={viewModel.stats.availableCount} label="ว่าง" color="emerald" />
-          <MiniStat icon="🔴" value={viewModel.stats.inUseCount} label="ใช้งาน" color="orange" />
-          <MiniStat icon="🟡" value={viewModel.stats.reservedCount} label="จอง" color="yellow" />
-          <MiniStat icon="📋" value={viewModel.stats.waitingQueueCount} label="คิว" color="cyan" />
+          <MiniStat icon="🟢" value={viewModel.stats.availableCount} label="ว่าง" color="emerald" theme={theme} />
+          <MiniStat icon="🔴" value={viewModel.stats.inUseCount} label="ใช้งาน" color="orange" theme={theme} />
+          <MiniStat icon="🟡" value={viewModel.stats.reservedCount} label="จอง" color="yellow" theme={theme} />
+          <MiniStat icon="📋" value={viewModel.stats.waitingQueueCount} label="คิว" color="cyan" theme={theme} />
         </div>
       </header>
 
@@ -429,12 +443,14 @@ function MiniStat({
   icon, 
   value, 
   label, 
-  color 
+  color,
+  theme
 }: { 
   icon: string; 
   value: number; 
   label: string;
   color: 'emerald' | 'orange' | 'yellow' | 'cyan';
+  theme: ThemeConfig;
 }) {
   const colorMap = {
     emerald: 'bg-emerald-900/40 border-emerald-700/50 text-emerald-400',
@@ -442,13 +458,23 @@ function MiniStat({
     yellow: 'bg-yellow-900/40 border-yellow-700/50 text-yellow-400',
     cyan: 'bg-cyan-900/40 border-cyan-700/50 text-cyan-400',
   };
+  
+  // For sunrise theme, use lighter version
+  const sunriseColorMap = {
+    emerald: 'bg-emerald-100 border-emerald-400 text-emerald-700',
+    orange: 'bg-orange-100 border-orange-400 text-orange-700',
+    yellow: 'bg-yellow-100 border-yellow-400 text-yellow-700',
+    cyan: 'bg-cyan-100 border-cyan-400 text-cyan-700',
+  };
+
+  const activeColorMap = theme?.id === 'sunrise' ? sunriseColorMap : colorMap;
 
   return (
-    <div className={`${colorMap[color]} border rounded-lg px-3 py-2 flex items-center gap-2 w-full`}>
+    <div className={`${activeColorMap[color]} border rounded-lg px-3 py-2 flex items-center gap-2 w-full`}>
       <span className="text-lg">{icon}</span>
       <div className="flex flex-col leading-tight">
         <span className="text-xl font-bold">{value}</span>
-        <span className="text-[10px] text-white/70 uppercase tracking-wide">{label}</span>
+        <span className={`text-[10px] ${theme?.id === 'sunrise' ? 'text-gray-700/70' : 'text-white/70'} uppercase tracking-wide`}>{label}</span>
       </div>
     </div>
   );
@@ -485,25 +511,48 @@ function StationCard({
   
   // Check if booking is overdue
   const isOverdue = reservedBooking && reservedBooking.localStartTime < currentTime.format('HH:mm');
+  const isSunrise = theme?.id === 'sunrise';
 
   // Color mapping
-  const stateColors = {
+  const darkStateColors = {
     available: 'border-emerald-600/40 shadow-lg shadow-emerald-900/10 hover:border-emerald-500/60 hover:shadow-emerald-900/30 transition-all duration-300',
     in_use: 'border-orange-600/40 bg-zinc-900/80 shadow-lg shadow-orange-900/10 hover:border-orange-500/60 hover:shadow-orange-900/30 hover:bg-zinc-800 transition-all duration-300',
     reserved: isOverdue ? 'border-red-600/40 shadow-lg shadow-red-900/10 hover:border-red-500/60' : 'border-yellow-600/40 shadow-lg shadow-yellow-900/10 hover:border-yellow-500/60',
   };
 
-  const headerColors = {
+  const sunriseStateColors = {
+    available: 'border-emerald-200 bg-emerald-50/50 shadow-lg shadow-emerald-100/50 hover:border-emerald-300 hover:shadow-emerald-100/80 transition-all duration-300',
+    in_use: 'border-orange-200 bg-orange-50/50 shadow-lg shadow-orange-100/50 hover:border-orange-300 hover:shadow-orange-100/80 hover:bg-orange-50 transition-all duration-300',
+    reserved: isOverdue ? 'border-red-200 bg-red-50/50 shadow-lg shadow-red-100/50 hover:border-red-300' : 'border-yellow-200 bg-yellow-50/50 shadow-lg shadow-yellow-100/50 hover:border-yellow-300',
+  };
+
+  const darkHeaderColors = {
     available: 'from-emerald-700 to-emerald-900 text-emerald-100',
     in_use: 'from-orange-700 to-red-900 text-orange-100',
     reserved: isOverdue ? 'from-red-700 to-rose-900 text-red-100' : 'from-yellow-600 to-orange-800 text-yellow-100',
   };
 
-  const badgeColors = {
+  const sunriseHeaderColors = {
+    available: 'from-emerald-400 to-emerald-500 text-white shadow-emerald-200/50 shadow-md',
+    in_use: 'from-orange-400 to-orange-500 text-white shadow-orange-200/50 shadow-md',
+    reserved: isOverdue ? 'from-red-400 to-red-500 text-white shadow-red-200/50 shadow-md' : 'from-yellow-400 to-yellow-500 text-white shadow-yellow-200/50 shadow-md',
+  };
+
+  const darkBadgeColors = {
     available: 'bg-emerald-950/50 border border-emerald-800 text-emerald-400',
     in_use: 'bg-orange-950/50 border border-orange-800 text-orange-400 animate-pulse',
     reserved: isOverdue ? 'bg-red-950/50 border border-red-800 text-red-400 animate-bounce' : 'bg-yellow-950/50 border border-yellow-800 text-yellow-400',
   };
+
+  const sunriseBadgeColors = {
+    available: 'bg-emerald-100 border border-emerald-200 text-emerald-700',
+    in_use: 'bg-orange-100 border border-orange-200 text-orange-700 animate-pulse',
+    reserved: isOverdue ? 'bg-red-100 border border-red-200 text-red-700 animate-bounce' : 'bg-yellow-100 border border-yellow-200 text-yellow-700',
+  };
+
+  const stateColors = isSunrise ? sunriseStateColors : darkStateColors;
+  const headerColors = isSunrise ? sunriseHeaderColors : darkHeaderColors;
+  const badgeColors = isSunrise ? sunriseBadgeColors : darkBadgeColors;
 
   const stateLabels = {
     available: '✅ ว่าง',
@@ -512,17 +561,21 @@ function StationCard({
   };
 
   return (
-    <div className={`rounded-xl border backdrop-blur-sm transition-all duration-300 ${stateColors[stationState]} ${stationState === 'in_use' ? '' : theme.colors.card.base} ${theme.colors.card.hover}`}>
+    <div className={`rounded-xl border backdrop-blur-sm transition-all duration-300 ${stateColors[stationState]} ${stationState === 'in_use' && !isSunrise ? '' : theme?.colors?.card?.base || 'bg-zinc-900/80'} ${theme?.colors?.card?.hover || ''}`}>
       {/* Header - Compact */}
-      <div className={`px-3 py-2 border-b ${stationState === 'in_use' ? 'border-orange-500/30' : stationState === 'reserved' ? 'border-yellow-500/30' : 'border-emerald-500/30'}`}>
+      <div className={`px-3 py-2 border-b ${
+        isSunrise 
+          ? (stationState === 'in_use' ? 'border-orange-200' : stationState === 'reserved' ? 'border-yellow-200' : 'border-emerald-200')
+          : (stationState === 'in_use' ? 'border-orange-500/30' : stationState === 'reserved' ? 'border-yellow-500/30' : 'border-emerald-500/30')
+      }`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-xl bg-gradient-to-br ${headerColors[stationState]}`}>
               🎮
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">{machine.name}</h3>
-              <p className="text-xs text-white/50">#{machine.position}</p>
+              <h3 className={`text-base font-bold ${theme?.colors?.text?.primary || 'text-white'}`}>{machine.name}</h3>
+              <p className={`text-xs ${theme?.colors?.text?.secondary || 'text-white/50'}`}>#{machine.position}</p>
             </div>
           </div>
           <span className={`px-2 py-1 rounded-full text-xs font-bold ${badgeColors[stationState]}`}>
@@ -533,7 +586,7 @@ function StationCard({
               e.stopPropagation();
               onViewHistory();
             }}
-            className="ml-2 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-xs"
+            className={`ml-2 w-8 h-8 rounded-full ${theme?.id === 'sunrise' ? 'bg-orange-100/70 hover:bg-orange-200 text-orange-600' : 'bg-white/10 hover:bg-white/20'} flex items-center justify-center text-xs`}
             title="ดูประวัติ"
           >
             🕒
@@ -548,19 +601,23 @@ function StationCard({
           <div className="space-y-3">
             {/* RESERVED INFO & CHECK-IN */}
             {stationState === 'reserved' && reservedBooking && (
-              <div className="space-y-3 pb-3 border-b border-white/10">
-                <div className={`${isOverdue ? 'bg-red-500/20 border-red-500/30' : 'bg-yellow-500/20 border-yellow-500/30'} border rounded-xl p-3`}>
-                  <p className={`text-xs ${isOverdue ? 'text-red-400' : 'text-yellow-400'} mb-1`}>
+              <div className={`space-y-3 pb-3 border-b ${isSunrise ? 'border-gray-200' : 'border-white/10'}`}>
+                <div className={`${isOverdue 
+                    ? (isSunrise ? 'bg-red-50 border-red-200' : 'bg-red-500/20 border-red-500/30') 
+                    : (isSunrise ? 'bg-yellow-50 border-yellow-200' : 'bg-yellow-500/20 border-yellow-500/30')} border rounded-xl p-3`}>
+                  <p className={`text-xs ${isOverdue 
+                      ? (isSunrise ? 'text-red-600' : 'text-red-400') 
+                      : (isSunrise ? 'text-yellow-700' : 'text-yellow-400')} mb-1`}>
                     {isOverdue ? '⚠️ เลยเวลา' : '📅 จองไว้'}
                   </p>
-                  <p className="text-lg font-bold text-white">{reservedBooking.customerName}</p>
-                  <p className="text-sm text-white/60">
+                  <p className={`text-lg font-bold ${theme?.colors?.text?.primary || 'text-white'}`}>{reservedBooking.customerName}</p>
+                  <p className={`text-sm ${theme?.colors?.text?.secondary || 'text-white/60'}`}>
                     {reservedBooking.localStartTime} - {reservedBooking.localEndTime}
                   </p>
                 </div>
                 
                 <GlowButton
-                  color={isOverdue ? 'red-dark' : 'emerald-dark'}
+                  color={isOverdue ? (isSunrise ? 'red' : 'red-dark') : (isSunrise ? 'green' : 'emerald-dark')}
                   className="w-full py-3"
                   onClick={onCheckIn}
                   disabled={isUpdating}
@@ -573,7 +630,7 @@ function StationCard({
             {/* MANUAL & QUEUE ACTIONS (Always visible when not in use) */}
             <div className="space-y-2">
               <GlowButton
-                color="emerald-dark"
+                color={isSunrise ? 'green' : 'emerald-dark'}
                 className="w-full py-3"
                 onClick={onStartManual}
                 disabled={isUpdating}
@@ -598,13 +655,13 @@ function StationCard({
         {stationState === 'in_use' && activeSession && (
           <div className="space-y-3">
             <div 
-              className="bg-orange-500/20 border border-orange-500/30 rounded-xl p-3 cursor-pointer hover:bg-orange-500/30 transition-colors"
+              className={`${isSunrise ? 'bg-orange-50 border-orange-200 hover:bg-orange-100' : 'bg-orange-500/20 border-orange-500/30 hover:bg-orange-500/30'} border rounded-xl p-3 cursor-pointer transition-colors`}
               onClick={() => onViewDetails(activeSession)}
             >
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-xs text-orange-400 mb-1">👤 ผู้เล่น (กดเพื่อดูรายละเอียด)</p>
-                  <p className="text-lg font-bold text-white">{activeSession.customerName}</p>
+                  <p className={`text-xs ${isSunrise ? 'text-orange-600' : 'text-orange-400'} mb-1`}>👤 ผู้เล่น (กดเพื่อดูรายละเอียด)</p>
+                  <p className={`text-lg font-bold ${theme?.colors?.text?.primary || 'text-white'}`}>{activeSession.customerName}</p>
                 </div>
                 <span className="text-lg">ℹ️</span>
               </div>
@@ -613,10 +670,11 @@ function StationCard({
             <SessionTimer 
               startTime={activeSession.startTime} 
               estimatedEndTime={activeSession.estimatedEndTime}
+              theme={theme}
             />
             
             <GlowButton
-              color="red-dark"
+              color={isSunrise ? 'red' : 'red-dark'}
               className="w-full py-3"
               onClick={onEndSession}
               disabled={isUpdating}
@@ -628,11 +686,11 @@ function StationCard({
 
         {/* Upcoming Bookings */}
         {station.upcomingBookings.length > 0 && (
-          <div className="pt-2 border-t border-white/10">
-            <p className="text-xs text-white/40 mb-2">การจองถัดไป</p>
+          <div className={`pt-2 border-t ${theme?.id === 'sunrise' ? 'border-gray-200' : 'border-white/10'}`}>
+            <p className={`text-xs ${theme?.id === 'sunrise' ? 'text-gray-500' : 'text-white/40'} mb-2`}>การจองถัดไป</p>
             <div className="space-y-1">
               {station.upcomingBookings.map(b => (
-                <div key={b.id} className="flex justify-between text-sm text-white/60">
+                <div key={b.id} className={`flex justify-between text-sm ${theme?.colors?.text?.secondary || 'text-white/60'}`}>
                   <span>{b.customerName}</span>
                   <span>{b.localStartTime}</span>
                 </div>
@@ -642,14 +700,14 @@ function StationCard({
         )}
         
         {/* Schedule Slots Bar */}
-        <div className="pt-2 border-t border-white/10">
+        <div className={`pt-2 border-t ${theme?.id === 'sunrise' ? 'border-gray-200' : 'border-white/10'}`}>
            <div className="flex gap-[1px] h-2 w-full rounded-full overflow-hidden mb-1">
              {station.slots.map((slot) => {
-               // Determine color based on status
-               let bgClass = 'bg-white/10'; // Default/Unknown
-               if (slot.status === 'passed') bgClass = 'bg-white/5';
-               else if (slot.status === 'booked') bgClass = 'bg-red-900';
-               else if (slot.status === 'available') bgClass = 'bg-emerald-900';
+               // Determine color based on status and theme
+               let bgClass = theme?.id === 'sunrise' ? 'bg-gray-200' : 'bg-white/10'; // Default/Unknown
+               if (slot.status === 'passed') bgClass = theme?.id === 'sunrise' ? 'bg-gray-100' : 'bg-white/5';
+               else if (slot.status === 'booked') bgClass = theme?.id === 'sunrise' ? 'bg-red-400' : 'bg-red-900';
+               else if (slot.status === 'available') bgClass = theme?.id === 'sunrise' ? 'bg-emerald-400' : 'bg-emerald-900';
                
                return (
                  <div 
@@ -679,7 +737,7 @@ function StationCard({
                );
              })}
            </div>
-           <div className="flex justify-between text-[10px] text-white/30 font-mono">
+           <div className={`flex justify-between text-[10px] ${theme?.id === 'sunrise' ? 'text-gray-500' : 'text-white/30'} font-mono`}>
              <span>00:00</span>
              <span>12:00</span>
              <span>23:59</span>
@@ -919,3 +977,100 @@ function EndSessionModal({
 }
 
 
+// ============================================================
+// SKELETON COMPONENT
+// ============================================================
+
+export function ControlViewSkeleton() {
+  return (
+    <div className="fixed inset-0 z-[100] overflow-auto bg-neutral-900">
+      {/* Header Skeleton */}
+      <header className="sticky top-0 z-50 backdrop-blur-md bg-black/40 border-b border-white/10">
+        {/* Row 1: Back, Title, Time */}
+        <div className="px-3 py-2 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 rounded-xl bg-white/10 animate-pulse" />
+            <div className="h-6 w-32 bg-white/10 rounded animate-pulse" />
+          </div>
+
+          <div className="flex items-center gap-2">
+            {/* Time skeleton */}
+            <div className="bg-white/10 rounded-lg px-3 py-1.5 border border-white/20">
+              <div className="h-6 w-20 bg-white/10 rounded animate-pulse" />
+            </div>
+            
+            {/* Theme switcher skeleton */}
+            <div className="px-3 h-10 rounded-xl bg-white/10 border border-white/20 w-24 animate-pulse" />
+            
+            {/* Refresh skeleton */}
+            <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 animate-pulse" />
+          </div>
+        </div>
+        
+        {/* Row 2: Stats Grid */}
+        <div className="px-3 pb-2 grid grid-cols-2 md:grid-cols-4 gap-2">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 flex items-center gap-2">
+              <div className="w-6 h-6 bg-white/10 rounded animate-pulse" />
+              <div className="flex flex-col gap-1 flex-1">
+                <div className="h-5 w-8 bg-white/10 rounded animate-pulse" />
+                <div className="h-3 w-12 bg-white/10 rounded animate-pulse" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </header>
+
+      {/* Station Grid Skeleton */}
+      <div className="px-3 py-3 pb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <StationCardSkeleton key={i} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function StationCardSkeleton() {
+  return (
+    <div className="rounded-xl border border-white/20 bg-zinc-900/80 backdrop-blur-sm">
+      {/* Header */}
+      <div className="px-3 py-2 border-b border-white/10">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 rounded-lg bg-white/10 animate-pulse" />
+            <div>
+              <div className="h-4 w-20 bg-white/10 rounded animate-pulse mb-1" />
+              <div className="h-3 w-12 bg-white/10 rounded animate-pulse" />
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-6 w-16 rounded-full bg-white/10 animate-pulse" />
+            <div className="w-8 h-8 rounded-full bg-white/10 animate-pulse" />
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-3 space-y-2">
+        {/* Action buttons skeleton */}
+        <div className="space-y-2">
+          <div className="w-full h-12 rounded-xl bg-white/10 animate-pulse" />
+          <div className="w-full h-12 rounded-xl bg-white/10 animate-pulse" />
+        </div>
+
+        {/* Schedule bar skeleton */}
+        <div className="pt-2 border-t border-white/10">
+          <div className="flex gap-[1px] h-2 w-full rounded-full overflow-hidden mb-1 bg-white/5 animate-pulse" />
+          <div className="flex justify-between">
+            <div className="h-3 w-10 bg-white/5 rounded animate-pulse" />
+            <div className="h-3 w-10 bg-white/5 rounded animate-pulse" />
+            <div className="h-3 w-10 bg-white/5 rounded animate-pulse" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
