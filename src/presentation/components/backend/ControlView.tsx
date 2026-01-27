@@ -782,6 +782,7 @@ function StationCard({
                     <ProgressBar 
                         startTime={activeSession.startTime} 
                         durationMinutes={activeSession.durationMinutes || 60} 
+                        estimatedEndTime={activeSession.estimatedEndTime}
                         isSunrise={isSunrise}
                     />
                 </div>
@@ -1192,10 +1193,12 @@ export function StationCardSkeleton() {
 function ProgressBar({
   startTime,
   durationMinutes,
+  estimatedEndTime,
   isSunrise
 }: {
   startTime: string;
   durationMinutes: number;
+  estimatedEndTime?: string;
   isSunrise: boolean;
 }) {
   const [progress, setProgress] = useState(0);
@@ -1204,7 +1207,12 @@ function ProgressBar({
     const calculateProgress = () => {
       const start = dayjs(startTime);
       const now = dayjs();
-      const end = start.add(durationMinutes, 'minute');
+      
+      // If we have an estimated end time, use it for total duration calculation
+      const end = estimatedEndTime 
+        ? dayjs(estimatedEndTime)
+        : start.add(durationMinutes, 'minute');
+        
       const totalMs = end.diff(start);
       const elapsedMs = now.diff(start);
       
@@ -1221,7 +1229,7 @@ function ProgressBar({
     }, 1000);
     
     return () => clearInterval(interval);
-  }, [startTime, durationMinutes]);
+  }, [startTime, durationMinutes, estimatedEndTime]);
 
   return (
     <div 
