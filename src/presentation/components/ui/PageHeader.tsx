@@ -1,8 +1,14 @@
 'use client';
 
 import { getShopNow } from '@/src/lib/date';
+import dayjs from 'dayjs';
+import 'dayjs/locale/th';
+import buddhistEra from 'dayjs/plugin/buddhistEra';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+
+dayjs.extend(buddhistEra);
+dayjs.locale('th');
 
 interface PageHeaderProps {
   title: string;

@@ -119,7 +119,9 @@ export function SessionDetailModal({
               <div className="flex justify-between border-t border-white/10 pt-2 mt-2">
                 <span className="text-white/60">ประเภท</span>
                 <span className="text-emerald-400 capitalize">
-                  {session.sourceType === 'manual' || !session.sourceType ? 'ผู้เล่นทั่วไป' : session.sourceType}
+                  {session.sourceType === 'booking' && 'จองล่วงหน้า'}
+                  {session.sourceType === 'walk_in' && 'คิวหน้าร้าน (Walk-in)'}
+                  {(session.sourceType === 'manual' || !session.sourceType) && 'ผู้เล่นทั่วไป'}
                 </span>
               </div>
             </div>
@@ -230,14 +232,13 @@ export function SessionDetailModal({
   );
 }
 
+// Simplified SessionTimer for Modal usage only (No theming logic needed)
 export function SessionTimer({ 
   startTime, 
   estimatedEndTime,
-  compact = false 
 }: { 
   startTime: string; 
   estimatedEndTime?: string;
-  compact?: boolean;
 }) {
   const [now, setNow] = useState(dayjs());
 
@@ -272,29 +273,18 @@ export function SessionTimer({
     const remainingDur = dayjs.duration(Math.abs(remainingMs));
     const rHours = Math.floor(remainingDur.asHours());
     const rMins = remainingDur.minutes();
+    const rSecs = remainingDur.seconds();
+
+    const timeString = rHours > 0
+      ? `${rHours}:${rMins.toString().padStart(2, '0')}:${rSecs.toString().padStart(2, '0')}`
+      : `${rMins}:${rSecs.toString().padStart(2, '0')}`;
     
     remainingStr = isOvertime 
-      ? `+${rHours > 0 ? rHours + ':' : ''}${rMins}m`
-      : `-${rHours > 0 ? rHours + ':' : ''}${rMins}m`;
+      ? `+${timeString}`
+      : `-${timeString}`;
   }
 
-  // Compact View (for Lists)
-  if (compact) {
-    return (
-      <div className="flex flex-col items-end">
-        <span className="font-mono font-bold text-lg text-emerald-400 animate-pulse tabular-nums">
-          {timeStr}
-        </span>
-        {remainingStr && (
-           <span className={`text-[10px] font-bold ${isOvertime ? 'text-red-400' : 'text-blue-300'}`}>
-             {remainingStr}
-           </span>
-        )}
-      </div>
-    );
-  }
-
-  // Full View (for Modal) - Reverted to bg-black/20
+  // Full View (Default Modal Style)
   return (
     <div className="bg-black/20 rounded-lg p-3 flex flex-col gap-1">
       <div className="flex justify-between items-center gap-2">
