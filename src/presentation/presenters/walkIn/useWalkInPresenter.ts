@@ -39,7 +39,7 @@ export function useWalkInPresenter(
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const { activeWalkIn, joinWalkIn, leaveWalkIn, updateWalkIn, isInitialized } = useCustomerStore();
+  const { joinWalkIn, leaveWalkIn, updateWalkIn, isInitialized } = useCustomerStore();
 
   const loadData = useCallback(async () => {
     if (!useCustomerStore.getState().isInitialized) return;
@@ -153,7 +153,7 @@ export function useWalkInPresenter(
         leaveWalkIn();
         if (isMountedRef.current) setCurrentQueue(null);
       }
-    } catch (err) {
+    } catch {
        if (isMountedRef.current) setError('ไม่สามารถยกเลิกคิวได้');
     } finally {
       if (isMountedRef.current) setLoading(false);

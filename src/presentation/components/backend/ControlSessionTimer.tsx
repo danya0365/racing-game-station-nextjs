@@ -74,9 +74,7 @@ export function ControlSessionTimer({
   const mins = dur.minutes();
   const secs = dur.seconds();
 
-  const timeStr = hours > 0
-    ? `${hours}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
-    : `${mins}:${secs.toString().padStart(2, '0')}`;
+  const timeStr = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   
   // Calculate remaining time
   let remainingStr = null;
@@ -92,9 +90,7 @@ export function ControlSessionTimer({
     const rMins = remainingDur.minutes();
     const rSecs = remainingDur.seconds();
 
-    const timeString = rHours > 0
-      ? `${rHours}:${rMins.toString().padStart(2, '0')}:${rSecs.toString().padStart(2, '0')}`
-      : `${rMins}:${rSecs.toString().padStart(2, '0')}`;
+    const timeString = `${rHours.toString().padStart(2, '0')}:${rMins.toString().padStart(2, '0')}:${rSecs.toString().padStart(2, '0')}`;
     
     remainingStr = isOvertime 
       ? `+${timeString}`

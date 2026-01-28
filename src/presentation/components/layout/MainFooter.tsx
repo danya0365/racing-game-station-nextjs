@@ -3,14 +3,18 @@
 import Link from 'next/link';
 
 export function MainFooter() {
+  const version = process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0';
+  const commitSha = process.env.NEXT_PUBLIC_COMMIT_SHA || '';
+  const shortSha = commitSha.slice(0, 7);
   return (
     <footer className="h-14 bg-surface/80 backdrop-blur-lg border-t border-border/50 flex items-center justify-between px-4 md:px-8 shrink-0">
       {/* Copyright */}
       <div className="flex items-center gap-2 text-xs md:text-sm text-muted overflow-hidden">
         <span className="whitespace-nowrap">© 2025</span>
-        <span className="font-semibold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent cursor-default transition-transform duration-200 hover:scale-110 truncate">
+        <span className="font-semibold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent cursor-default truncate">
           Racing Game Station System
         </span>
+        <span className="whitespace-nowrap">v{version} {shortSha && `(${shortSha})`}</span>
       </div>
 
       {/* Quick Links - Hidden on mobile, shown on desktop */}

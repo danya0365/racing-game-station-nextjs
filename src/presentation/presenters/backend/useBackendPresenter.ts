@@ -342,6 +342,7 @@ export function useBackendPresenter(
   /**
    * Reset machine queue (not implemented in new system)
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const resetMachineQueue = useCallback(async (_machineId: string) => {
     setIsUpdating(true);
     setError(null);
