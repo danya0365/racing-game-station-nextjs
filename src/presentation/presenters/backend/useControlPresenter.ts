@@ -244,7 +244,7 @@ export function useControlPresenter(
           const now = dayjs();
           const durationMinutes = now.diff(start, 'minute');
           finalAmount = calculateSessionPrice(durationMinutes);
-          console.log(`Auto-calculated price for ${durationMinutes} mins: ${finalAmount}`);
+          // console.log(`Auto-calculated price for ${durationMinutes} mins: ${finalAmount}`);
         }
       }
 

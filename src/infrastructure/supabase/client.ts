@@ -25,7 +25,7 @@ export function createClient(): SupabaseClient<Database> {
     return clientInstance;
   }
 
-  console.log('Initializing Supabase Client (Singleton)...');
+
   
   // Create client with optimized configuration
   clientInstance = createBrowserClient<Database>(
@@ -64,7 +64,7 @@ export function createClient(): SupabaseClient<Database> {
       if (document.visibilityState === 'visible') {
         const timeSinceActivity = dayjs().valueOf() - lastActivityTime;
         if (timeSinceActivity > CLIENT_STALE_TIMEOUT) {
-          console.log('Supabase Client: Refreshing stale connection...');
+
           // Don't reset client, just trigger a health check
           clientInstance?.auth.getSession().catch(console.warn);
         }
@@ -88,7 +88,7 @@ export function createClient(): SupabaseClient<Database> {
  */
 export function resetClient(): void {
   if (clientInstance) {
-    console.log('Supabase Client: Resetting client...');
+
     // Remove all realtime subscriptions
     clientInstance.removeAllChannels();
     clientInstance = null;
@@ -108,10 +108,7 @@ export function getExistingClient(): SupabaseClient<Database> | null {
  */
 export const logActiveConnections = () => {
   if (clientInstance) {
-    console.log('Active channels:', clientInstance.getChannels());
-    console.log('Last activity:', dayjs(lastActivityTime).toISOString());
-  } else {
-    console.log('No active Supabase client');
+    // console.log('No active Supabase client');
   }
 };
 

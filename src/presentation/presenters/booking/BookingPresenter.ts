@@ -17,6 +17,7 @@ import { Metadata } from 'next';
 
 import { SHOP_TIMEZONE } from '@/src/lib/date';
 
+
 const DEFAULT_TIMEZONE = SHOP_TIMEZONE;
 
 
@@ -88,7 +89,7 @@ export class BookingPresenter {
    * @param data - Booking data with local date/time
    * @param referenceTime - Current time for validation (unused for now but kept for API consistency)
    */
-  async createBooking(data: CreateBookingData, referenceTime: string): Promise<Booking> {
+  async createBooking(data: CreateBookingData, _referenceTime: string): Promise<Booking> {
     // Validate slot availability first
     const isAvailable = await this.bookingRepo.isSlotAvailable(
       data.machineId,
@@ -103,7 +104,7 @@ export class BookingPresenter {
     }
 
     // Log referenceTime usage (for future validation if needed)
-    console.log('Creating booking with referenceTime:', referenceTime);
+    // console.log('Creating booking with referenceTime:', referenceTime);
 
     return this.bookingRepo.create(data);
   }

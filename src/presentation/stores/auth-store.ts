@@ -22,7 +22,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
   isLoading: true, // Initial loading state
 
-  setSession: (session) => set((state) => ({ 
+  setSession: (session) => set(() => ({ 
     session,
     user: session?.user || null,
     profile: session?.profile || null,
