@@ -935,7 +935,9 @@ function HistoryModal({
                         <span className="text-lg font-bold text-white block">{session.customerName}</span>
                         <div className="flex gap-2 mt-1">
                            <span className="text-xs text-white/40 bg-white/10 px-2 py-0.5 rounded-full inline-block">
-                             {session.sourceType === 'manual' || !session.sourceType ? 'ผู้เล่นทั่วไป' : session.sourceType}
+                             {session.sourceType === 'booking' && 'จองล่วงหน้า'}
+                             {session.sourceType === 'walk_in' && 'คิวหน้าร้าน (Walk-in)'}
+                             {(session.sourceType === 'manual' || !session.sourceType) && 'ผู้เล่นทั่วไป'}
                            </span>
                            {session.notes && (
                               <span className="text-xs text-yellow-500/80 bg-yellow-500/10 px-2 py-0.5 rounded-full inline-block">
@@ -953,15 +955,23 @@ function HistoryModal({
                     </div>
                     <div className="flex items-center gap-4 text-sm text-white/60 font-mono bg-black/20 p-2 rounded-lg">
                       <div>
-                        <span className="opacity-50 mr-2">Start:</span>
+                        <span className="opacity-50 mr-2">เริ่ม:</span>
                         {dayjs(session.startTime).format('HH:mm')}
                       </div>
                       <div>
-                        <span className="opacity-50 mr-2">End:</span>
+                        <span className="opacity-50 mr-2">จบ:</span>
                         {session.endTime ? dayjs(session.endTime).format('HH:mm') : '-'}
                       </div>
                       <div className="ml-auto">
-                        {session.durationMinutes ? `${session.durationMinutes} min` : 'On-going'}
+                        {session.durationMinutes ? (() => {
+                          const duration = dayjs.duration(session.durationMinutes, 'minutes');
+                          const hours = duration.hours();
+                          const minutes = duration.minutes();
+                          if (hours > 0) {
+                            return `${hours} ชม. ${minutes} นาที`;
+                          }
+                          return `${minutes} นาที`;
+                        })() : 'กำลังเล่น'}
                       </div>
                     </div>
                   </div>
