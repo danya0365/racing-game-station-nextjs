@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
+import { ChatWidget } from '../chat/ChatWidget';
 import { MainFooter } from './MainFooter';
 import { MainHeader } from './MainHeader';
 
@@ -25,6 +26,10 @@ export function MainLayout({ children }: MainLayoutProps) {
 
       {/* Footer */}
       <MainFooter />
+
+      {/* Chat Widget - Floating, admin only */}
+      <ChatWidget />
     </div>
   );
 }
+

@@ -15,6 +15,7 @@ import { IMachineRepository } from '@/src/application/repositories/IMachineRepos
 import { ISessionRepository } from '@/src/application/repositories/ISessionRepository';
 import { IWalkInQueueRepository } from '@/src/application/repositories/IWalkInQueueRepository';
 import { ApiBookingRepository } from '@/src/infrastructure/repositories/api/ApiBookingRepository';
+import { ApiChatRepository } from '@/src/infrastructure/repositories/api/ApiChatRepository';
 import { ApiCustomerRepository } from '@/src/infrastructure/repositories/api/ApiCustomerRepository';
 import { ApiMachineRepository } from '@/src/infrastructure/repositories/api/ApiMachineRepository';
 import { ApiSessionRepository } from '@/src/infrastructure/repositories/api/ApiSessionRepository';
@@ -88,10 +89,16 @@ export function createAllRepositories(): {
   };
 }
 
+/**
+ * Creates chat repository (client-side)
+ */
+export function createChatRepository() {
+  return new ApiChatRepository();
+}
+
 // Re-export types for convenience
 export type {
     IBookingRepository,
     ICustomerRepository,
     IMachineRepository, ISessionRepository, IWalkInQueueRepository
 };
-
