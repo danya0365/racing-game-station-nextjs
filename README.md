@@ -35,7 +35,8 @@
 | 📊 **Admin Dashboard** | ควบคุมห้องเกมแบบ Real-time |
 | 🌙 **Dark Mode** | รองรับโหมดมืด/สว่าง |
 | 📱 **Responsive** | ใช้งานได้ทุกอุปกรณ์ |
-| ⚡ **Quick Booking** | จองด่วนแบบ Focus Mode |
+| 📅 **Time Booking** | จองเวลาเล่นล่วงหน้า |
+| 🚶 **Walk-in Queue** | ระบบรับคิว Walk-in หน้าร้าน |
 | 🔐 **Authentication** | ระบบ Login/Register ด้วย Supabase |
 | 🔄 **Real-time** | อัพเดตสถานะแบบ Real-time |
 
@@ -109,7 +110,10 @@ racing-game-station-nextjs/
 │   ├── auth/                    # Authentication pages
 │   ├── backend/                 # Admin dashboard
 │   ├── customer/                # Customer pages
-│   └── quick-booking/           # Quick booking page
+│   ├── time-booking/            # Booking page
+│   ├── walk-in/                 # Walk-in queue page
+│   ├── qr-scan/                 # QR Scanner
+│   └── qa-checklist/            # QA Testing tool
 │
 ├── src/
 │   ├── application/             # Application layer
@@ -261,7 +265,10 @@ npm run deploy:all
 | `/customer/queue/[id]` | Queue status page | Public |
 | `/customer/queue-status` | Queue status lookup | Public |
 | `/customer/queue-history` | Booking history | Public |
-| `/quick-booking` | Quick booking (Focus Mode) | Public |
+| `/time-booking` | Time Slot Booking | Public |
+| `/walk-in` | Walk-in Queue Registration | Public |
+| `/qr-scan` | QR Code Scanner | Public |
+| `/qa-checklist` | QA Testing Tool | Public |
 | `/backend` | Admin dashboard | Protected |
 | `/profile` | User profile | Protected |
 | `/auth/login` | Login page | Public |
