@@ -27,8 +27,8 @@ export function MainLayout({ children }: MainLayoutProps) {
       {/* Footer */}
       <MainFooter />
 
-      {/* Chat Widget - Floating, admin only */}
-      <ChatWidget />
+      {/* Chat Widget - Floating, admin only (Feature Toggled) */}
+      {process.env.NEXT_PUBLIC_ENABLE_CHAT_WIDGET === 'true' && <ChatWidget />}
     </div>
   );
 }
