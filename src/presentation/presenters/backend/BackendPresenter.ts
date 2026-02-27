@@ -10,6 +10,7 @@
 import { Booking, BookingStats, IBookingRepository } from '@/src/application/repositories/IBookingRepository';
 import { IMachineRepository, Machine, MachineStats, MachineStatus } from '@/src/application/repositories/IMachineRepository';
 import { ISessionRepository, Session, SessionStats } from '@/src/application/repositories/ISessionRepository';
+import { IStorageRepository } from '@/src/application/repositories/IStorageRepository';
 import { IWalkInQueueRepository, WalkInQueue, WalkInQueueStats } from '@/src/application/repositories/IWalkInQueueRepository';
 import { Metadata } from 'next';
 
@@ -50,7 +51,8 @@ export class BackendPresenter {
     private readonly machineRepository: IMachineRepository,
     private readonly walkInQueueRepository: IWalkInQueueRepository,
     private readonly sessionRepository: ISessionRepository,
-    private readonly bookingRepository?: IBookingRepository
+    private readonly bookingRepository?: IBookingRepository,
+    private readonly storageRepository?: IStorageRepository
   ) {}
 
   /**
@@ -446,6 +448,26 @@ export class BackendPresenter {
       return await this.machineRepository.update(machineId, data);
     } catch (error) {
       console.error('Error updating machine:', error);
+      throw error;
+    }
+  }
+
+  // ============================================================
+  // STORAGE ACTIONS
+  // ============================================================
+
+  /**
+   * Upload an image file to storage
+   */
+  async uploadImage(file: File, pathPrefix: string = 'misc'): Promise<string> {
+    if (!this.storageRepository) {
+      throw new Error('Storage repository is not configured for image uploads.');
+    }
+    
+    try {
+      return await this.storageRepository.uploadFile(file, 'thumbnails', pathPrefix);
+    } catch (error) {
+      console.error('Error uploading image:', error);
       throw error;
     }
   }

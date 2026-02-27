@@ -9,6 +9,7 @@
 import { SupabaseBookingRepository } from '@/src/infrastructure/repositories/supabase/SupabaseBookingRepository';
 import { SupabaseMachineRepository } from '@/src/infrastructure/repositories/supabase/SupabaseMachineRepository';
 import { SupabaseSessionRepository } from '@/src/infrastructure/repositories/supabase/SupabaseSessionRepository';
+import { SupabaseStorageRepository } from '@/src/infrastructure/repositories/supabase/SupabaseStorageRepository';
 import { SupabaseWalkInQueueRepository } from '@/src/infrastructure/repositories/supabase/SupabaseWalkInQueueRepository';
 import { createClient } from '@/src/infrastructure/supabase/server';
 import { BackendPresenter } from './BackendPresenter';
@@ -20,12 +21,14 @@ export class BackendPresenterServerFactory {
     const walkInQueueRepository = new SupabaseWalkInQueueRepository(supabase);
     const sessionRepository = new SupabaseSessionRepository(supabase);
     const bookingRepository = new SupabaseBookingRepository(supabase);
+    const storageRepository = new SupabaseStorageRepository(supabase);
 
     return new BackendPresenter(
       machineRepository,
       walkInQueueRepository,
       sessionRepository,
-      bookingRepository
+      bookingRepository,
+      storageRepository
     );
   }
 }

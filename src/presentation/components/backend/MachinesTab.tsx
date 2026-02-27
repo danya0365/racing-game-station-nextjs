@@ -4,6 +4,7 @@ import { MachineStatus } from '@/src/application/repositories/IMachineRepository
 import { MACHINE_TYPES } from '@/src/config/machineConfig';
 import { AnimatedButton } from '@/src/presentation/components/ui/AnimatedButton';
 import { AnimatedCard } from '@/src/presentation/components/ui/AnimatedCard';
+import { ImageUploadInput } from '@/src/presentation/components/ui/ImageUploadInput';
 import { Portal } from '@/src/presentation/components/ui/Portal';
 import { useState } from 'react';
 
@@ -35,9 +36,10 @@ interface MachinesTabProps {
     type?: string;
     hourlyRate?: number;
   }) => Promise<void>;
+  onUploadImage?: (file: File, pathPrefix?: string) => Promise<string>;
 }
 
-export function MachinesTab({ machines, isUpdating, onUpdateStatus, onUpdateMachine, onCreateMachine }: MachinesTabProps) {
+export function MachinesTab({ machines, isUpdating, onUpdateStatus, onUpdateMachine, onCreateMachine, onUploadImage }: MachinesTabProps) {
   const [editingMachine, setEditingMachine] = useState<typeof machines[0] | null>(null);
   const [viewingMachine, setViewingMachine] = useState<typeof machines[0] | null>(null);
   const [isAddingMachine, setIsAddingMachine] = useState(false);
@@ -179,6 +181,7 @@ export function MachinesTab({ machines, isUpdating, onUpdateStatus, onUpdateMach
               setEditingMachine(null);
             }}
             isUpdating={isUpdating}
+            onUploadImage={onUploadImage}
           />
         </Portal>
       )}
@@ -192,6 +195,7 @@ export function MachinesTab({ machines, isUpdating, onUpdateStatus, onUpdateMach
               setIsAddingMachine(false);
             }}
             isUpdating={isUpdating}
+            onUploadImage={onUploadImage}
           />
         </Portal>
       )}
@@ -211,9 +215,10 @@ interface AddMachineModalProps {
     hourlyRate?: number;
   }) => Promise<void>;
   isUpdating: boolean;
+  onUploadImage?: (file: File, pathPrefix?: string) => Promise<string>;
 }
 
-function AddMachineModal({ onClose, onSave, isUpdating }: AddMachineModalProps) {
+function AddMachineModal({ onClose, onSave, isUpdating, onUploadImage }: AddMachineModalProps) {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -297,13 +302,12 @@ function AddMachineModal({ onClose, onSave, isUpdating }: AddMachineModalProps) 
           </div>
 
           <div>
-            <label className="block text-sm text-muted mb-1">URL รูปภาพ (ไม่บังคับ)</label>
-            <input
-              type="url"
+            <label className="block text-sm text-muted mb-1">รูปภาพ (ไม่บังคับ)</label>
+            <ImageUploadInput
               value={formData.imageUrl}
-              onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-cyan-500 text-foreground"
-              placeholder="https://..."
+              onChange={(url) => setFormData({ ...formData, imageUrl: url })}
+              disabled={isUpdating}
+              onUpload={onUploadImage ? (file) => onUploadImage(file, 'machines') : undefined}
             />
           </div>
 
@@ -344,9 +348,10 @@ interface EditMachineModalProps {
     type?: string;
   }) => Promise<void>;
   isUpdating: boolean;
+  onUploadImage?: (file: File, pathPrefix?: string) => Promise<string>;
 }
 
-function EditMachineModal({ machine, onClose, onSave, isUpdating }: EditMachineModalProps) {
+function EditMachineModal({ machine, onClose, onSave, isUpdating, onUploadImage }: EditMachineModalProps) {
   const [formData, setFormData] = useState({
     name: machine.name,
     description: machine.description,
@@ -420,15 +425,14 @@ function EditMachineModal({ machine, onClose, onSave, isUpdating }: EditMachineM
             />
           </div>
 
-          {/* Image URL */}
+          {/* Image Upload */}
           <div>
-            <label className="block text-sm text-muted mb-1">URL รูปภาพ (ไม่บังคับ)</label>
-            <input
-              type="url"
+            <label className="block text-sm text-muted mb-1">รูปภาพ (ไม่บังคับ)</label>
+            <ImageUploadInput
               value={formData.imageUrl}
-              onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-cyan-500 text-foreground"
-              placeholder="https://..."
+              onChange={(url) => setFormData({ ...formData, imageUrl: url })}
+              disabled={isUpdating}
+              onUpload={onUploadImage ? (file) => onUploadImage(file, 'machines') : undefined}
             />
           </div>
 
