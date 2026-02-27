@@ -22,6 +22,15 @@ export interface MachineUpdateData {
   hourlyRate?: number;
 }
 
+export interface MachineCreateData {
+  name: string;
+  description: string;
+  position: number;
+  imageUrl?: string;
+  type?: string;
+  hourlyRate?: number;
+}
+
 export interface BackendPresenterState {
   viewModel: BackendViewModel | null;
   loading: boolean;
@@ -46,6 +55,7 @@ export interface BackendPresenterActions {
   updateQueueStatus: (queueId: string, status: QueueStatus) => Promise<void>;
 
   endSession: (sessionId: string, totalAmount?: number) => Promise<void>;
+  createMachine: (data: MachineCreateData) => Promise<void>;
   updateMachineStatus: (machineId: string, status: MachineStatus) => Promise<void>;
   updateMachine: (machineId: string, data: MachineUpdateData) => Promise<void>;
   deleteQueue: (queueId: string) => Promise<void>;
@@ -207,6 +217,27 @@ export function useBackendPresenter(
 
     try {
       await presenter.endSession(sessionId, totalAmount);
+      await refreshData();
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMessage);
+      throw err;
+    } finally {
+      if (isMountedRef.current) {
+        setIsUpdating(false);
+      }
+    }
+  }, [refreshData, presenter]);
+
+  /**
+   * Create machine
+   */
+  const createMachine = useCallback(async (data: MachineCreateData) => {
+    setIsUpdating(true);
+    setError(null);
+
+    try {
+      await presenter.createMachine(data);
       await refreshData();
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
@@ -446,6 +477,7 @@ export function useBackendPresenter(
       updateQueueStatus,
 
       endSession,
+      createMachine,
       updateMachineStatus,
       updateMachine,
       deleteQueue,

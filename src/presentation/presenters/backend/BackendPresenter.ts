@@ -399,6 +399,25 @@ export class BackendPresenter {
   // ============================================================
 
   /**
+   * Create a new machine
+   */
+  async createMachine(data: {
+    name: string;
+    description: string;
+    position: number;
+    imageUrl?: string;
+    type?: string;
+    hourlyRate?: number;
+  }): Promise<Machine> {
+    try {
+      return await this.machineRepository.create(data);
+    } catch (error) {
+      console.error('Error creating machine:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Update machine status
    */
   async updateMachineStatus(machineId: string, status: MachineStatus): Promise<Machine> {
