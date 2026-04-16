@@ -66,6 +66,13 @@ export async function POST(request: NextRequest) {
     const repo = new SupabaseCustomerRepository(supabase);
 
     const data = await request.json();
+
+    // Handle hijacking action
+    if (data.action === 'createOrUpdateCustomer') {
+      const result = await repo.createOrUpdateCustomer(data.name, data.phone);
+      return NextResponse.json(result);
+    }
+
     const customer = await repo.create(data);
     return NextResponse.json(customer, { status: 201 });
   } catch (error) {

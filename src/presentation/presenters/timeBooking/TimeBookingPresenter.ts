@@ -7,6 +7,7 @@
  */
 
 import { Booking, BookingDaySchedule, CreateBookingData, IBookingRepository } from '@/src/application/repositories/IBookingRepository';
+import { ICustomerRepository } from '@/src/application/repositories/ICustomerRepository';
 import { IMachineRepository, Machine } from '@/src/application/repositories/IMachineRepository';
 
 import { SHOP_TIMEZONE } from '@/src/lib/date';
@@ -28,7 +29,8 @@ export interface TimeBookingViewModel {
 export class TimeBookingPresenter {
   constructor(
     private readonly bookingRepository: IBookingRepository,
-    private readonly machineRepository: IMachineRepository
+    private readonly machineRepository: IMachineRepository,
+    private readonly customerRepository: ICustomerRepository
   ) {}
 
   /**
@@ -94,6 +96,18 @@ export class TimeBookingPresenter {
       return await this.bookingRepository.create(data);
     } catch (error) {
       console.error('Error creating booking:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Create or update a customer (Hack mode for flexible registration)
+   */
+  async createOrUpdateCustomer(name: string, phone: string) {
+    try {
+      return await this.customerRepository.createOrUpdateCustomer(name, phone);
+    } catch (error) {
+      console.error('Error in createOrUpdateCustomer:', error);
       throw error;
     }
   }

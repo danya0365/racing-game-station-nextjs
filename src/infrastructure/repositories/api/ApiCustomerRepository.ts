@@ -163,4 +163,20 @@ export class ApiCustomerRepository implements ICustomerRepository {
     }
     return res.json();
   }
+
+  /**
+   * Create or update a customer (Hack mode)
+   */
+  async createOrUpdateCustomer(name: string, phone: string): Promise<{ success: boolean; customerId?: string; error?: string }> {
+    const res = await fetch(this.baseUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'createOrUpdateCustomer', name, phone }),
+    });
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.error || 'ไม่สามารถสมัคร/อัปเดตข้อมูลลูกค้าได้');
+    }
+    return res.json();
+  }
 }

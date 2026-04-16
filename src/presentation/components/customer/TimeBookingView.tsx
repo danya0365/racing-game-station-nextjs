@@ -9,6 +9,7 @@ import {
     BookingStep,
     useTimeBookingPresenter
 } from '@/src/presentation/presenters/timeBooking/useTimeBookingPresenter';
+import { useAuthStore } from '@/src/presentation/stores/auth-store';
 import { useCustomerStore } from '@/src/presentation/stores/useCustomerStore';
 import { animated } from '@react-spring/web';
 import dayjs from 'dayjs';
@@ -83,7 +84,23 @@ export function TimeBookingView({
       return;
     }
 
+    const { profile } = useAuthStore.getState();
+
     try {
+      let currentCustomerId = customerInfo.id || '';
+
+      // ✅ If guest (no profile id), always run create_or_update_customer first
+      if (!profile?.id) {
+        const result = await actions.createOrUpdateCustomer(name.trim(), phone.trim());
+        
+        if (!result.success) {
+          actions.setError(result.error || 'ไม่สามารถบันทึกข้อมูลลูกค้าได้');
+          return;
+        }
+        
+        currentCustomerId = result.customerId || '';
+      }
+
       const booking = await actions.createBooking({
         machineId: state.selectedMachineId,
         customerName: name.trim(),
@@ -92,7 +109,7 @@ export function TimeBookingView({
         localStartTime: state.selectedSlot.startTime,
         durationMinutes: duration,
         timezone: state.viewModel?.timezone || SHOP_TIMEZONE,
-        customerId: customerInfo.id || '',
+        customerId: currentCustomerId,
       });
       
       // ✅ IMPORTANT: Save customerId to store for cancellation later

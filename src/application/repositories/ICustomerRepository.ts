@@ -96,4 +96,9 @@ export interface ICustomerRepository {
    * Get frequent customers (5+ visits)
    */
   getFrequentCustomers(): Promise<Customer[]>;
+
+  /**
+   * Create or update a customer (Hack mode for flexible registration)
+   */
+  createOrUpdateCustomer(name: string, phone: string): Promise<{ success: boolean; customerId?: string; error?: string }>;
 }
