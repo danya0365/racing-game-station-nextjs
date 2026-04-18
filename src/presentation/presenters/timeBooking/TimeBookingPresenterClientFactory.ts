@@ -9,6 +9,7 @@
 'use client';
 
 import { ApiBookingRepository } from '@/src/infrastructure/repositories/api/ApiBookingRepository';
+import { ApiCustomerRepository } from '@/src/infrastructure/repositories/api/ApiCustomerRepository';
 import { ApiMachineRepository } from '@/src/infrastructure/repositories/api/ApiMachineRepository';
 import { TimeBookingPresenter } from './TimeBookingPresenter';
 
@@ -18,8 +19,9 @@ export class TimeBookingPresenterClientFactory {
     // ✅ Using new IBookingRepository (TIMESTAMPTZ-based)
     const bookingRepository = new ApiBookingRepository();
     const machineRepository = new ApiMachineRepository();
-
-    return new TimeBookingPresenter(bookingRepository, machineRepository);
+    const customerRepository = new ApiCustomerRepository();
+    
+    return new TimeBookingPresenter(bookingRepository, machineRepository, customerRepository);
   }
 }
 

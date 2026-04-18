@@ -1,14 +1,27 @@
 @import "tailwindcss";
 
-/* custom variants */
+/* ============================================
+   Tailwind v4: Class-based Dark Mode
+   ============================================ */
 @custom-variant dark (&:where(.dark, .dark *));
 
-@import "./fonts.css";
-@import "./theme.css";
-@import "./base.css";
-@import "./components.css";
-@import "./utilities.css";
-@import "./dark.css";
-@import "./crystal.css";
-@import "./animations.css";
+/* ============================================
+   Racing Game Station — Main Entry Point
+   All styles are organized into separate modules:
 
+   1. theme.css      → @theme tokens, CSS variables, dark mode
+   2. fonts.css      → MiSans Thai font family
+   3. base.css       → Base element styles (body, scrollbar)
+   4. components.css → Animations, patterns, component styles
+   ============================================ */
+
+@import "./theme.css";
+@import "./fonts.css";
+
+@layer base {
+  @import "./base.css";
+}
+
+@layer components {
+  @import "./components.css";
+}

@@ -4,7 +4,7 @@ import type { WalkInStatus } from '@/src/application/repositories/IWalkInQueueRe
 import { AnimatedButton } from '@/src/presentation/components/ui/AnimatedButton';
 import { GlowButton } from '@/src/presentation/components/ui/GlowButton';
 import {
-    BackendSkeleton
+  BackendSkeleton
 } from '@/src/presentation/components/ui/Skeleton';
 import { BackendViewModel } from '@/src/presentation/presenters/backend/BackendPresenter';
 import { useBackendPresenter } from '@/src/presentation/presenters/backend/useBackendPresenter';
@@ -164,6 +164,7 @@ export function BackendView({ initialViewModel }: BackendViewProps) {
               onUpdateStatus={actions.updateMachineStatus}
               onUpdateMachine={actions.updateMachine}
               onCreateMachine={actions.createMachine}
+              onUploadImage={actions.uploadImage}
             />
           )}
           {state.activeTab === 'customers' && (

@@ -415,6 +415,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_or_update_customer: {
+        Args: { p_name: string; p_phone: string }
+        Returns: Json
+      }
       create_profile: {
         Args: { avatar_url?: string; full_name?: string; username: string }
         Returns: string

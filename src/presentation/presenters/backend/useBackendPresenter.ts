@@ -62,6 +62,7 @@ export interface BackendPresenterActions {
   resetMachineQueue: (machineId: string) => Promise<void>;
   updateSessionPayment: (sessionId: string, status: 'paid' | 'unpaid' | 'partial') => Promise<void>;
   updateSessionAmount: (sessionId: string, amount: number) => Promise<void>;
+  uploadImage: (file: File, pathPrefix?: string) => Promise<string>;
   setError: (error: string | null) => void;
 }
 
@@ -371,6 +372,19 @@ export function useBackendPresenter(
   }, []);
 
   /**
+   * Upload image to storage
+   */
+  const uploadImage = useCallback(async (file: File, pathPrefix: string = 'misc'): Promise<string> => {
+    try {
+      return await presenter.uploadImage(file, pathPrefix);
+    } catch (err) {
+      console.error('Error uploading image in hook:', err);
+      // We don't set error state here since ImageUploadInput handles it locally
+      throw err;
+    }
+  }, [presenter]);
+
+  /**
    * Reset machine queue (not implemented in new system)
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -484,6 +498,7 @@ export function useBackendPresenter(
       resetMachineQueue,
       updateSessionPayment,
       updateSessionAmount,
+      uploadImage,
       setError,
     },
   ];

@@ -206,4 +206,32 @@ export class SupabaseCustomerRepository implements ICustomerRepository {
       isVip: raw.is_vip || false,
     };
   };
+
+  /**
+   * Create or update a customer (Hack mode for flexible registration)
+   */
+  async createOrUpdateCustomer(name: string, phone: string): Promise<{ success: boolean; customerId?: string; error?: string }> {
+    const { data: result, error } = await this.supabase
+      .rpc('create_or_update_customer', {
+        p_name: name,
+        p_phone: phone,
+      });
+
+    if (error) {
+      console.error('Error calling create_or_update_customer:', error);
+      return { success: false, error: 'เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล' };
+    }
+
+    const rpcResult = result as {
+      success: boolean;
+      customer_id?: string;
+      error?: string;
+    };
+
+    return {
+      success: rpcResult.success,
+      customerId: rpcResult.customer_id,
+      error: rpcResult.error,
+    };
+  }
 }

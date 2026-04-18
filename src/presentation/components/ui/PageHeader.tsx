@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { getShopNow } from '@/src/lib/date';
-import dayjs from 'dayjs';
-import 'dayjs/locale/th';
-import buddhistEra from 'dayjs/plugin/buddhistEra';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { getShopNow } from "@/src/lib/date";
+import dayjs from "dayjs";
+import "dayjs/locale/th";
+import buddhistEra from "dayjs/plugin/buddhistEra";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 dayjs.extend(buddhistEra);
-dayjs.locale('th');
+dayjs.locale("th");
 
 interface PageHeaderProps {
   title: string;
@@ -24,19 +24,20 @@ interface PageHeaderProps {
  * - Shows Title & Real-time Clock
  * - Optional "Home" navigation button
  */
-export function PageHeader({ 
-  title, 
-  icon = '🏎️', 
+export function PageHeader({
+  title,
+  icon = "🏎️",
   showHomeButton = false,
-  rightContent 
+  rightContent,
 }: PageHeaderProps) {
-  const [currentTime, setCurrentTime] = useState(getShopNow());
+  const [currentTime, setCurrentTime] = useState<dayjs.Dayjs | null>(null);
 
-  // Update current time every second
+  // Initialize and update current time every second (client only)
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(getShopNow());
-    }, 1000);
+    const updateTime = () => setCurrentTime(getShopNow());
+    updateTime();
+
+    const timer = setInterval(updateTime, 1000);
     return () => clearInterval(timer);
   }, []);
 
@@ -44,7 +45,7 @@ export function PageHeader({
     <section className="relative overflow-hidden bg-surface border-b border-border">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 via-background to-background" />
-      
+
       <div className="relative px-4 py-6 md:py-8 max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           <Link href="/">
@@ -57,9 +58,21 @@ export function PageHeader({
               {title}
             </h1>
             <div className="flex items-center gap-2 text-muted text-sm mt-1">
-              <span>📅 {currentTime.locale('th').format('D MMM BB')}</span>
-              <span>•</span>
-              <span className="font-variant-numeric tabular-nums">⏰ {currentTime.format('HH:mm:ss')}</span>
+              {currentTime ? (
+                <>
+                  <span>📅 {currentTime.locale("th").format("D MMM BB")}</span>
+                  <span>•</span>
+                  <span className="font-variant-numeric tabular-nums">
+                    ⏰ {currentTime.format("HH:mm:ss")}
+                  </span>
+                </>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <span className="inline-block w-20 h-4 bg-surface/60 rounded animate-pulse" />
+                  <span>•</span>
+                  <span className="inline-block w-16 h-4 bg-surface/60 rounded animate-pulse" />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -67,7 +80,7 @@ export function PageHeader({
         {/* Right Content / Navigation */}
         <div className="flex gap-3">
           {rightContent}
-          
+
           {showHomeButton && (
             <Link href="/">
               <div className="px-4 py-2 rounded-xl bg-surface border border-border flex items-center gap-2 hover:bg-surface/80 transition-colors cursor-pointer">

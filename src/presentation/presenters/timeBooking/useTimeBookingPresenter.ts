@@ -37,6 +37,7 @@ export interface TimeBookingPresenterActions {
   selectSlot: (slot: BookingTimeSlot) => void;
   setStep: (step: BookingStep) => void;
   createBooking: (data: CreateBookingData) => Promise<Booking>;
+  createOrUpdateCustomer: (name: string, phone: string) => Promise<{ success: boolean; customerId?: string; error?: string }>;
   reset: () => void;
   setError: (error: string | null) => void;
 }
@@ -192,6 +193,13 @@ export function useTimeBookingPresenter(
       }
     }
   }, [presenter]);
+  
+  /**
+   * Create or update customer (Hack mode)
+   */
+  const createOrUpdateCustomer = useCallback(async (name: string, phone: string) => {
+    return await presenter.createOrUpdateCustomer(name, phone);
+  }, [presenter]);
 
   /**
    * Reset all state
@@ -251,6 +259,7 @@ export function useTimeBookingPresenter(
       selectSlot,
       setStep,
       createBooking,
+      createOrUpdateCustomer,
       reset,
       setError,
     },
