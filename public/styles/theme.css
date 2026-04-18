@@ -36,6 +36,15 @@
   --input: #d1d5db;
   --input-bg: #ffffff;
   --input-placeholder: #9ca3af;
+
+  /* Accent colors */
+  --accent-purple: #a855f7;
+  --accent-cyan: #06b6d4;
+  --accent-pink: #ec4899;
+  --accent-blue: #3b82f6;
+  --accent-amber: #f59e0b;
+  --accent-orange: #f97316;
+  --accent-emerald: #10b981;
 }
 
 /* Dark mode */
@@ -60,6 +69,15 @@
   --input: #374151;
   --input-bg: #1f2937;
   --input-placeholder: #6b7280;
+
+  /* Accent colors (same in dark mode) */
+  --accent-purple: #c084fc;
+  --accent-cyan: #22d3ee;
+  --accent-pink: #f9a8d4;
+  --accent-blue: #60a5fa;
+  --accent-amber: #fbbf24;
+  --accent-orange: #fdba74;
+  --accent-emerald: #34d399;
 }
 
 /* ============================================
@@ -97,4 +115,109 @@
   --color-input: var(--input);
   --color-input-bg: var(--input-bg);
   --color-input-placeholder: var(--input-placeholder);
+
+  /* Accent Colors (for brand/racing theme) */
+  --color-accent-purple: var(--accent-purple);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-accent-pink: var(--accent-pink);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-amber: var(--accent-amber);
+  --color-accent-orange: var(--accent-orange);
+  --color-accent-emerald: var(--accent-emerald);
+
+  /* Gradient pairs */
+  --gradient-purple-start: #a855f7;
+  --gradient-purple-end: #ec4899;
+  --gradient-cyan-start: #06b6d4;
+  --gradient-cyan-end: #3b82f6;
+  --gradient-pink-start: #ec4899;
+  --gradient-pink-end: #f43f5e;
+  --gradient-green-start: #10b981;
+  --gradient-green-end: #22c55e;
+  --gradient-orange-start: #f97316;
+  --gradient-orange-end: #fbbf24;
+}
+
+/* ============================================
+   Gradient Utilities for Cards
+   ============================================ */
+@utility gradient-purple {
+  background-image: linear-gradient(
+    135deg,
+    var(--gradient-purple-start),
+    var(--gradient-purple-end)
+  );
+}
+
+@utility gradient-cyan {
+  background-image: linear-gradient(
+    135deg,
+    var(--gradient-cyan-start),
+    var(--gradient-cyan-end)
+  );
+}
+
+@utility gradient-pink {
+  background-image: linear-gradient(
+    135deg,
+    var(--gradient-pink-start),
+    var(--gradient-pink-end)
+  );
+}
+
+@utility gradient-green {
+  background-image: linear-gradient(
+    135deg,
+    var(--gradient-green-start),
+    var(--gradient-green-end)
+  );
+}
+
+@utility gradient-orange {
+  background-image: linear-gradient(
+    135deg,
+    var(--gradient-orange-start),
+    var(--gradient-orange-end)
+  );
+}
+
+/* Gradient backgrounds with opacity for cards */
+@utility gradient-purple-bg {
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--gradient-purple-start), transparent 80%),
+    color-mix(in srgb, var(--gradient-purple-end), transparent 80%)
+  );
+}
+
+@utility gradient-cyan-bg {
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--gradient-cyan-start), transparent 80%),
+    color-mix(in srgb, var(--gradient-cyan-end), transparent 80%)
+  );
+}
+
+@utility gradient-pink-bg {
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--gradient-pink-start), transparent 80%),
+    color-mix(in srgb, var(--gradient-pink-end), transparent 80%)
+  );
+}
+
+@utility gradient-green-bg {
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--gradient-green-start), transparent 80%),
+    color-mix(in srgb, var(--gradient-green-end), transparent 80%)
+  );
+}
+
+@utility gradient-orange-bg {
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--gradient-orange-start), transparent 80%),
+    color-mix(in srgb, var(--gradient-orange-end), transparent 80%)
+  );
 }
