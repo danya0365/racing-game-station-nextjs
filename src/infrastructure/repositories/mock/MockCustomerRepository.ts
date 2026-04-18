@@ -4,75 +4,75 @@
  */
 
 import {
-    CreateCustomerData,
-    Customer,
-    CustomerListResult,
-    CustomerStats,
-    ICustomerRepository,
-    UpdateCustomerData,
-} from '@/src/application/repositories/ICustomerRepository';
-import { CUSTOMER_CONFIG } from '@/src/config/customerConfig';
-import dayjs from 'dayjs';
+  CreateCustomerData,
+  Customer,
+  CustomerListResult,
+  CustomerStats,
+  ICustomerRepository,
+  UpdateCustomerData,
+} from "@/src/application/repositories/ICustomerRepository";
+import { CUSTOMER_CONFIG } from "@/src/config/customerConfig";
+import dayjs from "dayjs";
 
 // Mock data with sample customers
 const mockCustomers: Customer[] = [
   {
-    id: 'cust-1',
-    name: 'สมชาย ใจดี',
-    phone: '081-234-5678',
-    email: 'somchai@example.com',
+    id: "cust-1",
+    name: "สมชาย ใจดี",
+    phone: "081-234-5678",
+    email: "somchai@example.com",
     visitCount: 12,
     totalPlayTime: 720,
-    lastVisit: dayjs().subtract(2, 'day').toISOString(),
-    createdAt: dayjs().subtract(60, 'day').toISOString(),
-    updatedAt: dayjs().subtract(2, 'day').toISOString(),
-    notes: 'ลูกค้าประจำ ชอบเครื่อง 1',
+    lastVisit: dayjs().subtract(2, "day").toISOString(),
+    createdAt: dayjs().subtract(60, "day").toISOString(),
+    updatedAt: dayjs().subtract(2, "day").toISOString(),
+    notes: "ลูกค้าประจำ ชอบเครื่อง 1",
     isVip: true,
   },
   {
-    id: 'cust-2',
-    name: 'สมหญิง รักเกม',
-    phone: '082-345-6789',
+    id: "cust-2",
+    name: "สมหญิง รักเกม",
+    phone: "082-345-6789",
     visitCount: 8,
     totalPlayTime: 480,
-    lastVisit: dayjs().subtract(5, 'day').toISOString(),
-    createdAt: dayjs().subtract(45, 'day').toISOString(),
-    updatedAt: dayjs().subtract(5, 'day').toISOString(),
+    lastVisit: dayjs().subtract(5, "day").toISOString(),
+    createdAt: dayjs().subtract(45, "day").toISOString(),
+    updatedAt: dayjs().subtract(5, "day").toISOString(),
     isVip: true,
   },
   {
-    id: 'cust-3',
-    name: 'วิชัย เร็วแรง',
-    phone: '083-456-7890',
+    id: "cust-3",
+    name: "วิชัย เร็วแรง",
+    phone: "083-456-7890",
     visitCount: 5,
     totalPlayTime: 300,
-    lastVisit: dayjs().subtract(7, 'day').toISOString(),
-    createdAt: dayjs().subtract(30, 'day').toISOString(),
-    updatedAt: dayjs().subtract(7, 'day').toISOString(),
+    lastVisit: dayjs().subtract(7, "day").toISOString(),
+    createdAt: dayjs().subtract(30, "day").toISOString(),
+    updatedAt: dayjs().subtract(7, "day").toISOString(),
     isVip: false,
   },
   {
-    id: 'cust-4',
-    name: 'มานี มีสุข',
-    phone: '084-567-8901',
+    id: "cust-4",
+    name: "มานี มีสุข",
+    phone: "084-567-8901",
     visitCount: 3,
     totalPlayTime: 180,
-    lastVisit: dayjs().subtract(14, 'day').toISOString(),
-    createdAt: dayjs().subtract(20, 'day').toISOString(),
-    updatedAt: dayjs().subtract(14, 'day').toISOString(),
+    lastVisit: dayjs().subtract(14, "day").toISOString(),
+    createdAt: dayjs().subtract(20, "day").toISOString(),
+    updatedAt: dayjs().subtract(14, "day").toISOString(),
     isVip: false,
   },
   {
-    id: 'cust-5',
-    name: 'ณัฐพล สปีด',
-    phone: '085-678-9012',
-    email: 'nattapon@example.com',
+    id: "cust-5",
+    name: "ณัฐพล สปีด",
+    phone: "085-678-9012",
+    email: "nattapon@example.com",
     visitCount: 1,
     totalPlayTime: 60,
     lastVisit: dayjs().toISOString(),
     createdAt: dayjs().toISOString(),
     updatedAt: dayjs().toISOString(),
-    notes: 'ลูกค้าใหม่',
+    notes: "ลูกค้าใหม่",
     isVip: false,
   },
 ];
@@ -80,7 +80,12 @@ const mockCustomers: Customer[] = [
 export class MockCustomerRepository implements ICustomerRepository {
   private customers: Customer[] = [...mockCustomers];
 
-  async getAll(limit: number = 20, page: number = 1, search?: string, filter?: string): Promise<CustomerListResult> {
+  async getAll(
+    limit: number = 20,
+    page: number = 1,
+    search?: string,
+    filter?: string,
+  ): Promise<CustomerListResult> {
     let filtered = [...this.customers];
 
     // Search
@@ -88,19 +93,22 @@ export class MockCustomerRepository implements ICustomerRepository {
       const lowerQuery = search.toLowerCase();
       filtered = filtered.filter(
         (c) =>
-          c.name.toLowerCase().includes(lowerQuery) ||
-          c.phone.includes(search)
+          c.name.toLowerCase().includes(lowerQuery) || c.phone.includes(search),
       );
     }
 
     // Filter
-    const today = dayjs().startOf('day');
-    if (filter === 'vip') {
-      filtered = filtered.filter(c => c.isVip);
-    } else if (filter === 'new') {
-      filtered = filtered.filter(c => dayjs(c.createdAt).isAfter(today.subtract(1, 'minute'))); 
-    } else if (filter === 'regular') {
-      filtered = filtered.filter(c => c.visitCount >= CUSTOMER_CONFIG.REGULAR_CUSTOMER_MIN_VISITS);
+    const today = dayjs().startOf("day");
+    if (filter === "vip") {
+      filtered = filtered.filter((c) => c.isVip);
+    } else if (filter === "new") {
+      filtered = filtered.filter((c) =>
+        dayjs(c.createdAt).isAfter(today.subtract(1, "minute")),
+      );
+    } else if (filter === "regular") {
+      filtered = filtered.filter(
+        (c) => c.visitCount >= CUSTOMER_CONFIG.REGULAR_CUSTOMER_MIN_VISITS,
+      );
     }
 
     // Sort by last visit, most recent first
@@ -123,10 +131,12 @@ export class MockCustomerRepository implements ICustomerRepository {
 
   async getByPhone(phone: string): Promise<Customer | null> {
     // Normalize phone for comparison
-    const normalizedPhone = phone.replace(/[-\s]/g, '');
-    return this.customers.find((c) => 
-      c.phone.replace(/[-\s]/g, '') === normalizedPhone
-    ) || null;
+    const normalizedPhone = phone.replace(/[-\s]/g, "");
+    return (
+      this.customers.find(
+        (c) => c.phone.replace(/[-\s]/g, "") === normalizedPhone,
+      ) || null
+    );
   }
 
   async create(data: CreateCustomerData): Promise<Customer> {
@@ -150,7 +160,7 @@ export class MockCustomerRepository implements ICustomerRepository {
   async update(id: string, data: UpdateCustomerData): Promise<Customer> {
     const index = this.customers.findIndex((c) => c.id === id);
     if (index === -1) {
-      throw new Error('Customer not found');
+      throw new Error("Customer not found");
     }
 
     this.customers[index] = {
@@ -172,10 +182,14 @@ export class MockCustomerRepository implements ICustomerRepository {
     return true;
   }
 
-  async incrementVisit(id: string, playTime: number, now: string): Promise<Customer> {
+  async incrementVisit(
+    id: string,
+    playTime: number,
+    now: string,
+  ): Promise<Customer> {
     const customer = await this.getById(id);
     if (!customer) {
-      throw new Error('Customer not found');
+      throw new Error("Customer not found");
     }
 
     const index = this.customers.findIndex((c) => c.id === id);
@@ -191,18 +205,20 @@ export class MockCustomerRepository implements ICustomerRepository {
   }
 
   async getStats(todayStr: string): Promise<CustomerStats> {
-    const today = dayjs(todayStr).startOf('day');
- 
+    const today = dayjs(todayStr).startOf("day");
+
     const newToday = this.customers.filter((c) => {
       const createdAt = dayjs(c.createdAt);
-      return createdAt.isSame(today, 'day') || createdAt.isAfter(today);
+      return createdAt.isSame(today, "day") || createdAt.isAfter(today);
     }).length;
 
     return {
       totalCustomers: this.customers.length,
       vipCustomers: this.customers.filter((c) => c.isVip).length,
       newCustomersToday: newToday,
-      returningCustomers: this.customers.filter((c) => c.visitCount >= CUSTOMER_CONFIG.REGULAR_CUSTOMER_MIN_VISITS).length,
+      returningCustomers: this.customers.filter(
+        (c) => c.visitCount >= CUSTOMER_CONFIG.REGULAR_CUSTOMER_MIN_VISITS,
+      ).length,
     };
   }
 
@@ -212,7 +228,33 @@ export class MockCustomerRepository implements ICustomerRepository {
 
   async getFrequentCustomers(): Promise<Customer[]> {
     return this.customers
-      .filter((c) => c.visitCount >= CUSTOMER_CONFIG.REGULAR_CUSTOMER_MIN_VISITS)
+      .filter(
+        (c) => c.visitCount >= CUSTOMER_CONFIG.REGULAR_CUSTOMER_MIN_VISITS,
+      )
       .sort((a, b) => b.visitCount - a.visitCount);
+  }
+
+  async createOrUpdateCustomer(
+    name: string,
+    phone: string,
+  ): Promise<{ success: boolean; customerId?: string; error?: string }> {
+    // Check if customer already exists by phone
+    const existing = await this.getByPhone(phone);
+
+    if (existing) {
+      // Update name if changed
+      if (existing.name !== name) {
+        await this.update(existing.id, { name });
+      }
+      return { success: true, customerId: existing.id };
+    }
+
+    // Create new customer
+    try {
+      const newCustomer = await this.create({ name, phone });
+      return { success: true, customerId: newCustomer.id };
+    } catch {
+      return { success: false, error: "Failed to create customer" };
+    }
   }
 }
