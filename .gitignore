@@ -43,3 +43,6 @@ next-env.d.ts
 
 # supabase
 supabase/.temp
+
+# claude code (มี API key ใน settings.local.json — ห้าม commit)
+/.claude/settings.local.json

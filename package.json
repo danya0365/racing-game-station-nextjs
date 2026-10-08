@@ -1,6 +1,6 @@
 {
   "name": "racing-game-station",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -22,7 +22,8 @@
     "deploy:supabase:status": "./scripts/deploy-supabase.sh status",
     "deploy:all": "./scripts/deploy-all.sh",
     "setup:env": "./scripts/setup-env.sh",
-    "setup:env:prod": "./scripts/setup-env.sh production"
+    "setup:env:prod": "./scripts/setup-env.sh production",
+    "setup:git-hooks": "./scripts/setup-git-hooks.sh"
   },
   "dependencies": {
     "@react-spring/web": "^10.0.3",
