@@ -137,8 +137,56 @@ export type Database = {
           },
         ]
       }
+      branches: {
+        Row: {
+          address: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean
+          name: string
+          opening_hours: string | null
+          phone: string | null
+          position: number
+          slug: string
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          opening_hours?: string | null
+          phone?: string | null
+          position?: number
+          slug: string
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          opening_hours?: string | null
+          phone?: string | null
+          position?: number
+          slug?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "branches_pkey"
+            columns: ["id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       machines: {
         Row: {
+          branch_id: string
           created_at: string | null
           description: string | null
           hourly_rate: number
@@ -152,6 +200,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          branch_id: string
           created_at?: string | null
           description?: string | null
           hourly_rate?: number
@@ -349,6 +398,7 @@ export type Database = {
       }
       walk_in_queue: {
         Row: {
+          branch_id: string
           called_at: string | null
           created_at: string | null
           customer_id: string
@@ -364,6 +414,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          branch_id: string
           called_at?: string | null
           created_at?: string | null
           customer_id: string
@@ -535,8 +586,9 @@ export type Database = {
         Returns: Json
       }
       rpc_get_active_machines: {
-        Args: never
+        Args: { p_branch_id?: string }
         Returns: {
+          branch_id: string
           description: string
           hourly_rate: number
           id: string
@@ -548,7 +600,7 @@ export type Database = {
         }[]
       }
       rpc_get_active_sessions: {
-        Args: never
+        Args: { p_branch_id?: string }
         Returns: {
           customer_name: string
           duration_minutes: number
@@ -584,10 +636,10 @@ export type Database = {
           isSetofReturn: true
         }
       }
-      rpc_get_backend_stats: { Args: never; Returns: Json }
+      rpc_get_backend_stats: { Args: { p_branch_id?: string }; Returns: Json }
       rpc_get_booking_stats: { Args: never; Returns: Json }
       rpc_get_bookings_by_date: {
-        Args: { p_customer_id?: string; p_date: string }
+        Args: { p_branch_id?: string; p_customer_id?: string; p_date: string }
         Returns: {
           booking_id: string
           business_timezone: string
@@ -650,9 +702,12 @@ export type Database = {
           total_price: number
         }[]
       }
-      rpc_get_home_dashboard_stats: { Args: { p_date?: string }; Returns: Json }
+      rpc_get_home_dashboard_stats: {
+        Args: { p_branch_id?: string; p_date?: string }
+        Returns: Json
+      }
       rpc_get_my_bookings: {
-        Args: { p_customer_id: string }
+        Args: { p_branch_id?: string; p_customer_id: string }
         Returns: {
           booking_id: string
           business_timezone: string
@@ -675,6 +730,7 @@ export type Database = {
       rpc_get_my_walk_in_queue: {
         Args: { p_customer_id: string }
         Returns: {
+          branch_id: string
           called_at: string
           customer_name: string
           customer_phone: string
@@ -691,11 +747,11 @@ export type Database = {
         }[]
       }
       rpc_get_session_stats: {
-        Args: { p_end_date?: string; p_start_date?: string }
+        Args: { p_branch_id?: string; p_end_date?: string; p_start_date?: string }
         Returns: Json
       }
       rpc_get_today_sessions: {
-        Args: never
+        Args: { p_branch_id?: string }
         Returns: {
           customer_name: string
           duration_minutes: number
@@ -710,7 +766,7 @@ export type Database = {
         }[]
       }
       rpc_get_waiting_queue: {
-        Args: never
+        Args: { p_branch_id?: string }
         Returns: {
           customer_name: string
           customer_phone_masked: string
@@ -724,7 +780,10 @@ export type Database = {
           wait_time_minutes: number
         }[]
       }
-      rpc_get_walk_in_queue_stats: { Args: never; Returns: Json }
+      rpc_get_walk_in_queue_stats: {
+        Args: { p_branch_id?: string }
+        Returns: Json
+      }
       rpc_is_booking_slot_available: {
         Args: {
           p_duration_minutes: number
@@ -737,6 +796,7 @@ export type Database = {
       }
       rpc_join_walk_in_queue: {
         Args: {
+          p_branch_id?: string
           p_customer_id?: string
           p_customer_name: string
           p_customer_phone: string

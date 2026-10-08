@@ -5,87 +5,94 @@
  */
 
 import {
-    CreateMachineData,
-    IMachineRepository,
-    Machine,
-    MachineDashboardDTO,
-    MachineStats,
-    MachineStatus,
-    UpdateMachineData,
-} from '@/src/application/repositories/IMachineRepository';
-import dayjs from 'dayjs';
+  CreateMachineData,
+  IMachineRepository,
+  Machine,
+  MachineDashboardDTO,
+  MachineStats,
+  MachineStatus,
+  UpdateMachineData,
+} from "@/src/application/repositories/IMachineRepository";
+import dayjs from "dayjs";
 
 // Mock data for Racing Game Station machines
+const MOCK_BRANCH_ID = "00000000-0000-0000-0000-000000000b02";
 const MOCK_MACHINES: Machine[] = [
   {
-    id: 'machine-001',
-    name: 'Game Station 1',
-    description: 'Formula Racing Game Station with Fanatec GT DD Pro',
+    id: "machine-001",
+    name: "Game Station 1",
+    description: "Formula Racing Game Station with Fanatec GT DD Pro",
     position: 1,
-    imageUrl: '/images/machines/station-1.jpg',
+    imageUrl: "/images/machines/station-1.jpg",
     isActive: true,
-    status: 'available',
-    createdAt: '2025-01-01T00:00:00.000Z',
-    updatedAt: '2025-01-01T00:00:00.000Z',
+    status: "available",
+    branchId: MOCK_BRANCH_ID,
+    createdAt: "2025-01-01T00:00:00.000Z",
+    updatedAt: "2025-01-01T00:00:00.000Z",
   },
   {
-    id: 'machine-002',
-    name: 'Game Station 2',
-    description: 'GT Racing Game Station with Thrustmaster T300RS',
+    id: "machine-002",
+    name: "Game Station 2",
+    description: "GT Racing Game Station with Thrustmaster T300RS",
     position: 2,
-    imageUrl: '/images/machines/station-2.jpg',
+    imageUrl: "/images/machines/station-2.jpg",
     isActive: true,
-    status: 'occupied',
-    type: 'Game Station',
+    status: "occupied",
+    type: "Game Station",
     hourlyRate: 200,
-    createdAt: '2025-01-01T00:00:00.000Z',
-    updatedAt: '2025-01-07T10:00:00.000Z',
+    branchId: MOCK_BRANCH_ID,
+    createdAt: "2025-01-01T00:00:00.000Z",
+    updatedAt: "2025-01-07T10:00:00.000Z",
   },
   {
-    id: 'machine-003',
-    name: 'Game Station 3',
-    description: 'Rally Racing Game Station with Logitech G923',
+    id: "machine-003",
+    name: "Game Station 3",
+    description: "Rally Racing Game Station with Logitech G923",
     position: 3,
-    imageUrl: '/images/machines/station-3.jpg',
+    imageUrl: "/images/machines/station-3.jpg",
     isActive: true,
-    status: 'available',
-    createdAt: '2025-01-01T00:00:00.000Z',
-    updatedAt: '2025-01-01T00:00:00.000Z',
+    status: "available",
+    branchId: MOCK_BRANCH_ID,
+    createdAt: "2025-01-01T00:00:00.000Z",
+    updatedAt: "2025-01-01T00:00:00.000Z",
   },
   {
-    id: 'machine-004',
-    name: 'Game Station 4',
+    id: "machine-004",
+    name: "Game Station 4",
     description: 'Drift Game Station with Ultrawide 49"',
     position: 4,
-    imageUrl: '/images/machines/station-4.jpg',
+    imageUrl: "/images/machines/station-4.jpg",
     isActive: true,
-    status: 'occupied',
-    type: 'Game Station',
+    status: "occupied",
+    type: "Game Station",
     hourlyRate: 250,
-    createdAt: '2025-01-01T00:00:00.000Z',
-    updatedAt: '2025-01-07T11:00:00.000Z',
+    branchId: MOCK_BRANCH_ID,
+    createdAt: "2025-01-01T00:00:00.000Z",
+    updatedAt: "2025-01-07T11:00:00.000Z",
   },
   {
-    id: 'machine-005',
-    name: 'Game Station 5',
-    description: 'F1 Game Station VIP with Motion Platform',
+    id: "machine-005",
+    name: "Game Station 5",
+    description: "F1 Game Station VIP with Motion Platform",
     position: 5,
-    imageUrl: '/images/machines/station-5.jpg',
+    imageUrl: "/images/machines/station-5.jpg",
     isActive: true,
-    status: 'available',
-    createdAt: '2025-01-01T00:00:00.000Z',
-    updatedAt: '2025-01-01T00:00:00.000Z',
+    status: "available",
+    branchId: MOCK_BRANCH_ID,
+    createdAt: "2025-01-01T00:00:00.000Z",
+    updatedAt: "2025-01-01T00:00:00.000Z",
   },
   {
-    id: 'machine-006',
-    name: 'Game Station 6',
-    description: 'Endurance Game Station Pro for E-Sports',
+    id: "machine-006",
+    name: "Game Station 6",
+    description: "Endurance Game Station Pro for E-Sports",
     position: 6,
-    imageUrl: '/images/machines/station-6.jpg',
+    imageUrl: "/images/machines/station-6.jpg",
     isActive: false,
-    status: 'maintenance',
-    createdAt: '2025-01-01T00:00:00.000Z',
-    updatedAt: '2025-01-06T15:00:00.000Z',
+    status: "maintenance",
+    branchId: MOCK_BRANCH_ID,
+    createdAt: "2025-01-01T00:00:00.000Z",
+    updatedAt: "2025-01-06T15:00:00.000Z",
   },
 ];
 
@@ -97,15 +104,23 @@ export class MockMachineRepository implements IMachineRepository {
     return this.machines.find((machine) => machine.id === id) || null;
   }
 
-  async getAll(): Promise<Machine[]> {
+  async getAll(branchId?: string): Promise<Machine[]> {
+    if (branchId) {
+      return MOCK_MACHINES.filter((m) => m.branchId === branchId);
+    }
     await this.delay(100);
     return [...this.machines].sort((a, b) => a.position - b.position);
   }
 
-  async getAvailable(): Promise<Machine[]> {
+  async getAvailable(branchId?: string): Promise<Machine[]> {
     await this.delay(100);
     return this.machines
-      .filter((machine) => machine.isActive && machine.status === 'available')
+      .filter(
+        (machine) =>
+          machine.isActive &&
+          machine.status === "available" &&
+          (!branchId || machine.branchId === branchId)
+      )
       .sort((a, b) => a.position - b.position);
   }
 
@@ -116,7 +131,7 @@ export class MockMachineRepository implements IMachineRepository {
       id: `machine-${dayjs().valueOf()}`,
       ...data,
       isActive: true,
-      status: 'available',
+      status: "available",
       createdAt: dayjs().toISOString(),
       updatedAt: dayjs().toISOString(),
     };
@@ -130,7 +145,7 @@ export class MockMachineRepository implements IMachineRepository {
 
     const index = this.machines.findIndex((machine) => machine.id === id);
     if (index === -1) {
-      throw new Error('Machine not found');
+      throw new Error("Machine not found");
     }
 
     const updatedMachine: Machine = {
@@ -155,14 +170,22 @@ export class MockMachineRepository implements IMachineRepository {
     return true;
   }
 
-  async getStats(): Promise<MachineStats> {
+  async getStats(branchId?: string): Promise<MachineStats> {
     await this.delay(100);
 
-    const activeMachines = this.machines.filter((m) => m.isActive);
+    const activeMachines = this.machines.filter(
+      (m) => m.isActive && (!branchId || m.branchId === branchId)
+    );
     const totalMachines = activeMachines.length;
-    const availableMachines = activeMachines.filter((m) => m.status === 'available').length;
-    const occupiedMachines = activeMachines.filter((m) => m.status === 'occupied').length;
-    const maintenanceMachines = this.machines.filter((m) => m.status === 'maintenance').length;
+    const availableMachines = activeMachines.filter(
+      (m) => m.status === "available",
+    ).length;
+    const occupiedMachines = activeMachines.filter(
+      (m) => m.status === "occupied",
+    ).length;
+    const maintenanceMachines = this.machines.filter(
+      (m) => m.status === "maintenance",
+    ).length;
 
     return {
       totalMachines,
@@ -177,7 +200,7 @@ export class MockMachineRepository implements IMachineRepository {
 
     const index = this.machines.findIndex((machine) => machine.id === id);
     if (index === -1) {
-      throw new Error('Machine not found');
+      throw new Error("Machine not found");
     }
 
     const updatedMachine: Machine = {
@@ -192,17 +215,17 @@ export class MockMachineRepository implements IMachineRepository {
 
   async getByIds(ids: string[]): Promise<Machine[]> {
     await this.delay(100);
-    return this.machines.filter(m => ids.includes(m.id));
+    return this.machines.filter((m) => ids.includes(m.id));
   }
 
   async getDashboardInfo(): Promise<MachineDashboardDTO[]> {
     await this.delay(100);
-    return this.machines.map(m => ({
+    return this.machines.map((m) => ({
       machineId: m.id,
       waitingCount: Math.floor(Math.random() * 3),
-      playingCount: m.status === 'occupied' ? 1 : 0,
-      estimatedWaitMinutes: m.status === 'occupied' ? 30 : 0,
-      nextPosition: 10
+      playingCount: m.status === "occupied" ? 1 : 0,
+      estimatedWaitMinutes: m.status === "occupied" ? 30 : 0,
+      nextPosition: 10,
     }));
   }
 

@@ -94,7 +94,10 @@ export interface ISessionRepository {
   /**
    * Get all sessions (with pagination)
    */
-  getAll(limit?: number, page?: number): Promise<Session[]>;
+  /**
+   * @param branchId - Restrict to one branch; omit for all branches
+   */
+  getAll(limit?: number, page?: number, branchId?: string): Promise<Session[]>;
 
   /**
    * Get sessions by station ID
@@ -108,8 +111,11 @@ export interface ISessionRepository {
 
   /**
    * Get all active sessions across all stations
+   *
+   * Sessions currently playing (end_time IS NULL).
+   * @param branchId - Restrict to one branch; omit for all
    */
-  getActiveSessions(): Promise<Session[]>;
+  getActiveSessions(branchId?: string): Promise<Session[]>;
 
   /**
    * Get today's sessions
@@ -143,7 +149,13 @@ export interface ISessionRepository {
   /**
    * Get session statistics
    */
-  getStats(dateRange?: { start: string; end: string }): Promise<SessionStats>;
+  /**
+   * @param branchId - Restrict to one branch; omit for all branches
+   */
+  getStats(
+    dateRange?: { start: string; end: string },
+    branchId?: string
+  ): Promise<SessionStats>;
 
   /**
    * Get total revenue for a date range

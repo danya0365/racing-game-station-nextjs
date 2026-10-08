@@ -165,7 +165,10 @@ export interface IBookingRepository {
    * SECURE: Only returns bookings that belong to this customer_id
    * @param customerId - Customer UUID from localStorage (obtained after first booking)
    */
-  getMyBookings(customerId: string): Promise<Booking[]>;
+  /**
+   * @param branchId - Restrict to one branch; omit for all branches
+   */
+  getMyBookings(customerId: string, branchId?: string): Promise<Booking[]>;
 
   /**
    * Get all bookings for a machine on a specific date
@@ -175,8 +178,9 @@ export interface IBookingRepository {
 
   /**
    * Get all bookings for a specific date (across all machines)
+   * @param branchId - Restrict to one branch; omit for all (staff view)
    */
-  getByDate(date: string, customerId?: string): Promise<Booking[]>;
+  getByDate(date: string, customerId?: string, branchId?: string): Promise<Booking[]>;
 
   /**
    * Create a new booking

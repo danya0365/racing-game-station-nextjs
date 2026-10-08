@@ -18,6 +18,8 @@ export interface Machine {
   type?: string;
   /** Price per hour in THB */
   hourlyRate?: number;
+  /** Branch this machine belongs to — every machine has exactly one */
+  branchId: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -44,6 +46,8 @@ export interface CreateMachineData {
   imageUrl?: string;
   type?: string;
   hourlyRate?: number;
+  /** Required — a machine always belongs to a branch */
+  branchId: string;
 }
 
 export interface UpdateMachineData {
@@ -55,6 +59,8 @@ export interface UpdateMachineData {
   status?: MachineStatus;
   type?: string;
   hourlyRate?: number;
+  /** Required — a machine always belongs to a branch */
+  branchId?: string;
 }
 
 export interface IMachineRepository {
@@ -66,13 +72,15 @@ export interface IMachineRepository {
 
   /**
    * Get all machines
+   * @param branchId - Restrict to one branch; omit for all (staff/admin)
    */
-  getAll(): Promise<Machine[]>;
+  getAll(branchId?: string): Promise<Machine[]>;
 
   /**
    * Get available machines
+   * @param branchId - Restrict to one branch; omit for all (staff/admin)
    */
-  getAvailable(): Promise<Machine[]>;
+  getAvailable(branchId?: string): Promise<Machine[]>;
 
   /**
    * Create a new machine
@@ -91,8 +99,9 @@ export interface IMachineRepository {
 
   /**
    * Get statistics
+   * @param branchId - Restrict to one branch; omit for all (staff/admin)
    */
-  getStats(): Promise<MachineStats>;
+  getStats(branchId?: string): Promise<MachineStats>;
 
   /**
    * Update machine status

@@ -40,11 +40,13 @@ export class SupabaseMachineRepository implements IMachineRepository {
     return (data || []).map(this.mapToDomain);
   }
 
-  async getAll(): Promise<Machine[]> {
-    const { data, error } = await this.supabase
-      .from('machines')
-      .select('*')
-      .order('position');
+  async getAll(branchId?: string): Promise<Machine[]> {
+    let query = this.supabase.from('machines').select('*').order('position');
+    if (branchId) {
+      query = query.eq('branch_id', branchId);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.error('Error fetching machines:', error);
@@ -54,8 +56,8 @@ export class SupabaseMachineRepository implements IMachineRepository {
     return data.map(this.mapToDomain);
   }
 
-  async getAvailable(): Promise<Machine[]> {
-    const machines = await this.getAll();
+  async getAvailable(branchId?: string): Promise<Machine[]> {
+    const machines = await this.getAll(branchId);
     return machines.filter(m => m.isActive && m.status === 'available');
   }
 
@@ -69,6 +71,7 @@ export class SupabaseMachineRepository implements IMachineRepository {
         image_url: data.imageUrl,
         type: data.type,
         hourly_rate: data.hourlyRate,
+        branch_id: data.branchId,
       })
       .select()
       .single();
@@ -89,6 +92,7 @@ export class SupabaseMachineRepository implements IMachineRepository {
         status: data.status,
         type: data.type,
         hourly_rate: data.hourlyRate,
+        branch_id: data.branchId,
       })
       .eq('id', id)
       .select()
@@ -107,10 +111,12 @@ export class SupabaseMachineRepository implements IMachineRepository {
     return !error;
   }
 
-  async getStats(): Promise<MachineStats> {
-    const { data: machines, error } = await this.supabase
-      .from('machines')
-      .select('status, is_active');
+  async getStats(branchId?: string): Promise<MachineStats> {
+    let query = this.supabase.from('machines').select('status, is_active');
+    if (branchId) {
+      query = query.eq('branch_id', branchId);
+    }
+    const { data: machines, error } = await query;
 
     if (error || !machines) {
       return {
@@ -161,6 +167,7 @@ export class SupabaseMachineRepository implements IMachineRepository {
       status: raw.status as MachineStatus,
       type: (raw as { type?: string }).type || undefined,
       hourlyRate: (raw as { hourly_rate?: number }).hourly_rate || undefined,
+      branchId: (raw as { branch_id?: string }).branch_id || '',
       createdAt: raw.created_at || '',
       updatedAt: raw.updated_at || '',
     };

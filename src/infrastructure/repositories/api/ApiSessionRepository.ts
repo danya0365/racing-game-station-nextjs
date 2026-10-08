@@ -36,10 +36,15 @@ export class ApiSessionRepository implements ISessionRepository {
     return res.json();
   }
 
-  async getAll(limit: number = 50, page: number = 1): Promise<Session[]> {
+  async getAll(
+    limit: number = 50,
+    page: number = 1,
+    branchId?: string
+  ): Promise<Session[]> {
     const params = new URLSearchParams();
     if (limit) params.set('limit', limit.toString());
     if (page) params.set('page', page.toString());
+    if (branchId) params.set('branch', branchId);
 
     const res = await fetch(`${this.baseUrl}?${params.toString()}`);
     if (!res.ok) {
@@ -76,8 +81,10 @@ export class ApiSessionRepository implements ISessionRepository {
     return res.json();
   }
 
-  async getActiveSessions(): Promise<Session[]> {
-    const res = await fetch(`${this.baseUrl}/active`);
+  async getActiveSessions(branchId?: string): Promise<Session[]> {
+    const res = await fetch(
+      branchId ? `${this.baseUrl}/active?branch=${branchId}` : `${this.baseUrl}/active`
+    );
     if (!res.ok) {
       const error = await res.json();
       throw new Error(error.error || 'ไม่สามารถโหลดข้อมูล sessions ได้');
@@ -174,12 +181,16 @@ export class ApiSessionRepository implements ISessionRepository {
   // STATISTICS
   // ============================================================
 
-  async getStats(dateRange?: { start: string; end: string }): Promise<SessionStats> {
+  async getStats(
+    dateRange?: { start: string; end: string },
+    branchId?: string
+  ): Promise<SessionStats> {
     const params = new URLSearchParams();
     if (dateRange) {
       params.set('startDate', dateRange.start);
       params.set('endDate', dateRange.end);
     }
+    if (branchId) params.set('branch', branchId);
     
     const res = await fetch(`${this.baseUrl}/stats?${params.toString()}`);
     if (!res.ok) {

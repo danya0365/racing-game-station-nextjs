@@ -56,18 +56,30 @@ export class SupabaseSessionRepository implements ISessionRepository {
     return this.mapToDomain(data);
   }
 
-  async getAll(limit: number = 50, page: number = 1): Promise<Session[]> {
+  async getAll(
+    limit: number = 50,
+    page: number = 1,
+    branchId?: string
+  ): Promise<Session[]> {
     const from = (page - 1) * limit;
     const to = from + limit - 1;
 
-    const { data, error } = await this.supabase
+    // sessions has no branch_id of its own — the branch comes from the machine,
+    // so filter on the embedded relation rather than a local array filter
+    let query = this.supabase
       .from('sessions')
       .select(`
         *,
-        machines:station_id (name)
+        machines:station_id!inner (name, branch_id)
       `)
       .order('start_time', { ascending: false })
       .range(from, to);
+
+    if (branchId) {
+      query = query.eq('machines.branch_id', branchId);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.error('Error fetching sessions:', error);
@@ -116,9 +128,9 @@ export class SupabaseSessionRepository implements ISessionRepository {
     return this.mapToDomain(data);
   }
 
-  async getActiveSessions(): Promise<Session[]> {
+  async getActiveSessions(branchId?: string): Promise<Session[]> {
     const { data, error } = await this.supabase
-      .rpc('rpc_get_active_sessions');
+      .rpc('rpc_get_active_sessions', { p_branch_id: branchId });
 
     if (error) {
       console.error('Error fetching active sessions:', error);
@@ -322,11 +334,15 @@ export class SupabaseSessionRepository implements ISessionRepository {
   // STATISTICS
   // ============================================================
 
-  async getStats(dateRange?: { start: string; end: string }): Promise<SessionStats> {
+  async getStats(
+    dateRange?: { start: string; end: string },
+    branchId?: string
+  ): Promise<SessionStats> {
     const { data, error } = await this.supabase
       .rpc('rpc_get_session_stats', {
         p_start_date: dateRange?.start,
         p_end_date: dateRange?.end,
+        p_branch_id: branchId,
       });
 
     if (error) {

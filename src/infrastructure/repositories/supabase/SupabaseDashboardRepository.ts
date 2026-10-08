@@ -5,7 +5,7 @@ import { SupabaseClient } from '@supabase/supabase-js';
 export class SupabaseDashboardRepository implements IDashboardRepository {
   constructor(private readonly supabase: SupabaseClient<Database>) {}
 
-  async getHomeDashboardStats(): Promise<HomeDashboardStats> {
+  async getHomeDashboardStats(branchId?: string): Promise<HomeDashboardStats> {
     // Current date string YYYY-MM-DD
     // Note: The RPC defaults to CURRENT_DATE so we can pass null or today's date
     // But better to be explicit.
@@ -16,7 +16,10 @@ export class SupabaseDashboardRepository implements IDashboardRepository {
     // We can rely on RPC default.
     
     const { data, error } = await this.supabase
-      .rpc('rpc_get_home_dashboard_stats', { p_date: new Date().toISOString().split('T')[0] });
+      .rpc('rpc_get_home_dashboard_stats', {
+        p_date: new Date().toISOString().split('T')[0],
+        p_branch_id: branchId,
+      });
 
     if (error) {
       console.error('Error fetching dashboard stats:', error);

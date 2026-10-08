@@ -34,8 +34,17 @@ export class ApiWalkInQueueRepository implements IWalkInQueueRepository {
     return res.json();
   }
 
-  async getAll(): Promise<WalkInQueue[]> {
-    const res = await fetch(this.baseUrl);
+  async getAll(
+    limit?: number,
+    page?: number,
+    branchId?: string
+  ): Promise<WalkInQueue[]> {
+    const qs = new URLSearchParams();
+    if (limit) qs.set('limit', limit.toString());
+    if (page) qs.set('page', page.toString());
+    if (branchId) qs.set('branch', branchId);
+    const suffix = qs.toString();
+    const res = await fetch(suffix ? `${this.baseUrl}?${suffix}` : this.baseUrl);
     if (!res.ok) {
       const error = await res.json();
       throw new Error(error.error || 'ไม่สามารถโหลดข้อมูลคิวได้');
@@ -44,8 +53,10 @@ export class ApiWalkInQueueRepository implements IWalkInQueueRepository {
     return res.json();
   }
 
-  async getWaiting(): Promise<WalkInQueue[]> {
-    const res = await fetch(`${this.baseUrl}?status=waiting`);
+  async getWaiting(branchId?: string): Promise<WalkInQueue[]> {
+    const qs = new URLSearchParams({ status: 'waiting' });
+    if (branchId) qs.set('branch', branchId);
+    const res = await fetch(`${this.baseUrl}?${qs}`);
     if (!res.ok) {
       const error = await res.json();
       throw new Error(error.error || 'ไม่สามารถโหลดข้อมูลคิวได้');
@@ -133,8 +144,10 @@ export class ApiWalkInQueueRepository implements IWalkInQueueRepository {
     return data.nextNumber || 1;
   }
 
-  async getStats(): Promise<WalkInQueueStats> {
-    const res = await fetch(`${this.baseUrl}/stats`);
+  async getStats(branchId?: string): Promise<WalkInQueueStats> {
+    const res = await fetch(
+      branchId ? `${this.baseUrl}/stats?branch=${branchId}` : `${this.baseUrl}/stats`
+    );
     if (!res.ok) {
       return {
         waitingCount: 0,

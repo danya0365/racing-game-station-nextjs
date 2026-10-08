@@ -48,8 +48,10 @@ export class ApiMachineRepository implements IMachineRepository {
   /**
    * Get all machines
    */
-  async getAll(): Promise<Machine[]> {
-    const res = await fetch(this.baseUrl);
+  async getAll(branchId?: string): Promise<Machine[]> {
+    const res = await fetch(
+      branchId ? `${this.baseUrl}?branch=${branchId}` : this.baseUrl
+    );
     if (!res.ok) {
       const error = await res.json();
       throw new Error(error.error || 'ไม่สามารถโหลดข้อมูลเครื่องได้');
@@ -60,8 +62,10 @@ export class ApiMachineRepository implements IMachineRepository {
   /**
    * Get available machines
    */
-  async getAvailable(): Promise<Machine[]> {
-    const res = await fetch(`${this.baseUrl}?action=available`);
+  async getAvailable(branchId?: string): Promise<Machine[]> {
+    const qs = new URLSearchParams({ action: 'available' });
+    if (branchId) qs.set('branch', branchId);
+    const res = await fetch(`${this.baseUrl}?${qs}`);
     if (!res.ok) {
       const error = await res.json();
       throw new Error(error.error || 'ไม่สามารถโหลดข้อมูลเครื่องได้');
@@ -118,8 +122,10 @@ export class ApiMachineRepository implements IMachineRepository {
   /**
    * Get statistics
    */
-  async getStats(): Promise<MachineStats> {
-    const res = await fetch(`${this.baseUrl}?action=stats`);
+  async getStats(branchId?: string): Promise<MachineStats> {
+    const qs = new URLSearchParams({ action: 'stats' });
+    if (branchId) qs.set('branch', branchId);
+    const res = await fetch(`${this.baseUrl}?${qs}`);
     if (!res.ok) {
       const error = await res.json();
       throw new Error(error.error || 'ไม่สามารถโหลดสถิติได้');

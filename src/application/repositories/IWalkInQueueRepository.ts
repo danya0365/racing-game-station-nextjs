@@ -62,6 +62,11 @@ export interface JoinWalkInQueueData {
   preferredMachineId?: string;
   notes?: string;
   customerId: string; // For ownership verification (empty string if new/guest)
+  /**
+   * Branch to queue into. Only used when no machine is picked — when a
+   * machine is given, the RPC derives the branch from that machine instead.
+   */
+  branchId?: string;
 }
 
 
@@ -79,12 +84,17 @@ export interface IWalkInQueueRepository {
   /**
    * Get all queue entries (paginated)
    */
-  getAll(limit?: number, page?: number): Promise<WalkInQueue[]>;
+  /**
+   * @param branchId - Restrict to one branch; omit for all branches
+   */
+  getAll(limit?: number, page?: number, branchId?: string): Promise<WalkInQueue[]>;
 
   /**
    * Get all waiting queue entries (ordered by queue number)
+   *
+   * @param branchId - Restrict to one branch; omit for all
    */
-  getWaiting(): Promise<WalkInQueue[]>;
+  getWaiting(branchId?: string): Promise<WalkInQueue[]>;
 
   /**
    * Get queue entries by customer ID
@@ -121,5 +131,5 @@ export interface IWalkInQueueRepository {
   /**
    * Get statistics
    */
-  getStats(): Promise<WalkInQueueStats>;
+  getStats(branchId?: string): Promise<WalkInQueueStats>;
 }
