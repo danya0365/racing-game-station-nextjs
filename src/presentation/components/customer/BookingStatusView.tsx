@@ -1,6 +1,7 @@
 "use client";
 
 import { Booking } from "@/src/application/repositories/IBookingRepository";
+import { useActiveBranch } from "@/src/presentation/components/branch/BranchScope";
 import { createBookingRepository } from "@/src/infrastructure/repositories/RepositoryFactory";
 import dayjs, { getShopTodayString } from "@/src/lib/date";
 import { AnimatedButton } from "@/src/presentation/components/ui/AnimatedButton";
@@ -31,6 +32,10 @@ export function BookingStatusView() {
   // ✅ Use factory for repository creation
   const bookingRepo = useMemo(() => createBookingRepository(), []);
 
+  // Resolved during render from BranchScope's context — a customer's history at
+  // one branch must not show bookings they made at the other
+  const branchId = useActiveBranch().id;
+
   // Load my bookings by customer_id (SECURE)
   const loadMyBookings = useCallback(async () => {
     if (!customerInfo.id) {
@@ -43,7 +48,7 @@ export function BookingStatusView() {
     setError(null);
 
     try {
-      const data = await bookingRepo.getMyBookings(customerInfo.id);
+      const data = await bookingRepo.getMyBookings(customerInfo.id, branchId);
       setBookings(data);
     } catch (err) {
       setError("ไม่สามารถโหลดข้อมูลการจองได้");
@@ -51,7 +56,7 @@ export function BookingStatusView() {
     } finally {
       setLoading(false);
     }
-  }, [bookingRepo, customerInfo.id]);
+  }, [ bookingRepo, customerInfo.id, branchId ]);
 
   // Auto-load when customerInfo.id is available
   useEffect(() => {

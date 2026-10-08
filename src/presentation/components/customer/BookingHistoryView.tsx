@@ -2,6 +2,7 @@
 
 import { Booking, BookingDaySchedule } from '@/src/application/repositories/IBookingRepository';
 import { Machine } from '@/src/application/repositories/IMachineRepository';
+import { useActiveBranch } from '@/src/presentation/components/branch/BranchScope';
 import { createBookingRepositories } from '@/src/infrastructure/repositories/RepositoryFactory';
 import { AnimatedCard } from '@/src/presentation/components/ui/AnimatedCard';
 import { GlowButton } from '@/src/presentation/components/ui/GlowButton';
@@ -28,6 +29,9 @@ const DEFAULT_TIMEZONE = SHOP_TIMEZONE;
 export function BookingHistoryView() {
   // Customer store for customerId
   const { customerInfo, isInitialized } = useCustomerStore();
+  // Resolved during render from BranchScope's context — no branch segment in
+  // this component's URL, so it follows the customer's choice
+  const branchId = useActiveBranch().id;
   
   // Data state
   const [machines, setMachines] = useState<Machine[]>([]);
@@ -75,11 +79,12 @@ export function BookingHistoryView() {
     return dates;
   }, []);
 
-  // Load machines on mount
+  // Load machines on mount — scoped to the selected branch so this page never
+  // offers a machine from the other shop
   useEffect(() => {
     const loadMachines = async () => {
       try {
-        const allMachines = await machineRepo.getAll();
+        const allMachines = await machineRepo.getAll(branchId);
         setMachines(allMachines.filter(m => m.isActive));
       } catch (err) {
         console.error('Error loading machines:', err);
@@ -88,7 +93,7 @@ export function BookingHistoryView() {
       }
     };
     loadMachines();
-  }, [machineRepo]);
+  }, [machineRepo, branchId]);
 
   // Load schedule when machine/date changes
   const loadSchedule = useCallback(async () => {

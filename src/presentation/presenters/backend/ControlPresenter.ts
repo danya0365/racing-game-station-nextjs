@@ -56,21 +56,25 @@ export class ControlPresenter {
   /**
    * Get view model for the control panel
    */
-  async getViewModel(): Promise<ControlViewModel> {
+  /**
+   * @param branchId - Restrict every query to one branch. Omit to show all
+   *   branches (the un-scoped dashboard does this).
+   */
+  async getViewModel(branchId?: string): Promise<ControlViewModel> {
     const today = getShopTodayString();
-    
+
     // Fetch data in parallel
     const [allMachines, activeSessions, waitingQueue] = await Promise.all([
-      this.machineRepo.getAll(),
-      this.sessionRepo.getActiveSessions(),
-      this.walkInRepo.getWaiting(),
+      this.machineRepo.getAll(branchId),
+      this.sessionRepo.getActiveSessions(branchId),
+      this.walkInRepo.getWaiting(branchId),
     ]);
 
     // Filter active machines only
     const machines = allMachines.filter(m => m.isActive);
     
     // Fetch today's bookings for all machines in ONE call (Optimization)
-    const allBookingsPromise = this.bookingRepo.getByDate(today);
+    const allBookingsPromise = this.bookingRepo.getByDate(today, undefined, branchId);
 
     // Fetch schedules (still N calls unfortunately, unless optimized further)
     const schedulesPromises = machines.map(m =>

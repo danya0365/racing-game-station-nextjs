@@ -41,12 +41,13 @@ export class BookingPresenter {
 
   /**
    * Get initial view model for the page
+   * @param branchId - Restrict machines to one branch
    */
-  async getViewModel(todayStr: string): Promise<BookingViewModel> {
+  async getViewModel(todayStr: string, branchId?: string): Promise<BookingViewModel> {
     try {
       // Get machines and available dates in parallel
       const [machines, availableDates] = await Promise.all([
-        this.machineRepo.getAll(),
+        this.machineRepo.getAll(branchId),
         this.bookingRepo.getAvailableDates(todayStr, 7),
       ]);
 

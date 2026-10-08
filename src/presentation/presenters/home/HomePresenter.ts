@@ -52,16 +52,19 @@ export class HomePresenter {
 
   /**
    * Get view model for the home page
+   *
+   * @param branchId - Restrict every query to one branch.
+   *   Omit for the staff dashboard, which shows all branches.
    */
-  async getViewModel(todayStr: string, now: string): Promise<HomeViewModel> {
+  async getViewModel(todayStr: string, now: string, branchId?: string): Promise<HomeViewModel> {
     try {
       // Get data in parallel for better performance
       const [allMachines, machineStats, queueStats, bookings, dashboardStats] = await this.withTimeout(Promise.all([
-        this.machineRepository.getAll(),
-        this.machineRepository.getStats(),
-        this.walkInQueueRepository.getStats(),
-        this.bookingRepository.getByDate(todayStr),
-        this.dashboardRepository.getHomeDashboardStats(), // New RPC call
+        this.machineRepository.getAll(branchId),
+        this.machineRepository.getStats(branchId),
+        this.walkInQueueRepository.getStats(branchId),
+        this.bookingRepository.getByDate(todayStr, undefined, branchId),
+        this.dashboardRepository.getHomeDashboardStats(branchId), // New RPC call
       ]));
 
       // Filter only active machines for client display

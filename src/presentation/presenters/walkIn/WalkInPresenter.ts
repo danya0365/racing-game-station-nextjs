@@ -22,9 +22,18 @@ export class WalkInPresenter {
   /**
    * Join the walk-in queue
    */
-  async joinQueue(data: JoinWalkInQueueData): Promise<WalkInQueue> {
+  /**
+   * Join the walk-in queue
+   * @param branchId - Used only when no machine is picked; otherwise the RPC
+   *   derives the branch from the chosen machine so a queue can't land in the
+   *   wrong branch.
+   */
+  async joinQueue(data: JoinWalkInQueueData, branchId?: string): Promise<WalkInQueue> {
     try {
-      return await this.walkInRepo.join(data);
+      return await this.walkInRepo.join({
+        ...data,
+        branchId: data.preferredMachineId ? undefined : (data.branchId ?? branchId),
+      });
     } catch (error) {
       console.error('Error joining queue:', error);
       throw error;
@@ -47,11 +56,12 @@ export class WalkInPresenter {
 
   /**
    * Get active machines (status can be anything, but must be isActive=true)
+   * @param branchId - Restrict machines to one branch
    */
-  async getActiveMachines(): Promise<Machine[]> {
+  async getActiveMachines(branchId?: string): Promise<Machine[]> {
     try {
       // We want all machines that are present in the shop (isActive), regardless of status (occupied/available)
-      const machines = await this.machineRepo.getAll();
+      const machines = await this.machineRepo.getAll(branchId);
       return machines.filter(m => m.isActive);
     } catch (error) {
       console.error('Error getting machines:', error);

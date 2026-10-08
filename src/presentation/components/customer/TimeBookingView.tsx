@@ -10,6 +10,7 @@ import {
     useTimeBookingPresenter
 } from '@/src/presentation/presenters/timeBooking/useTimeBookingPresenter';
 import { useAuthStore } from '@/src/presentation/stores/auth-store';
+import { useBranchStore } from '@/src/presentation/stores/useBranchStore';
 import { useCustomerStore } from '@/src/presentation/stores/useCustomerStore';
 import { animated } from '@react-spring/web';
 import dayjs from 'dayjs';
@@ -34,6 +35,10 @@ export function TimeBookingView({
   initialViewModel, 
   presenterOverride 
 }: TimeBookingViewProps) {
+  const branch = useBranchStore((st) => st.branch);
+  const hasChosenBranch = useBranchStore((st) => st.hasChosen);
+  const openBranchPicker = useBranchStore((st) => st.openPicker);
+
   const { customerInfo, setCustomerInfo } = useCustomerStore();
 
   // ✅ Use presenter hook for state management
@@ -244,7 +249,20 @@ export function TimeBookingView({
           จองเวลา
         </h1>
 
-        <div className="w-20" /> {/* Spacer */}
+        {/* Branch switch — this view renders its own full-screen header above
+            the app header, so the app-level branch button is hidden underneath
+            it. Put the same control here, in the spacer slot. */}
+        {hasChosenBranch && (
+          <button
+            onClick={openBranchPicker}
+            type="button"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-cyan-400/40 bg-cyan-400/10 text-cyan-300 text-sm font-medium transition-all hover:bg-cyan-400/20"
+            aria-label={`สาขาปัจจุบัน: ${branch.shortName} — คลิกเพื่อเปลี่ยนสาขา`}
+          >
+            <span aria-hidden>📍</span>
+            <span className="max-w-[90px] truncate">{branch.shortName}</span>
+          </button>
+        )}
       </header>
 
       {/* Progress Steps */}

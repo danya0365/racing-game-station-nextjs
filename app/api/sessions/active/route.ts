@@ -16,6 +16,8 @@ export async function GET(request: NextRequest) {
     
     const { searchParams } = new URL(request.url);
     const stationId = searchParams.get('stationId');
+    // Optional ?branch=<uuid> — restrict sessions to one branch
+    const branchId = searchParams.get('branch') || undefined;
     
     if (stationId) {
       const session = await repository.getActiveSession(stationId);
@@ -25,7 +27,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(session);
     }
     
-    const sessions = await repository.getActiveSessions();
+    const sessions = await repository.getActiveSessions(branchId);
     return NextResponse.json(sessions);
   } catch (error) {
     console.error('Error fetching active sessions:', error);

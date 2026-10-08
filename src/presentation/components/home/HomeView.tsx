@@ -3,6 +3,7 @@
 import { Machine } from "@/src/application/repositories/IMachineRepository";
 import { HomeViewModel } from "@/src/presentation/presenters/home/HomePresenter";
 import { useHomePresenter } from "@/src/presentation/presenters/home/useHomePresenter";
+import { useBranchStore } from "@/src/presentation/stores/useBranchStore";
 import "dayjs/locale/th";
 import Link from "next/link";
 import { PageHeader } from "../ui/PageHeader";
@@ -40,6 +41,10 @@ export function HomeView({
 }: {
   initialViewModel?: HomeViewModel;
 }) {
+  // Links carry the branch prefix so a customer stays on the branch they picked
+  const branchSlug = useBranchStore((st) => st.branch.slug);
+  const branchHref = (path: string) => `/${branchSlug}${path}`;
+
   const [{ viewModel, loading: isLoading }, { refreshData }] =
     useHomePresenter(initialViewModel);
 
@@ -90,7 +95,7 @@ export function HomeView({
         <section>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <QuickActionCard
-              href="/walk-in"
+              href={branchHref("/walk-in")}
               icon="🏁"
               title="เข้าคิวทันที"
               description="เล่นเลย ไม่ต้องจอง"
@@ -98,14 +103,14 @@ export function HomeView({
               isPrimary
             />
             <QuickActionCard
-              href="/time-booking"
+              href={branchHref("/time-booking")}
               icon="📅"
               title="จองล่วงหน้า"
               description="ล็อคเวลาที่ต้องการ"
               color="purple"
             />
             <QuickActionCard
-              href="/customer/booking-history"
+              href={branchHref("/customer/booking-history")}
               icon="📋"
               title="ประวัติการจอง"
               description="เช็คสถานะของคุณ"
@@ -157,7 +162,7 @@ export function HomeView({
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-medium text-foreground">ภาพรวมวันนี้</h3>
             <Link
-              href="/time-booking"
+              href={branchHref("/time-booking")}
               className="text-sm text-accent-purple hover:opacity-80"
             >
               ดูตารางเวลาเต็ม →

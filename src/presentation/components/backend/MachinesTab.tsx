@@ -6,6 +6,7 @@ import { AnimatedButton } from '@/src/presentation/components/ui/AnimatedButton'
 import { AnimatedCard } from '@/src/presentation/components/ui/AnimatedCard';
 import { ImageUploadInput } from '@/src/presentation/components/ui/ImageUploadInput';
 import { Portal } from '@/src/presentation/components/ui/Portal';
+import { BRANCHES } from '@/src/config/branch.config';
 import { useState } from 'react';
 
 interface MachinesTabProps {
@@ -35,6 +36,7 @@ interface MachinesTabProps {
     imageUrl?: string;
     type?: string;
     hourlyRate?: number;
+    branchId: string;
   }) => Promise<void>;
   onUploadImage?: (file: File, pathPrefix?: string) => Promise<string>;
 }
@@ -213,6 +215,7 @@ interface AddMachineModalProps {
     imageUrl?: string;
     type?: string;
     hourlyRate?: number;
+    branchId: string;
   }) => Promise<void>;
   isUpdating: boolean;
   onUploadImage?: (file: File, pathPrefix?: string) => Promise<string>;
@@ -226,6 +229,7 @@ function AddMachineModal({ onClose, onSave, isUpdating, onUploadImage }: AddMach
     imageUrl: '',
     type: 'simulator',
     hourlyRate: 0,
+    branchId: BRANCHES[0].id,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -237,6 +241,7 @@ function AddMachineModal({ onClose, onSave, isUpdating, onUploadImage }: AddMach
       imageUrl: formData.imageUrl || undefined,
       type: formData.type,
       hourlyRate: formData.hourlyRate || undefined,
+      branchId: formData.branchId,
     });
   };
 
@@ -284,6 +289,21 @@ function AddMachineModal({ onClose, onSave, isUpdating, onUploadImage }: AddMach
               onChange={(e) => setFormData({ ...formData, position: parseInt(e.target.value) || 1 })}
               className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-cyan-500 text-foreground"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm text-muted mb-1">สาขา</label>
+            <select
+              value={formData.branchId}
+              onChange={(e) => setFormData({ ...formData, branchId: e.target.value })}
+              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-cyan-500 text-foreground"
+            >
+              {BRANCHES.map((branch) => (
+                <option key={branch.id} value={branch.id}>
+                  {branch.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>

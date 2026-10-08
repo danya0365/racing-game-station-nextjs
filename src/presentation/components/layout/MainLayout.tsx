@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import { ReactNode } from 'react';
-import { ChatWidget } from '../chat/ChatWidget';
-import { MainFooter } from './MainFooter';
-import { MainHeader } from './MainHeader';
+import { ReactNode } from "react";
+import { BranchGate } from "../branch/BranchGate";
+import { ChatWidget } from "../chat/ChatWidget";
+import { MainFooter } from "./MainFooter";
+import { MainHeader } from "./MainHeader";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -15,21 +16,22 @@ interface MainLayoutProps {
  */
 export function MainLayout({ children }: MainLayoutProps) {
   return (
-    <div className="h-screen w-screen overflow-hidden flex flex-col bg-background">
-      {/* Header */}
-      <MainHeader />
+    <BranchGate>
+      <div className="h-screen w-screen overflow-hidden flex flex-col bg-background">
+        {/* Header */}
+        <MainHeader />
 
-      {/* Main Content Area - Takes remaining space */}
-      <main className="flex-1 overflow-auto">
-        {children}
-      </main>
+        {/* Main Content Area - Takes remaining space */}
+        <main className="flex-1 overflow-auto">{children}</main>
 
-      {/* Footer */}
-      <MainFooter />
+        {/* Footer */}
+        <MainFooter />
 
-      {/* Chat Widget - Floating, admin only (Feature Toggled) */}
-      {process.env.NEXT_PUBLIC_ENABLE_CHAT_WIDGET === 'true' && <ChatWidget />}
-    </div>
+        {/* Chat Widget - Floating, admin only (Feature Toggled) */}
+        {process.env.NEXT_PUBLIC_ENABLE_CHAT_WIDGET === "true" && (
+          <ChatWidget />
+        )}
+      </div>
+    </BranchGate>
   );
 }
-

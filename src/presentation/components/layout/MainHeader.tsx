@@ -1,17 +1,38 @@
 'use client';
 
-import { NAV_LINKS } from '@/src/config/navigation.config';
+import { BRANCHES } from '@/src/config/branch.config';
+import { getNavLinks } from '@/src/config/navigation.config';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useBranchStore } from '@/src/presentation/stores/useBranchStore';
 import { useAuthPresenter } from '../../presenters/auth/useAuthPresenter';
 import { Portal } from '../ui/Portal';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import { MobileMenu } from './MobileMenu';
 
+/**
+ * Pages whose view renders its own full-screen header above the app header.
+ * Those views put their own branch button in theirs, so the one here is hidden
+ * to avoid showing two.
+ */
+const SELF_HEADED_ROUTES = ['/time-booking', '/walk-in'];
+
+/** Branch prefixes — routes above also exist under /pattani and /narathiwas */
+const BRANCH_PREFIXES = BRANCHES.map((b) => `/${b.slug}`);
+
 export function MainHeader() {
   const router = useRouter();
   const [authState, authActions] = useAuthPresenter();
+  // Header links follow the active branch so switching branch is sticky
+  const pathname = usePathname();
+  const branch = useBranchStore((s) => s.branch);
+  const hasChosenBranch = useBranchStore((s) => s.hasChosen);
+  const openBranchPicker = useBranchStore((s) => s.openPicker);
+  const navLinks = getNavLinks(branch);
+  const hasBranchPrefix = BRANCH_PREFIXES.some((p) => pathname.startsWith(p));
+  const pathWithoutBranch = pathname.split('/').slice(hasBranchPrefix ? 2 : 1).join('/');
+  const isCoveredByOwnHeader = SELF_HEADED_ROUTES.includes(`/${pathWithoutBranch}`);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
@@ -29,7 +50,7 @@ export function MainHeader() {
     <>
       <header className="h-16 bg-surface/80 backdrop-blur-lg border-b border-border/50 flex items-center justify-between px-4 md:px-8 z-50">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
+        <Link href={`/${branch.slug}`} className="flex items-center gap-3 group">
           <div className="flex items-center gap-3 transition-transform duration-200 group-hover:scale-105">
             {/* Racing Icon */}
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg">
@@ -46,7 +67,7 @@ export function MainHeader() {
 
         {/* Navigation */}
         <nav className="hidden md:flex items-center gap-6">
-          {NAV_LINKS.map((link) => (
+          {navLinks.map((link) => (
             <NavLink key={link.href} href={link.href}>
               {link.label}
             </NavLink>
@@ -55,6 +76,39 @@ export function MainHeader() {
 
         {/* Right Section */}
         <div className="flex items-center gap-4">
+          {/* Current branch — opens the switch modal. Lives in the header rather
+              than floating above it so it never covers the nav links.
+
+              Views that render their own full-screen header (TimeBookingView and
+              friends) sit above this one, so the button is hidden there — they
+              put their own copy in their header instead. Without this the
+              customer sees two identical buttons. */}
+          {hasChosenBranch && !isCoveredByOwnHeader && (
+            <button
+              onClick={openBranchPicker}
+              type="button"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-cyan-500/30 bg-cyan-500/10 text-accent-cyan text-sm font-medium transition-all hover:bg-cyan-500/20 hover:border-cyan-500/50"
+              aria-label={`สาขาปัจจุบัน: ${branch.shortName} — คลิกเพื่อเปลี่ยนสาขา`}
+            >
+              <span aria-hidden>📍</span>
+              <span className="max-w-[100px] truncate">{branch.shortName}</span>
+              <svg
+                className="w-3.5 h-3.5 shrink-0 transition-transform duration-200"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 9l4-4 4 4M16 15l-4 4-4-4"
+                />
+              </svg>
+            </button>
+          )}
+
           <div className="hidden md:block">
             <ThemeToggle />
           </div>

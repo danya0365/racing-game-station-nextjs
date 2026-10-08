@@ -21,6 +21,8 @@ export async function GET(request: NextRequest) {
     const endDate = searchParams.get('endDate');
     const limitParams = searchParams.get('limit');
     const pageParams = searchParams.get('page');
+    // Optional ?branch=<uuid> — restrict sessions to one branch
+    const branchId = searchParams.get('branch') || undefined;
     
     let sessions;
     
@@ -33,7 +35,7 @@ export async function GET(request: NextRequest) {
     } else {
       const limit = limitParams ? parseInt(limitParams) : undefined;
       const page = pageParams ? parseInt(pageParams) : undefined;
-      sessions = await repository.getAll(limit, page);
+      sessions = await repository.getAll(limit, page, branchId);
     }
     
     return NextResponse.json(sessions);

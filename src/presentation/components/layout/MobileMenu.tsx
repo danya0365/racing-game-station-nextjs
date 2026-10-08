@@ -1,8 +1,9 @@
 'use client';
 
-import { NAV_LINKS } from '@/src/config/navigation.config';
+import { getNavLinks } from '@/src/config/navigation.config';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useBranchStore } from '@/src/presentation/stores/useBranchStore';
 import { useAuthPresenter } from '../../presenters/auth/useAuthPresenter';
 import { ThemeToggle } from '../ui/ThemeToggle';
 
@@ -14,6 +15,9 @@ interface MobileMenuProps {
 export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const router = useRouter();
   const [authState, authActions] = useAuthPresenter();
+  const branch = useBranchStore((s) => s.branch);
+  const hasChosenBranch = useBranchStore((s) => s.hasChosen);
+  const openBranchPicker = useBranchStore((s) => s.openPicker);
 
   const handleLogout = async () => {
     await authActions.signOut();
@@ -76,11 +80,32 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           </div>
         ) : null}
 
+        {/* Current branch — opens the switch modal, same as the header badge */}
+        {hasChosenBranch && (
+          <div className="p-4 border-b border-border">
+            <button
+              onClick={() => {
+                openBranchPicker();
+                onClose();
+              }}
+              type="button"
+              className="w-full flex items-center justify-between gap-2 px-4 py-3 rounded-xl border border-cyan-500/30 bg-cyan-500/10 text-accent-cyan text-sm font-medium transition-all hover:bg-cyan-500/20"
+              aria-label={`สาขาปัจจุบัน: ${branch.shortName} — คลิกเพื่อเปลี่ยนสาขา`}
+            >
+              <span className="flex items-center gap-2 min-w-0">
+                <span aria-hidden>📍</span>
+                <span className="truncate">สาขา{branch.shortName}</span>
+              </span>
+              <span className="text-xs shrink-0">เปลี่ยน ›</span>
+            </button>
+          </div>
+        )}
+
         {/* Navigation Links */}
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto border-b border-border">
           <div className="pb-2 mb-2 border-b border-border/50">
             <p className="text-[10px] font-bold text-muted uppercase px-4 mb-2 tracking-wider">เมนูหลัก</p>
-            {NAV_LINKS.map((link) => (
+            {getNavLinks(branch).map((link) => (
               <MobileNavLink 
                 key={link.href} 
                 href={link.href} 

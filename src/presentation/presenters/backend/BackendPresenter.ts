@@ -70,13 +70,17 @@ export class BackendPresenter {
   /**
    * Get dashboard data (Stats + Light Machine Check)
    */
-  async getDashboardData(): Promise<Partial<BackendViewModel>> {
+  /**
+   * @param branchId - Restrict every query to one branch. Omit to show all
+   *   branches (the un-scoped dashboard does this).
+   */
+  async getDashboardData(branchId?: string): Promise<Partial<BackendViewModel>> {
     try {
       // Parallel fetch: Stats + Machines + Queue Stats + Session Stats
       const [machines, walkInQueueStats, sessionStats] = await this.withTimeout(Promise.all([
-        this.machineRepository.getAll(),
-        this.walkInQueueRepository.getStats(),
-        this.sessionRepository.getStats(),
+        this.machineRepository.getAll(branchId),
+        this.walkInQueueRepository.getStats(branchId),
+        this.sessionRepository.getStats(undefined, branchId),
       ]));
 
       const activeMachines = machines.filter(m => m.isActive);
@@ -89,8 +93,8 @@ export class BackendPresenter {
 
       // Get waiting queues and active sessions
       const [waitingQueues, activeSessions] = await this.withTimeout(Promise.all([
-        this.walkInQueueRepository.getWaiting(),
-        this.sessionRepository.getActiveSessions(),
+        this.walkInQueueRepository.getWaiting(branchId),
+        this.sessionRepository.getActiveSessions(branchId),
       ]));
 
       return {
@@ -115,12 +119,12 @@ export class BackendPresenter {
   /**
    * Get control room data (Realtime machines + queues + sessions)
    */
-  async getControlData(): Promise<Partial<BackendViewModel>> {
+  async getControlData(branchId?: string): Promise<Partial<BackendViewModel>> {
     try {
       const [machines, waitingQueues, activeSessions] = await this.withTimeout(Promise.all([
-        this.machineRepository.getAll(),
-        this.walkInQueueRepository.getWaiting(),
-        this.sessionRepository.getActiveSessions(),
+        this.machineRepository.getAll(branchId),
+        this.walkInQueueRepository.getWaiting(branchId),
+        this.sessionRepository.getActiveSessions(branchId),
       ]));
 
       // Calculate machine stats
@@ -151,11 +155,11 @@ export class BackendPresenter {
   /**
    * Get queues data (History + Stats)
    */
-  async getQueuesData(limit: number = 20, page: number = 1): Promise<Partial<BackendViewModel>> {
+  async getQueuesData(limit: number = 20, page: number = 1, branchId?: string): Promise<Partial<BackendViewModel>> {
     try {
       const [queues, walkInQueueStats] = await this.withTimeout(Promise.all([
-        this.walkInQueueRepository.getAll(limit, page),
-        this.walkInQueueRepository.getStats(),
+        this.walkInQueueRepository.getAll(limit, page, branchId),
+        this.walkInQueueRepository.getStats(branchId),
       ]));
 
       return {
@@ -174,11 +178,11 @@ export class BackendPresenter {
   /**
    * Get sessions data (History + Stats)
    */
-  async getSessionsData(limit: number = 20, page: number = 1): Promise<Partial<BackendViewModel>> {
+  async getSessionsData(limit: number = 20, page: number = 1, branchId?: string): Promise<Partial<BackendViewModel>> {
     try {
       const [sessions, sessionStats] = await this.withTimeout(Promise.all([
-        this.sessionRepository.getAll(limit, page),
-        this.sessionRepository.getStats(),
+        this.sessionRepository.getAll(limit, page, branchId),
+        this.sessionRepository.getStats(undefined, branchId),
       ]));
 
       // Sort sessions by start time desc (newest first)
@@ -199,8 +203,12 @@ export class BackendPresenter {
   /**
    * Get view model for the backend page (Unified loader)
    */
-  async getViewModel(now: string): Promise<BackendViewModel> {
-    const data = await this.getControlData();
+  /**
+   * @param branchId - Restrict every query to one branch. Omit to show all
+   *   branches.
+   */
+  async getViewModel(now: string, branchId?: string): Promise<BackendViewModel> {
+    const data = await this.getControlData(branchId);
 
     // Fetch today's bookings if repository is available
     let todayBookings: Booking[] = [];
@@ -219,7 +227,7 @@ export class BackendPresenter {
         const today = now.slice(0, 10);
         
         // Fetch all bookings for all machines for today in ONE query
-        const allBookings = await this.bookingRepository!.getByDate(today);
+        const allBookings = await this.bookingRepository!.getByDate(today, undefined, branchId);
         
         todayBookings = allBookings.sort((a, b) => a.localStartTime.localeCompare(b.localStartTime));
         
@@ -239,8 +247,8 @@ export class BackendPresenter {
 
     // Get full stats
     const [walkInQueueStats, sessionStats] = await Promise.all([
-      this.walkInQueueRepository.getStats(),
-      this.sessionRepository.getStats(),
+      this.walkInQueueRepository.getStats(branchId),
+      this.sessionRepository.getStats(undefined, branchId),
     ]);
 
     return {
@@ -410,6 +418,7 @@ export class BackendPresenter {
     imageUrl?: string;
     type?: string;
     hourlyRate?: number;
+    branchId: string;
   }): Promise<Machine> {
     try {
       return await this.machineRepository.create(data);

@@ -5,6 +5,7 @@ import type { WalkInQueue, WalkInStatus } from '@/src/application/repositories/I
 import dayjs from 'dayjs';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BackendPresenter, BackendViewModel } from './BackendPresenter';
+import { useActiveBranch } from '@/src/presentation/components/branch/BranchScope';
 import { createClientBackendPresenter } from './BackendPresenterClientFactory';
 
 // Type aliases for backward compatibility - includes legacy statuses
@@ -29,6 +30,8 @@ export interface MachineCreateData {
   imageUrl?: string;
   type?: string;
   hourlyRate?: number;
+  /** Branch the new machine belongs to — a machine always has exactly one */
+  branchId: string;
 }
 
 export interface BackendPresenterState {
@@ -79,6 +82,10 @@ export function useBackendPresenter(
     () => presenterOverride ?? createClientBackendPresenter(),
     [presenterOverride]
   );
+
+  // Resolved during render from BranchScope's context, so the first fetch is
+  // already for the right branch
+  const branchId = useActiveBranch().id;
   
   const isMountedRef = useRef(true);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -112,21 +119,21 @@ export function useBackendPresenter(
       
       if (tab === 'dashboard') {
         // Dashboard needs Everything (Machines, Queues, Sessions, Bookings Stats)
-        partialData = await presenter.getViewModel(nowStr);
+        partialData = await presenter.getViewModel(nowStr, branchId);
       } else if (tab === 'control' || tab === 'machines') {
         // Operational tabs need real-time data but not full daily bookings
-        partialData = await presenter.getControlData();
+        partialData = await presenter.getControlData(branchId);
       } else if (tab === 'queues') {
-        partialData = await presenter.getQueuesData(limit, targetPage);
+        partialData = await presenter.getQueuesData(limit, targetPage, branchId);
       } else if (tab === 'sessions') {
-        partialData = await presenter.getSessionsData(limit, targetPage);
+        partialData = await presenter.getSessionsData(limit, targetPage, branchId);
       } else if (tab === 'customers' || tab === 'advanceBookings') {
         // These tabs handle their own data fetching
         setLoading(false);
         return;
       } else {
         // Fallback
-        partialData = await presenter.getViewModel(nowStr);
+        partialData = await presenter.getViewModel(nowStr, branchId);
       }
 
       if (isMountedRef.current) {
@@ -150,7 +157,7 @@ export function useBackendPresenter(
         setLoading(false);
       }
     }
-  }, [activeTab, presenter]);
+  }, [activeTab, presenter, branchId]);
 
   /**
    * Refresh data (only if tab is visible)

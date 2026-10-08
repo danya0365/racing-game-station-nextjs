@@ -1,16 +1,11 @@
-import { getShopNow } from "@/src/lib/date";
+import { BranchScope } from "@/src/presentation/components/branch/BranchScope";
 import { BackendView } from "@/src/presentation/components/backend/BackendView";
 import { createServerBackendPresenter } from "@/src/presentation/presenters/backend/BackendPresenterServerFactory";
 import type { Metadata } from "next";
-import Link from "next/link";
 
-// Tell Next.js this is a dynamic page
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 
-/**
- * Generate metadata for the page
- */
 export async function generateMetadata(): Promise<Metadata> {
   const presenter = await createServerBackendPresenter();
 
@@ -27,38 +22,17 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * Backend/Admin page - Server Component for SEO optimization
+ * Backend/Admin page — staff dashboard for the selected branch.
+ *
+ * No server-side view model: the chosen branch lives in localStorage, which the
+ * server cannot read, so fetching here would show every branch's numbers for a
+ * frame before the client refetched the selected one. BackendView loads it on
+ * the client instead, scoped by BranchScope.
  */
-export default async function BackendPage() {
-  const presenter = await createServerBackendPresenter();
-
-  try {
-    // Use Shop timezone for consistent server/client date handling
-    // FIX: Use .format() to preserve timezone offset (toISOString converts to UTC)
-    // TODO: pass date from props
-    const nowStr = getShopNow().format();
-    const viewModel = await presenter.getViewModel(nowStr);
-
-    return <BackendView initialViewModel={viewModel} />;
-  } catch (error) {
-    console.error("Error fetching backend data:", error);
-
-    return (
-      <div className="h-full flex items-center justify-center bg-racing-gradient">
-        <div className="text-center">
-          <div className="text-6xl mb-4">⚙️</div>
-          <h1 className="text-2xl font-bold text-foreground mb-2">
-            เกิดข้อผิดพลาด
-          </h1>
-          <p className="text-muted mb-4">ไม่สามารถโหลดข้อมูลได้</p>
-          <Link
-            href="/"
-            className="inline-block bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-3 rounded-xl hover:from-purple-400 hover:to-pink-500 transition-all"
-          >
-            กลับหน้าแรก
-          </Link>
-        </div>
-      </div>
-    );
-  }
+export default function BackendPage() {
+  return (
+    <BranchScope>
+      <BackendView />
+    </BranchScope>
+  );
 }

@@ -7,6 +7,7 @@ import type {
   CreateBookingData,
 } from '@/src/application/repositories/IBookingRepository';
 import { getShopNow, getShopTodayString, SHOP_TIMEZONE } from '@/src/lib/date';
+import { useActiveBranch } from '@/src/presentation/components/branch/BranchScope';
 import { useCustomerStore } from '@/src/presentation/stores/useCustomerStore';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BookingPresenter, BookingViewModel } from './BookingPresenter';
@@ -55,6 +56,11 @@ export function useBookingPresenter(
     [presenterOverride]
   );
 
+  // Resolved during render from BranchScope's context, so it is already the
+  // right branch on the first render — a child's effect runs before the
+  // parent's, so reading it from the store inside a callback would be stale.
+  const branchId = useActiveBranch().id;
+
   // Track mounted state for memory leak protection
   const isMountedRef = useRef(true);
 
@@ -89,7 +95,10 @@ export function useBookingPresenter(
       const todayStr = getShopTodayString();
       const nowStr = getShopNow().toISOString();
       
-      const vm = await presenter.getViewModel(todayStr);
+      const vm = await presenter.getViewModel(
+        todayStr,
+        branchId
+      );
       if (isMountedRef.current) {
         setViewModel(vm);
         
@@ -115,7 +124,7 @@ export function useBookingPresenter(
         setLoading(false);
       }
     }
-  }, [presenter]);
+  }, [presenter, branchId]);
 
   // Load data on mount if no initial data
   useEffect(() => {
