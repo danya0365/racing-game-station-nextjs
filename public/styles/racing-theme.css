@@ -32,26 +32,44 @@
 
 /* ---------- สีเน้นโหมดสว่าง — เข้มกว่าโหมดมืด เพราะพื้นขาวต้องการ contrast สูงกว่า ----------
    --racing-on-flag คือสีตัวอักษรที่วางบน --racing-flag ได้โดยผ่าน WCAG AA
-   ทั้งสองสาขาใช้สีต่างกัน: แดงต้องใช้ขาว (6.38:1) แต่ทองต้องใช้ดำ (5.41:1)
-   ถ้าฝังสีตัวอักษรไว้ที่เดียว ปุ่มหลักของปัตตานีจะเป็นขาวบนทอง —
-   อ่านไม่ออกและไม่ผ่านเกณฑ์ */
+   ทั้งสองสาขาใช้ขาวในโหมดสว่าง ต่างกันแค่ความเข้มของรามป์: แดงเข้มอยู่แล้ว
+   ส่วนทองต้องถูกเข้มลงให้ขาวผ่านทั้งสองปลายของ gradient (ดูบล็อกปัตตานี)
+   โหมดมืดสลับกลับ — ทองสว่างขึ้นมากจนต้องใช้ตัวอักษรสีดำแทน */
 [data-racing="narathiwas"] {
   --racing-flag: #c10500;
   --racing-flag-soft: #e10600;
   --racing-flag-dim: rgba(193, 5, 0, 0.08);
   --racing-on-flag: #ffffff;
   --racing-on-flag-soft: #ffffff;
+  /* Branch colour used AS TEXT (links, headings, "รอคิว" labels). Needs its own
+     value: --racing-flag is tuned for large fills, and on a white page it reads
+     at 5.85:1 — but see the dark-mode block below for why the same value there
+     only reaches 4.03:1 and cannot be reused. */
+  --racing-flag-text: #c10500; /* 5.85:1 on #f5f5f3 */
 }
 
 [data-racing="pattani"] {
-  --racing-flag: #8a6318;
-  --racing-flag-soft: #a87a24;
-  --racing-flag-dim: rgba(138, 99, 24, 0.1);
-  /* White on #8a6318 reaches 5.41:1, but the button's gradient starts at
-     --racing-flag-soft (#a87a24) and the text sits over that lighter end, where
-     white drops to 3.84:1. So the token tracks the soft end, not the flag. */
-  --racing-on-flag: #16161a; /* 4.70:1 on flag-soft */
-  --racing-on-flag-soft: #16161a;
+  /* Darker gold than the logo's #a87a24, and deliberately so: every flag-filled
+     surface here is a GRADIENT from --racing-flag to --racing-flag-soft, so the
+     text has to clear AA against the LIGHT end too, not just the dark one.
+
+     At the old ramp (#8a6318 → #a87a24) neither colour worked across both ends —
+     white dropped to 3.33:1 on the soft end, near-black to 4.06:1 on the flag
+     end. Darkening the whole ramp until white clears both ends is the only
+     direction that works, and it also lets both branches share the same
+     white-on-flag treatment instead of diverging. Measured after the cards'
+     90% opacity blend over the page: 5.97:1 on the flag end, 4.87:1 on the soft
+     end. In dark mode the ramp inverts back to the bright gold and the on-colour
+     flips to black — see the .dark block below. */
+  --racing-flag: #6e4e0c;
+  --racing-flag-soft: #855c0a;
+  --racing-flag-dim: rgba(110, 78, 12, 0.1);
+  --racing-on-flag: #ffffff; /* 5.97:1 on flag · 4.87:1 on flag-soft */
+  --racing-on-flag-soft: #ffffff;
+  /* Same value as --racing-flag here: with the ramp darkened enough for white to
+     clear AA, the darker end is also fine for text on a page — 6.98:1 on
+     #f5f5f3 and 6.00:1 on the flag's own dim tint. */
+  --racing-flag-text: #6e4e0c;
 }
 
 /* ---------- โหมดมืด (ตรงกับโลโก้ — ดำสนิท ขาวตัวอักษร) ----------
@@ -79,10 +97,18 @@
    ค่าใน comment คือ contrast ที่วัดได้จริงทั้งคู่ */
 .dark[data-racing="narathiwas"] {
   --racing-flag: #e10600;
-  --racing-flag-soft: #ff2a1f;
+  /* #ff2a1f sat just under AA for white text (4.49:1 against the blended fill).
+     #ee2d21 clears it at 4.97:1 and still reads as the light end of the same
+     ramp — the two ends stay visibly different. */
+  --racing-flag-soft: #ee2d21;
   --racing-flag-dim: rgba(225, 6, 0, 0.14);
-  --racing-on-flag: #ffffff; /* 4.97:1 */
-  --racing-on-flag-soft: #0a0a0a; /* 5.28:1 */
+  --racing-on-flag: #ffffff; /* 5.89:1 on flag · 4.97:1 on flag-soft */
+  --racing-on-flag-soft: #ffffff;
+  /* #e10600 as text sits on #08080a at only 4.03:1 — under AA for body copy, and
+     the flag colour is fixed by the logo. Lightening to the -soft end of the
+     same ramp reaches 5.34:1 while staying recognisably the same red, which is
+     why this needs a token separate from --racing-flag rather than a reuse. */
+  --racing-flag-text: #ee2d21; /* 5.34:1 on #08080a · 4.99:1 on #121216 */
 }
 
 .dark[data-racing="pattani"] {
@@ -95,20 +121,39 @@
   --racing-flag-dim: rgba(217, 164, 65, 0.14);
   --racing-on-flag: #0a0a0a; /* 8.80:1 */
   --racing-on-flag-soft: #0a0a0a; /* 12.29:1 */
+  --racing-flag-text: #d9a441; /* 8.90:1 on #08080a — already fine as text */
 }
 
+/* ---------- LED สถานะ ----------
+   เหมือนกันทุกสาขาและทั้งสองโหมด เพราะต้องอ่านสถานะได้โดยไม่สับสนกับสีแบรนด์
+   (เครื่องว่าง = เขียว ทุกสาขาต้องเขียวเหมือนกัน)
+
+   ค่าโหมดสว่างต้องผ่าน AA ได้ทั้งสองทาง เพราะสีชุดนี้ถูกใช้สองแบบ:
+   เป็นตัวอักษรบนพื้นหน้า (ป้ายสถานะ) และเป็นพื้นของปุ่ม/การ์ดที่มีข้อความทับ
+   ค่าใน comment คือคู่ของทั้งสองการใช้ วัดจริงบนพื้น --racing-bg
+   ข้อความบนพื้น LED วัดหลังผสม opacity .90 ของการ์ดสถิติ */
 [data-racing] {
-  /* LED สถานะ — เหมือนกันทุกสาขาและทั้งสองโหมด เพราะต้องอ่านสถานะได้
-     โดยไม่สับสนกับสีแบรนด์ */
-  --racing-led-go: #16a34a;
-  --racing-led-warn: #d97706;
-  --racing-led-off: #a1a1aa;
+  /* go/warn ถูกเข้มกว่าค่าเดิม (#16a34a / #d97706) เพราะค่าเดิมให้ขาวบนพื้น
+     ได้แค่ 3.20–3.19:1 — ค่านี้ให้ 6.19 / 4.65:1 */
+  --racing-led-go: #0e5f2f; /* 7.13:1 บนพื้น · ขาวบนนี้ 6.19:1 */
+  --racing-led-warn: #9a5706; /* 5.14:1 บนพื้น · ขาวบนนี้ 4.65:1 */
+  --racing-led-stop: #b91c1c; /* 5.93:1 · ขาวบนนี้ 5.65:1 */
+  --racing-led-info: #1d4ed8; /* 6.14:1 · ขาวบนนี้ 5.53:1 */
+  --racing-led-off: #57575e; /* 6.02:1 · ขาวบนนี้ 5.62:1 */
+
+  /* สีตัวอักษรที่วางบน LED ได้ — โหมดสว่าง LED เข้ม จึงใช้ขาว */
+  --racing-led-on: #ffffff;
 }
 
 .dark[data-racing] {
-  --racing-led-go: #22c07c;
-  --racing-led-warn: #f0a31a;
-  --racing-led-off: #5a5a64;
+  --racing-led-go: #4ade80; /* 10.72:1 บน #121216 · ดำบนนี้ 9.28:1 */
+  --racing-led-warn: #fbbf24; /* 11.19:1 · ดำบนนี้ 9.68:1 */
+  --racing-led-stop: #f87171; /* 6.76:1 · ดำบนนี้ 5.91:1 */
+  --racing-led-info: #60a5fa; /* 7.35:1 · ดำบนนี้ 6.41:1 */
+  --racing-led-off: #a1a1aa; /* 7.29:1 · ดำบนนี้ 6.41:1 */
+
+  /* LED สว่างขึ้นมากในโหมดมืด ขาวบนนั้นอ่านไม่ออก (~2:1) จึงต้องเป็นดำ */
+  --racing-led-on: #0a0a0a;
 }
 
 /* ============================================
@@ -177,6 +222,9 @@
 
   --color-racing-flag: var(--racing-flag);
   --color-racing-flag-soft: var(--racing-flag-soft);
+  /* Branch colour for TEXT. Separate from --color-racing-flag because a fill
+     tuned for large areas does not clear AA at body size on both modes. */
+  --color-racing-flag-text: var(--racing-flag-text);
   /* Text colour that is legible ON the flag, per branch and per mode. */
   --color-racing-on-flag: var(--racing-on-flag);
   --color-racing-on-flag-soft: var(--racing-on-flag-soft);
@@ -187,7 +235,11 @@
 
   --color-racing-led-go: var(--racing-led-go);
   --color-racing-led-warn: var(--racing-led-warn);
+  --color-racing-led-stop: var(--racing-led-stop);
+  --color-racing-led-info: var(--racing-led-info);
   --color-racing-led-off: var(--racing-led-off);
+  /* Text colour that is legible ON an LED, per mode. */
+  --color-racing-led-on: var(--racing-led-on);
 }
 
 /* ============================================
