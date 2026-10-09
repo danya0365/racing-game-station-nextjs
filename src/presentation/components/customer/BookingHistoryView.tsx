@@ -163,7 +163,7 @@ export function BookingHistoryView() {
       case 'pending':
         return { label: 'รอยืนยัน', color: 'bg-amber-500', textColor: 'text-amber-400', icon: '⏳' };
       case 'completed':
-        return { label: 'เสร็จสิ้น', color: 'bg-blue-500', textColor: 'text-blue-400', icon: '✔️' };
+        return { label: 'เสร็จสิ้น', color: 'bg-racing-flag-soft', textColor: 'text-racing-flag-soft', icon: '✔️' };
       case 'cancelled':
         return { label: 'ยกเลิก', color: 'bg-red-500', textColor: 'text-red-400', icon: '❌' };
       default:
@@ -235,9 +235,9 @@ export function BookingHistoryView() {
                     }}
                     className={`flex-shrink-0 px-4 py-3 rounded-xl font-bold transition-all duration-300 min-w-[80px] ${
                       isSelected
-                        ? 'bg-gradient-to-br from-purple-500 to-pink-600 text-white shadow-lg shadow-purple-500/40'
-                        : 'bg-surface border border-border text-foreground hover:border-purple-500'
-                    } ${isToday && !isSelected ? 'ring-2 ring-purple-500/50' : ''}`}
+                        ? 'bg-gradient-to-br from-racing-flag to-racing-flag-soft text-racing-on-flag shadow-lg shadow-racing-flag/40'
+                        : 'bg-surface border border-border text-foreground hover:border-racing-flag'
+                    } ${isToday && !isSelected ? 'ring-2 ring-racing-flag/50' : ''}`}
                   >
                     <div className="text-center">
                       <div className="text-xs font-medium mb-1 opacity-70">
@@ -278,8 +278,8 @@ export function BookingHistoryView() {
                 onClick={() => setSelectedDate(d.date)}
                 className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
                   d.date === selectedDate 
-                    ? 'w-4 bg-purple-500' 
-                    : 'bg-muted-light hover:bg-purple-500/50'
+                    ? 'w-4 bg-racing-flag' 
+                    : 'bg-muted-light hover:bg-racing-flag/50'
                 }`}
               />
             ))}
@@ -299,8 +299,8 @@ export function BookingHistoryView() {
               onClick={() => setSelectedMachineId('all')}
               className={`px-4 py-2 rounded-xl font-medium transition-all ${
                 selectedMachineId === 'all'
-                  ? 'bg-purple-500 text-white'
-                  : 'bg-surface border border-border text-foreground hover:border-purple-500'
+                  ? 'bg-racing-flag text-racing-on-flag'
+                  : 'bg-surface border border-border text-foreground hover:border-racing-flag'
               }`}
             >
               📋 ทุกเครื่อง
@@ -311,8 +311,8 @@ export function BookingHistoryView() {
                 onClick={() => setSelectedMachineId(machine.id)}
                 className={`px-4 py-2 rounded-xl font-medium transition-all ${
                   selectedMachineId === machine.id
-                    ? 'bg-purple-500 text-white'
-                    : 'bg-surface border border-border text-foreground hover:border-purple-500'
+                    ? 'bg-racing-flag text-racing-on-flag'
+                    : 'bg-surface border border-border text-foreground hover:border-racing-flag'
                 }`}
               >
                 🎮 {machine.name}
@@ -331,8 +331,8 @@ export function BookingHistoryView() {
             <div className="text-2xl font-bold text-red-400">{totalBooked}</div>
             <div className="text-sm text-muted">สล็อตจองแล้ว</div>
           </div>
-          <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-purple-400">{bookings.length}</div>
+          <div className="bg-racing-flag/10 border border-racing-flag/30 rounded-xl p-4 text-center">
+            <div className="text-2xl font-bold text-racing-flag">{bookings.length}</div>
             <div className="text-sm text-muted">รายการจอง</div>
           </div>
         </div>
@@ -340,7 +340,7 @@ export function BookingHistoryView() {
         {/* Loading */}
         {(loading || isUpdating) && (
           <div className="text-center py-8">
-            <div className="w-10 h-10 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
+            <div className="w-10 h-10 border-4 border-racing-flag/30 border-t-racing-flag rounded-full animate-spin mx-auto mb-4" />
             <p className="text-muted">กำลังโหลด...</p>
           </div>
         )}
@@ -475,12 +475,12 @@ export function BookingHistoryView() {
                       key={booking.id}
                       className={`p-4 rounded-xl transition-all ${
                         isOwner 
-                          ? 'bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-2 border-purple-500/50 ring-2 ring-purple-500/20' 
-                          : 'bg-surface border border-border hover:border-purple-500/50'
+                          ? 'bg-gradient-to-r from-racing-flag/10 to-racing-flag-soft/10 border-2 border-racing-flag/50 ring-2 ring-racing-flag/20' 
+                          : 'bg-surface border border-border hover:border-racing-flag/50'
                       }`}
                     >
                       {isOwner && (
-                        <div className="mb-2 px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs font-bold rounded-full inline-block">
+                        <div className="mb-2 px-2 py-0.5 bg-racing-flag/20 text-racing-flag text-xs font-bold rounded-full inline-block">
                           ⭐ การจองของคุณ
                         </div>
                       )}
@@ -489,7 +489,7 @@ export function BookingHistoryView() {
                           <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl text-white shadow-lg ${
                             isOwner 
                               ? 'bg-gradient-to-br from-yellow-500 to-orange-600' 
-                              : 'bg-gradient-to-br from-purple-500 to-pink-600'
+                              : 'bg-gradient-to-br from-racing-flag to-racing-flag-soft'
                           }`}>
                             {isOwner ? '⭐' : '🎮'}
                           </div>
@@ -497,7 +497,7 @@ export function BookingHistoryView() {
                             <p className="font-bold text-foreground">
                               {booking.localStartTime.slice(0, 5)} - {booking.localEndTime.slice(0, 5)}
                               {selectedMachineId === 'all' && machine && (
-                                <span className="ml-2 px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs rounded-full">
+                                <span className="ml-2 px-2 py-0.5 bg-racing-flag/20 text-racing-flag text-xs rounded-full">
                                   {machine.name}
                                 </span>
                               )}

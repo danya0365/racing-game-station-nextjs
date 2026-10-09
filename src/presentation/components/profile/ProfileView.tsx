@@ -50,7 +50,7 @@ export function ProfileView({ initialViewModel }: ProfileViewProps) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin mx-auto mb-4" />
+          <div className="w-16 h-16 border-4 border-racing-flag/30 border-t-racing-flag rounded-full animate-spin mx-auto mb-4" />
           <p className="text-muted">กำลังโหลด...</p>
         </div>
       </div>
@@ -67,7 +67,7 @@ export function ProfileView({ initialViewModel }: ProfileViewProps) {
           <p className="text-muted mb-6">{state.error}</p>
           <button
             onClick={actions.loadData}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium rounded-xl shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:scale-105 transition-all"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag font-medium rounded-xl shadow-lg shadow-racing-flag/30 hover:shadow-racing-flag/50 hover:scale-105 transition-all"
           >
             <span>🔄</span>
             <span>ลองใหม่อีกครั้ง</span>
@@ -87,7 +87,7 @@ export function ProfileView({ initialViewModel }: ProfileViewProps) {
           <p className="text-muted mb-6">กรุณาเข้าสู่ระบบเพื่อดูโปรไฟล์ของคุณ</p>
           <Link 
             href="/auth/login?redirectTo=/profile"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium rounded-xl shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:scale-105 transition-all"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag font-medium rounded-xl shadow-lg shadow-racing-flag/30 hover:shadow-racing-flag/50 hover:scale-105 transition-all"
           >
             <span>🚀</span>
             <span>เข้าสู่ระบบ</span>
@@ -103,12 +103,12 @@ export function ProfileView({ initialViewModel }: ProfileViewProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-cyan-500/20 via-blue-500/10 to-purple-500/20 py-12">
+      <div className="relative overflow-hidden bg-gradient-to-br from-racing-flag/20 via-racing-flag-soft/10 to-racing-flag/20 py-12">
         <div className="absolute inset-0 bg-[url('/styles/grid-pattern.svg')] opacity-10" />
         <div className="relative z-10 max-w-4xl mx-auto px-4">
           <div className="text-center animate-hero-in">
             {/* Avatar */}
-            <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-4xl font-bold text-white shadow-2xl shadow-cyan-500/30 mb-4">
+            <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-4xl font-bold text-racing-on-flag shadow-2xl shadow-racing-flag/30 mb-4">
               {userInitial}
             </div>
             <h1 className="text-3xl font-bold text-foreground mb-1">{displayName}</h1>
@@ -133,7 +133,7 @@ export function ProfileView({ initialViewModel }: ProfileViewProps) {
 
         {/* Profile Info Card */}
         <div className="bg-surface border border-border rounded-2xl overflow-hidden animate-section-in">
-          <div className="p-4 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border-b border-border flex items-center justify-between">
+          <div className="p-4 bg-gradient-to-r from-racing-flag/10 to-racing-flag-soft/10 border-b border-border flex items-center justify-between">
             <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
               <span>👤</span>
               <span>ข้อมูลส่วนตัว</span>
@@ -141,7 +141,7 @@ export function ProfileView({ initialViewModel }: ProfileViewProps) {
             {!state.isEditing && (
               <button
                 onClick={handleStartEditing}
-                className="px-4 py-2 bg-cyan-500/20 text-cyan-400 rounded-lg text-sm font-medium hover:bg-cyan-500/30 transition-colors"
+                className="px-4 py-2 bg-racing-flag/20 text-racing-flag rounded-lg text-sm font-medium hover:bg-racing-flag/30 transition-colors"
               >
                 ✏️ แก้ไข
               </button>
@@ -157,7 +157,7 @@ export function ProfileView({ initialViewModel }: ProfileViewProps) {
                     type="text"
                     value={formData.fullName}
                     onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                    className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 text-foreground"
+                    className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-racing-flag text-foreground"
                     placeholder="กรอกชื่อ-นามสกุล"
                   />
                 </div>
@@ -167,7 +167,7 @@ export function ProfileView({ initialViewModel }: ProfileViewProps) {
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 text-foreground"
+                    className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-racing-flag text-foreground"
                     placeholder="กรอกเบอร์โทรศัพท์"
                   />
                 </div>
@@ -182,7 +182,7 @@ export function ProfileView({ initialViewModel }: ProfileViewProps) {
                   <button
                     onClick={handleSaveProfile}
                     disabled={state.isSubmitting}
-                    className="flex-1 px-4 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium rounded-xl shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all disabled:opacity-50"
+                    className="flex-1 px-4 py-3 bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag font-medium rounded-xl shadow-lg shadow-racing-flag/30 hover:shadow-racing-flag/50 transition-all disabled:opacity-50"
                   >
                     {state.isSubmitting ? '⏳ กำลังบันทึก...' : '💾 บันทึก'}
                   </button>
@@ -219,7 +219,7 @@ export function ProfileView({ initialViewModel }: ProfileViewProps) {
 
         {/* Quick Actions Card */}
         <div className="bg-surface border border-border rounded-2xl overflow-hidden animate-section-in">
-          <div className="p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-b border-border">
+          <div className="p-4 bg-gradient-to-r from-racing-flag/10 to-racing-flag-soft/10 border-b border-border">
             <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
               <span>⚡</span>
               <span>ทางลัด</span>
@@ -229,14 +229,14 @@ export function ProfileView({ initialViewModel }: ProfileViewProps) {
           <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-3">
             <Link 
               href="/customer"
-              className="flex flex-col items-center gap-2 p-4 bg-background rounded-xl border border-border hover:border-cyan-500/50 hover:bg-cyan-500/5 transition-all text-center"
+              className="flex flex-col items-center gap-2 p-4 bg-background rounded-xl border border-border hover:border-racing-flag/50 hover:bg-racing-flag/5 transition-all text-center"
             >
               <span className="text-3xl">🎮</span>
               <span className="text-sm font-medium text-foreground">จองคิว</span>
             </Link>
             <Link 
               href="/customer/queue-status"
-              className="flex flex-col items-center gap-2 p-4 bg-background rounded-xl border border-border hover:border-purple-500/50 hover:bg-purple-500/5 transition-all text-center"
+              className="flex flex-col items-center gap-2 p-4 bg-background rounded-xl border border-border hover:border-racing-flag/50 hover:bg-racing-flag/5 transition-all text-center"
             >
               <span className="text-3xl">📋</span>
               <span className="text-sm font-medium text-foreground">สถานะคิว</span>

@@ -20,7 +20,7 @@ export function ChatMessageBubble({ message }: ChatMessageBubbleProps) {
   if (isUser) {
     return (
       <div className="flex justify-end mb-3">
-        <div className="max-w-[80%] bg-indigo-600 text-white px-4 py-2.5 rounded-2xl rounded-br-md shadow-lg text-sm">
+        <div className="max-w-[80%] bg-racing-flag text-racing-on-flag px-4 py-2.5 rounded-2xl rounded-br-md shadow-lg text-sm">
           {message.content}
         </div>
       </div>

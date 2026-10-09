@@ -44,17 +44,17 @@ export function PageHeader({
   return (
     <section className="relative overflow-hidden bg-surface border-b border-border">
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 via-background to-background" />
+      <div className="absolute inset-0 bg-gradient-to-r from-racing-flag/20 via-background to-background" />
 
       <div className="relative px-4 py-6 md:py-8 max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           <Link href="/">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-3xl shadow-lg shadow-purple-500/20 hover:scale-105 transition-transform cursor-pointer">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-3xl shadow-lg shadow-racing-flag/20 hover:scale-105 transition-transform cursor-pointer">
               {icon}
             </div>
           </Link>
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-racing-flag to-racing-flag bg-clip-text text-transparent">
               {title}
             </h1>
             <div className="flex items-center gap-2 text-muted text-sm mt-1">

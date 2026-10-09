@@ -138,7 +138,7 @@ export function CustomerInfoCard({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="กรอกชื่อของคุณ"
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder:text-muted focus:border-purple-500 focus:outline-none"
+              className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder:text-muted focus:border-racing-flag focus:outline-none"
             />
           </div>
 
@@ -149,14 +149,14 @@ export function CustomerInfoCard({
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="08X-XXX-XXXX"
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder:text-muted focus:border-purple-500 focus:outline-none"
+              className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder:text-muted focus:border-racing-flag focus:outline-none"
             />
           </div>
 
           <div className="flex gap-3">
             <button
               onClick={handleSave}
-              className="flex-1 py-3 bg-purple-500 hover:bg-purple-600 text-white font-medium rounded-xl transition-colors"
+              className="flex-1 py-3 bg-racing-flag hover:brightness-110 text-white font-medium rounded-xl transition-colors"
             >
               💾 บันทึก
             </button>
@@ -188,7 +188,7 @@ export function CustomerInfoCard({
         </div>
         <button
           onClick={() => setIsEditing(true)}
-          className="px-3 py-1.5 text-sm text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 rounded-lg transition-colors"
+          className="px-3 py-1.5 text-sm text-racing-flag hover:text-racing-flag-soft hover:bg-racing-flag/10 rounded-lg transition-colors"
         >
           ✏️ แก้ไข
         </button>

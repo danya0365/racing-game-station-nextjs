@@ -53,7 +53,7 @@ export function ImageUploadInput({ value, onChange, placeholder = 'https://...',
           type="url"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="flex-1 px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-cyan-500 text-foreground"
+          className="flex-1 px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-racing-flag text-foreground"
           placeholder={placeholder}
           disabled={disabled || isUploading}
         />
@@ -61,7 +61,7 @@ export function ImageUploadInput({ value, onChange, placeholder = 'https://...',
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={disabled || isUploading}
-          className="px-4 py-3 bg-cyan-500/10 text-cyan-500 border border-cyan-500/30 rounded-xl hover:bg-cyan-500/20 transition-colors whitespace-nowrap disabled:opacity-50"
+          className="px-4 py-3 bg-racing-flag/10 text-racing-flag border border-racing-flag/30 rounded-xl hover:bg-racing-flag/20 transition-colors whitespace-nowrap disabled:opacity-50"
         >
           {isUploading ? '⏳ กำลังอัปโหลด...' : '📁 อัปโหลด'}
         </button>

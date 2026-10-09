@@ -219,16 +219,16 @@ export function QRScanView() {
   return (
     <div className="min-h-screen bg-racing-gradient">
       {/* Hero Section */}
-      <section className="px-4 md:px-8 py-12 bg-gradient-to-br from-cyan-500/10 via-background to-purple-500/10">
+      <section className="px-4 md:px-8 py-12 bg-gradient-to-br from-racing-flag/10 via-background to-racing-flag/10">
         <div className="max-w-4xl mx-auto">
 
           {/* Header */}
           <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-5xl mb-6 shadow-xl shadow-cyan-500/30 animate-bounce-slow">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-racing-flag to-racing-flag-soft text-5xl mb-6 shadow-xl shadow-racing-flag/30 animate-bounce-slow">
               📅
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-racing-flag via-racing-flag-soft to-racing-flag bg-clip-text text-transparent">
                 QR Code จองเวลา
               </span>
             </h1>
@@ -248,7 +248,7 @@ export function QRScanView() {
           >
             {/* Shop Logo & Name */}
             <div className="flex items-center justify-center gap-4 mb-8">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-4xl shadow-lg">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-4xl shadow-lg">
                 🏎️
               </div>
               <div className="text-left">
@@ -287,7 +287,7 @@ export function QRScanView() {
 
             {/* URL Display */}
             <div className="bg-surface border border-border rounded-xl px-6 py-3 inline-block mb-8">
-              <code className="text-cyan-400 text-sm md:text-base">
+              <code className="text-racing-flag text-sm md:text-base">
                 {bookingUrl || 'กำลังโหลด...'}
               </code>
             </div>
@@ -335,7 +335,7 @@ export function QRScanView() {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <AnimatedCard className="p-6 text-center">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-2xl mx-auto mb-4">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-2xl mx-auto mb-4">
                 1
               </div>
               <h4 className="font-bold text-foreground mb-2">สแกน QR Code</h4>
@@ -344,7 +344,7 @@ export function QRScanView() {
               </p>
             </AnimatedCard>
             <AnimatedCard className="p-6 text-center">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-2xl mx-auto mb-4">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-2xl mx-auto mb-4">
                 2
               </div>
               <h4 className="font-bold text-foreground mb-2">เลือกวันและเวลา</h4>
@@ -366,7 +366,7 @@ export function QRScanView() {
       </section>
 
       {/* Features Section */}
-      <section className="px-4 md:px-8 py-12 bg-gradient-to-br from-purple-500/5 via-background to-cyan-500/5">
+      <section className="px-4 md:px-8 py-12 bg-gradient-to-br from-racing-flag/5 via-background to-racing-flag/5">
         <div className="max-w-4xl mx-auto">
           <h3 className="text-xl font-bold text-foreground mb-6 text-center">
             ✨ ข้อดีของการจองเวลา
@@ -374,7 +374,7 @@ export function QRScanView() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <AnimatedCard className="p-6">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-600/20 flex items-center justify-center text-2xl shrink-0">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-racing-flag/20 to-racing-flag-soft/20 flex items-center justify-center text-2xl shrink-0">
                   ⏰
                 </div>
                 <div>
@@ -387,7 +387,7 @@ export function QRScanView() {
             </AnimatedCard>
             <AnimatedCard className="p-6">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-600/20 flex items-center justify-center text-2xl shrink-0">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-racing-flag/20 to-racing-flag-soft/20 flex items-center justify-center text-2xl shrink-0">
                   📆
                 </div>
                 <div>

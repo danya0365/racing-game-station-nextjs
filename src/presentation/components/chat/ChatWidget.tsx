@@ -88,7 +88,7 @@ export function ChatWidget() {
       >
         <div className="flex flex-col h-full backdrop-blur-xl bg-gray-900/95 md:rounded-2xl border border-white/10 overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-3 flex items-center justify-between shrink-0">
+          <div className="bg-gradient-to-r from-racing-flag to-racing-flag-soft px-4 py-3 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center text-lg">
                 🎮
@@ -145,8 +145,8 @@ export function ChatWidget() {
                 className="
                   w-10 h-10 flex items-center justify-center
                   bg-white/5 border border-white/10
-                  hover:bg-indigo-500/20 hover:border-indigo-500/40
-                  rounded-xl text-gray-300 hover:text-indigo-400
+                  hover:bg-racing-flag/20 hover:border-racing-flag/40
+                  rounded-xl text-gray-300 hover:text-racing-flag
                   disabled:opacity-30 disabled:cursor-not-allowed
                   active:scale-95 transition-all duration-200
                   shrink-0 cursor-pointer
@@ -174,7 +174,7 @@ export function ChatWidget() {
                   flex-1 bg-white/5 border border-white/10
                   text-white text-sm placeholder-gray-500
                   px-4 py-2.5 rounded-xl
-                  focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30
+                  focus:outline-none focus:border-racing-flag/50 focus:ring-1 focus:ring-racing-flag/30
                   disabled:opacity-50
                   transition-colors
                 "
@@ -184,7 +184,7 @@ export function ChatWidget() {
                 disabled={isLoading || !input.trim()}
                 className="
                   w-10 h-10 flex items-center justify-center
-                  bg-indigo-600 hover:bg-indigo-500
+                  bg-racing-flag hover:bg-racing-flag
                   rounded-xl text-white
                   disabled:opacity-30 disabled:cursor-not-allowed
                   active:scale-95 transition-all duration-200
@@ -207,10 +207,10 @@ export function ChatWidget() {
         className={`
           fixed bottom-6 right-6 z-50
           w-14 h-14 rounded-full
-          bg-gradient-to-br from-indigo-600 to-purple-600
-          shadow-lg shadow-indigo-500/30
+          bg-gradient-to-br from-racing-flag to-racing-flag-soft
+          shadow-lg shadow-racing-flag/30
           flex items-center justify-center
-          hover:shadow-xl hover:shadow-indigo-500/40 hover:scale-105
+          hover:shadow-xl hover:shadow-racing-flag/40 hover:scale-105
           active:scale-95
           transition-all duration-300
           cursor-pointer
