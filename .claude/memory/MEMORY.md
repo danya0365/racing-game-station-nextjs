@@ -25,10 +25,10 @@
 
 ## Working Log
 
-- **racing theme** — ธีมสีจากโลโก้จริงต่อสาขา commit 3 ก้อนแล้ว (`d7f7e02` `48f89df` `dc5604c`)
-  เหลือ migrate สี hardcode 2,341 จุด · backend 708 / auth 162 / ui 147 / customer 127 /
-  walk-in 103 / booking 73 / qr-scan 28 / profile 47 · `app/(docs)` 746 เป็นคู่มือไม่ใช่ flow ลูกค้า
-  · lint 107 errors เป็นของเก่า · build เตือน `middleware` → `proxy`
+- **racing theme เสร็จ flow ลูกค้าแล้ว** — commit 11 ก้อน (`d7f7e02` → `55d4c0b`)
+  สีแบรนด์เก่า 2,341 → 5 จุด (5 ที่เหลือคือ rose=danger, blue=Facebook ต้องเก็บ)
+  เหลือ: `app/(docs)` 746 · backend 708 (มีธีม 5 ชุดของตัวเอง แยกไว้)
+  ยังไม่ทำ: lint 106 errors ของเก่า · build เตือน `middleware` → `proxy`
 
 ## Reference
 

@@ -165,11 +165,13 @@ export function TimeBookingView({
     return (
       <div className="fixed inset-0 z-[100] bg-gradient-to-br from-racing-bg via-racing-bg to-racing-bg flex items-center justify-center p-4">
         <div className="relative z-10 text-center max-w-md w-full">
-          <div className="w-32 h-32 mx-auto rounded-full bg-white/10 flex items-center justify-center text-6xl mb-8">
+          <div className="w-32 h-32 mx-auto rounded-full bg-gray-200 dark:bg-white/10 flex items-center justify-center text-6xl mb-8">
             🚪
           </div>
-          <h1 className="text-3xl font-bold text-white mb-4">ขออภัย</h1>
-          <p className="text-white/70 text-lg mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            ขออภัย
+          </h1>
+          <p className="text-gray-600 dark:text-white/70 text-lg mb-8">
             ระบบจองเวลาปิดให้บริการชั่วคราว
             <br />
             กรุณาลองใหม่ในภายหลัง
@@ -190,7 +192,9 @@ export function TimeBookingView({
       <div className="fixed inset-0 z-[100] bg-gradient-to-br from-racing-bg via-racing-bg to-racing-bg flex items-center justify-center">
         <div className="text-center">
           <div className="w-20 h-20 border-4 border-racing-flag/30 border-t-racing-flag rounded-full animate-spin mx-auto mb-6" />
-          <p className="text-white/60 text-lg">กำลังโหลด...</p>
+          <p className="text-gray-600 dark:text-white/60 text-lg">
+            กำลังโหลด...
+          </p>
         </div>
       </div>
     );
@@ -216,7 +220,7 @@ export function TimeBookingView({
           </h1>
 
           {/* Booking Info */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-8">
+          <div className="bg-black/20 backdrop-blur-sm rounded-2xl p-6 mb-8">
             <p className="text-white/60 text-sm mb-2">การจองของคุณ</p>
             <p className="text-2xl font-bold text-emerald-300 mb-2">
               📅 {formatDateDisplay(state.success.localDate)}
@@ -240,7 +244,7 @@ export function TimeBookingView({
             </Link>
             <button
               onClick={handleReset}
-              className="w-full px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl text-white font-medium transition-all"
+              className="w-full px-6 py-3 bg-black/20 hover:bg-black/30 rounded-xl text-white font-medium transition-all"
             >
               📅 จองเพิ่มอีก
             </button>
@@ -264,13 +268,13 @@ export function TimeBookingView({
       <header className="relative z-10 p-4 flex items-center justify-between">
         <Link
           href="/"
-          className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white font-medium transition-all"
+          className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 dark:bg-white/10 dark:border-transparent dark:hover:bg-white/20 rounded-full text-gray-700 dark:text-white font-medium transition-all"
         >
           <span>←</span>
           <span className="hidden sm:inline">ออก</span>
         </Link>
 
-        <h1 className="text-xl font-bold text-white flex items-center gap-2">
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
           <span>📅</span>
           จองเวลา
         </h1>
@@ -329,7 +333,7 @@ export function TimeBookingView({
                 return (
                   <div key={s} className="flex items-center gap-2">
                     <div
-                      className={`flex items-center gap-1 sm:gap-2 ${isActive ? "text-racing-flag" : "text-white/40"}`}
+                      className={`flex items-center gap-1 sm:gap-2 ${isActive ? "text-racing-flag" : "text-gray-400 dark:text-white/40"}`}
                     >
                       <div
                         className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold ${
@@ -337,7 +341,7 @@ export function TimeBookingView({
                             ? "bg-emerald-500 text-white"
                             : isActive
                               ? "bg-racing-flag text-racing-on-flag"
-                              : "bg-white/20"
+                              : "bg-gray-200 dark:bg-white/20"
                         }`}
                       >
                         {isCompleted ? "✓" : i + 1}
@@ -346,7 +350,9 @@ export function TimeBookingView({
                         {labels[i]}
                       </span>
                     </div>
-                    {i < 3 && <div className="w-4 sm:w-8 h-0.5 bg-white/20" />}
+                    {i < 3 && (
+                      <div className="w-4 sm:w-8 h-0.5 bg-gray-300 dark:bg-white/20" />
+                    )}
                   </div>
                 );
               },
@@ -364,14 +370,16 @@ export function TimeBookingView({
           {/* Step 1: Machine Selection */}
           {state.step === "machine" && (
             <div className="space-y-4">
-              <h2 className="text-2xl font-bold text-white text-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-6">
                 🎮 เลือกเครื่องเล่น
               </h2>
 
               {machines.length === 0 ? (
                 <div className="text-center py-12">
                   <div className="text-6xl mb-4">🔧</div>
-                  <p className="text-white/60">ไม่พบเครื่องที่พร้อมใช้งาน</p>
+                  <p className="text-gray-600 dark:text-white/60">
+                    ไม่พบเครื่องที่พร้อมใช้งาน
+                  </p>
                   <Link href="/" className="mt-4 inline-block">
                     <GlowButton color="pink">กลับหน้าแรก</GlowButton>
                   </Link>
@@ -382,21 +390,23 @@ export function TimeBookingView({
                     <button
                       key={machine.id}
                       onClick={() => actions.selectMachine(machine.id)}
-                      className="w-full p-4 rounded-2xl border-2 bg-racing-flag/20 border-racing-flag/50 hover:border-racing-flag hover:bg-racing-flag/30 text-left transition-all"
+                      className="w-full p-4 rounded-2xl border-2 bg-racing-flag-dim border-racing-flag/50 hover:border-racing-flag hover:bg-racing-flag/20 text-left transition-all"
                     >
                       <div className="flex items-center gap-4">
                         <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-racing-flag-soft to-racing-flag flex items-center justify-center text-2xl">
                           🎮
                         </div>
                         <div className="flex-1">
-                          <h3 className="font-bold text-white text-lg">
+                          <h3 className="font-bold text-gray-900 dark:text-white text-lg">
                             {machine.name}
                           </h3>
-                          <p className="text-white/60 text-sm">
+                          <p className="text-gray-600 dark:text-white/60 text-sm">
                             เครื่องที่ {machine.position}
                           </p>
                         </div>
-                        <div className="text-white/40 text-2xl">→</div>
+                        <div className="text-gray-400 dark:text-white/40 text-2xl">
+                          →
+                        </div>
                       </div>
                     </button>
                   ))}
@@ -408,16 +418,16 @@ export function TimeBookingView({
           {/* Step 2: Date & Time Selection */}
           {state.step === "datetime" && state.selectedMachine && (
             <div className="space-y-4">
-              <h2 className="text-2xl font-bold text-white text-center mb-2">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-2">
                 🕐 เลือกวันและเวลา
               </h2>
-              <p className="text-white/60 text-center text-sm mb-6">
+              <p className="text-gray-600 dark:text-white/60 text-center text-sm mb-6">
                 {state.selectedMachine.name}
               </p>
 
               {/* Date Selection - Carousel */}
               <div className="mb-6">
-                <label className="block text-white/80 text-sm font-medium mb-3">
+                <label className="block text-gray-700 dark:text-white/80 text-sm font-medium mb-3">
                   📅 เลือกวัน
                 </label>
 
@@ -438,7 +448,7 @@ export function TimeBookingView({
                         (d) => d.date === state.selectedDate,
                       ) === 0
                     }
-                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-full text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-white border border-gray-200 hover:bg-gray-50 dark:bg-white/10 dark:border-transparent dark:hover:bg-white/20 rounded-full text-gray-700 dark:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                   >
                     ←
                   </button>
@@ -480,7 +490,7 @@ export function TimeBookingView({
                           className={`flex-shrink-0 px-5 py-4 rounded-2xl font-bold transition-all duration-300 min-w-[90px] ${
                             isSelected
                               ? "bg-gradient-to-br from-racing-flag to-racing-flag-soft text-racing-on-flag shadow-xl shadow-racing-flag/40"
-                              : "bg-white/10 text-white/70 hover:bg-white/20"
+                              : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 dark:bg-white/10 dark:border-transparent dark:text-white/70 dark:hover:bg-white/20"
                           }`}
                         >
                           <div className="text-center">
@@ -521,7 +531,7 @@ export function TimeBookingView({
                       ) ===
                       dateOptions.length - 1
                     }
-                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-full text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-white border border-gray-200 hover:bg-gray-50 dark:bg-white/10 dark:border-transparent dark:hover:bg-white/20 rounded-full text-gray-700 dark:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                   >
                     →
                   </button>
@@ -536,7 +546,7 @@ export function TimeBookingView({
                       className={`w-2 h-2 rounded-full transition-all duration-300 ${
                         d.date === state.selectedDate
                           ? "w-6 bg-racing-flag"
-                          : "bg-white/30 hover:bg-white/50"
+                          : "bg-gray-300 dark:bg-white/30 hover:bg-gray-400 dark:hover:bg-white/50"
                       }`}
                     />
                   ))}
@@ -545,13 +555,15 @@ export function TimeBookingView({
 
               {/* Time Slots */}
               <div>
-                <label className="block text-white/80 text-sm font-medium mb-3">
+                <label className="block text-gray-700 dark:text-white/80 text-sm font-medium mb-3">
                   🕐 เลือกเวลา
                 </label>
                 {state.scheduleLoading || !state.schedule ? (
                   <div className="text-center py-8">
                     <div className="w-10 h-10 border-3 border-racing-flag/30 border-t-racing-flag rounded-full animate-spin mx-auto mb-4" />
-                    <p className="text-white/60">กำลังโหลด...</p>
+                    <p className="text-gray-600 dark:text-white/60">
+                      กำลังโหลด...
+                    </p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
@@ -567,12 +579,12 @@ export function TimeBookingView({
                           disabled={!isAvailable}
                           className={`py-3 px-2 rounded-xl text-sm font-bold transition-all ${
                             isSelected
-                              ? "bg-racing-flag text-racing-on-flag ring-2 ring-white"
+                              ? "bg-racing-flag text-racing-on-flag ring-2 ring-racing-on-flag/40"
                               : isAvailable
-                                ? "bg-emerald-500/30 text-emerald-300 hover:bg-emerald-500/50"
+                                ? "bg-emerald-500/20 text-emerald-700 hover:bg-emerald-500/30 dark:bg-emerald-500/30 dark:text-emerald-300 dark:hover:bg-emerald-500/50"
                                 : isBooked
-                                  ? "bg-red-500/30 text-red-300 cursor-not-allowed"
-                                  : "bg-gray-500/30 text-gray-500 cursor-not-allowed"
+                                  ? "bg-red-500/20 text-red-700 dark:bg-red-500/30 dark:text-red-300 cursor-not-allowed"
+                                  : "bg-gray-200 text-gray-500 dark:bg-gray-500/30 dark:text-gray-500 cursor-not-allowed"
                           }`}
                         >
                           {slot.startTime}
@@ -583,17 +595,17 @@ export function TimeBookingView({
                 )}
 
                 {/* Legend */}
-                <div className="flex gap-4 mt-4 text-xs text-white/50">
+                <div className="flex gap-4 mt-4 text-xs text-gray-500 dark:text-white/50">
                   <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded bg-emerald-500/50" />
+                    <div className="w-3 h-3 rounded bg-emerald-500/20 dark:bg-emerald-500/50" />
                     <span>ว่าง</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded bg-red-500/50" />
+                    <div className="w-3 h-3 rounded bg-red-500/20 dark:bg-red-500/50" />
                     <span>จองแล้ว</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded bg-gray-500/50" />
+                    <div className="w-3 h-3 rounded bg-gray-200 dark:bg-gray-500/50" />
                     <span>ผ่านไปแล้ว</span>
                   </div>
                 </div>
@@ -605,7 +617,7 @@ export function TimeBookingView({
                   onClick={() => {
                     actions.setStep("machine");
                   }}
-                  className="flex-1 px-6 py-4 bg-white/10 hover:bg-white/20 rounded-xl text-white font-medium transition-all"
+                  className="flex-1 px-6 py-4 bg-white border border-gray-200 hover:bg-gray-50 dark:bg-white/10 dark:border-transparent dark:hover:bg-white/20 rounded-xl text-gray-700 dark:text-white font-medium transition-all"
                 >
                   ← ย้อนกลับ
                 </button>
@@ -625,10 +637,10 @@ export function TimeBookingView({
             state.selectedMachine &&
             state.selectedSlot && (
               <div className="space-y-4">
-                <h2 className="text-2xl font-bold text-white text-center mb-2">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-2">
                   👤 กรอกข้อมูล
                 </h2>
-                <p className="text-white/60 text-center text-sm mb-6">
+                <p className="text-gray-600 dark:text-white/60 text-center text-sm mb-6">
                   {state.selectedMachine.name} • {state.selectedDate} •{" "}
                   {state.selectedSlot.startTime}
                 </p>
@@ -636,7 +648,7 @@ export function TimeBookingView({
                 <div className="space-y-4">
                   {/* Name */}
                   <div>
-                    <label className="block text-white/80 text-sm font-medium mb-2">
+                    <label className="block text-gray-700 dark:text-white/80 text-sm font-medium mb-2">
                       ชื่อ
                     </label>
                     <input
@@ -644,14 +656,14 @@ export function TimeBookingView({
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="ชื่อ-นามสกุล"
-                      className="w-full px-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder:text-white/40 focus:border-racing-flag focus:outline-none text-lg"
+                      className="w-full px-4 py-4 bg-white border border-gray-200 rounded-xl text-gray-900 dark:bg-white/5 dark:border-white/10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-white/40 focus:border-racing-flag focus:outline-none text-lg"
                       autoFocus
                     />
                   </div>
 
                   {/* Phone */}
                   <div>
-                    <label className="block text-white/80 text-sm font-medium mb-2">
+                    <label className="block text-gray-700 dark:text-white/80 text-sm font-medium mb-2">
                       เบอร์โทร
                     </label>
                     <input
@@ -659,13 +671,13 @@ export function TimeBookingView({
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="08X-XXX-XXXX"
-                      className="w-full px-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder:text-white/40 focus:border-racing-flag focus:outline-none text-lg"
+                      className="w-full px-4 py-4 bg-white border border-gray-200 rounded-xl text-gray-900 dark:bg-white/5 dark:border-white/10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-white/40 focus:border-racing-flag focus:outline-none text-lg"
                     />
                   </div>
 
                   {/* Duration */}
                   <div>
-                    <label className="block text-white/80 text-sm font-medium mb-2">
+                    <label className="block text-gray-700 dark:text-white/80 text-sm font-medium mb-2">
                       ระยะเวลา
                     </label>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -677,7 +689,7 @@ export function TimeBookingView({
                           className={`py-4 px-3 rounded-xl font-bold transition-all relative ${
                             duration === d.time
                               ? "bg-racing-flag text-racing-on-flag shadow-lg shadow-racing-flag/30"
-                              : "bg-white/10 text-white/60 hover:bg-white/20"
+                              : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 dark:bg-white/10 dark:border-transparent dark:text-white/60 dark:hover:bg-white/20"
                           }`}
                         >
                           {d.popular && (
@@ -698,7 +710,7 @@ export function TimeBookingView({
                 <div className="flex gap-3 pt-4">
                   <button
                     onClick={() => actions.setStep("datetime")}
-                    className="flex-1 px-6 py-4 bg-white/10 hover:bg-white/20 rounded-xl text-white font-medium transition-all"
+                    className="flex-1 px-6 py-4 bg-white border border-gray-200 hover:bg-gray-50 dark:bg-white/10 dark:border-transparent dark:hover:bg-white/20 rounded-xl text-gray-700 dark:text-white font-medium transition-all"
                   >
                     ← ย้อนกลับ
                   </button>
@@ -724,21 +736,21 @@ export function TimeBookingView({
             state.selectedMachine &&
             state.selectedSlot && (
               <div className="space-y-4">
-                <h2 className="text-2xl font-bold text-white text-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-6">
                   ✅ ยืนยันการจอง
                 </h2>
 
                 {/* Summary Card */}
-                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 space-y-4">
-                  <div className="flex items-center gap-4 pb-4 border-b border-white/20">
+                <div className="bg-white border border-gray-200 shadow-lg shadow-gray-200/50 dark:bg-white/10 dark:border-white/10 dark:shadow-none dark:backdrop-blur-sm rounded-2xl p-6 space-y-4">
+                  <div className="flex items-center gap-4 pb-4 border-b border-gray-200 dark:border-white/20">
                     <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-racing-flag-soft to-racing-flag flex items-center justify-center text-2xl">
                       🎮
                     </div>
                     <div>
-                      <h3 className="font-bold text-white text-lg">
+                      <h3 className="font-bold text-gray-900 dark:text-white text-lg">
                         {state.selectedMachine.name}
                       </h3>
-                      <p className="text-white/60 text-sm">
+                      <p className="text-gray-600 dark:text-white/60 text-sm">
                         เครื่องที่ {state.selectedMachine.position}
                       </p>
                     </div>
@@ -746,27 +758,41 @@ export function TimeBookingView({
 
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="text-white/60">📅 วันที่</span>
-                      <span className="text-white font-medium">
+                      <span className="text-gray-600 dark:text-white/60">
+                        📅 วันที่
+                      </span>
+                      <span className="text-gray-900 dark:text-white font-medium">
                         {formatDateDisplay(state.selectedDate)}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-white/60">🕐 เวลา</span>
+                      <span className="text-gray-600 dark:text-white/60">
+                        🕐 เวลา
+                      </span>
                       <span className="text-racing-flag font-bold text-lg">
                         {state.selectedSlot.startTime}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-white/60">👤 ชื่อ</span>
-                      <span className="text-white font-medium">{name}</span>
+                      <span className="text-gray-600 dark:text-white/60">
+                        👤 ชื่อ
+                      </span>
+                      <span className="text-gray-900 dark:text-white font-medium">
+                        {name}
+                      </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-white/60">📱 เบอร์โทร</span>
-                      <span className="text-white font-medium">{phone}</span>
+                      <span className="text-gray-600 dark:text-white/60">
+                        📱 เบอร์โทร
+                      </span>
+                      <span className="text-gray-900 dark:text-white font-medium">
+                        {phone}
+                      </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-white/60">⏱️ ระยะเวลา</span>
+                      <span className="text-gray-600 dark:text-white/60">
+                        ⏱️ ระยะเวลา
+                      </span>
                       <span className="text-racing-flag font-bold">
                         {duration} นาที
                       </span>
@@ -786,7 +812,7 @@ export function TimeBookingView({
                   <button
                     onClick={() => actions.setStep("info")}
                     disabled={state.isSubmitting}
-                    className="flex-1 px-6 py-4 bg-white/10 hover:bg-white/20 rounded-xl text-white font-medium transition-all disabled:opacity-50"
+                    className="flex-1 px-6 py-4 bg-white border border-gray-200 hover:bg-gray-50 dark:bg-white/10 dark:border-transparent dark:hover:bg-white/20 rounded-xl text-gray-700 dark:text-white font-medium transition-all disabled:opacity-50"
                   >
                     ← แก้ไข
                   </button>
@@ -805,7 +831,7 @@ export function TimeBookingView({
 
       {/* Footer Info */}
       <footer className="relative z-10 p-4 text-center">
-        <p className="text-white/40 text-sm">
+        <p className="text-gray-400 dark:text-white/40 text-sm">
           📅 จองเวลา - เปิดให้บริการ{" "}
           {OPERATING_HOURS.isOpen24Hours
             ? "24 ชม."
