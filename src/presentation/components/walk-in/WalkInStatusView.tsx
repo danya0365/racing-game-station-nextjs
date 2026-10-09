@@ -40,8 +40,8 @@ export function WalkInStatusView({ queue, onCancel, onRefresh }: WalkInStatusVie
 
   const getStatusColor = () => {
     if (isSeated) return 'from-emerald-500 to-green-600';
-    if (isCalled || isNextUp) return 'from-cyan-500 to-blue-600';
-    return 'from-purple-500 to-pink-600';
+    if (isCalled || isNextUp) return 'from-racing-flag to-racing-flag-soft';
+    return 'from-racing-flag-soft to-racing-flag';
   };
 
   return (
@@ -52,14 +52,14 @@ export function WalkInStatusView({ queue, onCancel, onRefresh }: WalkInStatusVie
       isSeated 
         ? 'bg-emerald-950' 
         : isCalled 
-          ? 'bg-cyan-950' 
+          ? 'bg-racing-bg' 
           : 'bg-racing-gradient'
     }`} />
 
       {/* Background Effects (Dark Mode Only) */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none hidden dark:block">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-cyan-500/20 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl" />
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-racing-flag/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-racing-flag/10 rounded-full blur-3xl" />
       </div>
 
       {/* Header */}
@@ -77,9 +77,9 @@ export function WalkInStatusView({ queue, onCancel, onRefresh }: WalkInStatusVie
         <div className="w-full max-w-md relative z-10">
           {/* Header / Current Time */}
           <div className="flex justify-between items-center mb-8 px-2">
-            <div className="bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-500/10 dark:to-pink-500/10 border border-purple-300 dark:border-purple-500/30 rounded-2xl px-4 py-2 flex items-center gap-3 shadow-sm">
-              <span className="text-purple-600 dark:text-purple-400 text-sm font-medium">เวลา:</span>
-              <span className="text-purple-900 dark:text-white font-mono font-bold text-lg">{currentTime.format('HH:mm:ss')}</span>
+            <div className="bg-gradient-to-br from-racing-flag-dim to-racing-flag-dim dark:from-racing-flag-dim dark:to-racing-flag-dim border border-racing-line dark:border-racing-line rounded-2xl px-4 py-2 flex items-center gap-3 shadow-sm">
+              <span className="text-racing-flag dark:text-racing-flag text-sm font-medium">เวลา:</span>
+              <span className="text-racing-fg dark:text-white font-mono font-bold text-lg">{currentTime.format('HH:mm:ss')}</span>
             </div>
             <button 
               onClick={handleRefresh}
@@ -94,7 +94,7 @@ export function WalkInStatusView({ queue, onCancel, onRefresh }: WalkInStatusVie
           <AnimatedCard className="p-8 text-center overflow-hidden relative bg-white dark:bg-surface/80 border border-gray-300 dark:border-white/10 shadow-xl shadow-gray-200/50 dark:shadow-none" glowColor="rgba(255,255,255,0.1)">
             {/* Animated Glow Background for Called state */}
             {(isCalled || isNextUp) && (
-              <div className="absolute inset-0 bg-cyan-100/50 dark:bg-cyan-500/10 animate-pulse pointer-events-none" />
+              <div className="absolute inset-0 bg-racing-flag-dim dark:bg-racing-flag-dim animate-pulse pointer-events-none" />
             )}
 
             <div className={`w-32 h-32 md:w-40 md:h-40 rounded-full mx-auto mb-6 bg-gradient-to-br ${getStatusColor()} flex flex-col items-center justify-center shadow-2xl relative z-10 ${isCalled || isNextUp ? 'animate-bounce' : ''}`}>
@@ -104,7 +104,7 @@ export function WalkInStatusView({ queue, onCancel, onRefresh }: WalkInStatusVie
 
             <div className="relative z-10 space-y-2">
               <h2 className={`text-2xl md:text-3xl font-black uppercase tracking-tight ${
-                isSeated ? 'text-emerald-600 dark:text-emerald-400' : isCalled ? 'text-cyan-600 dark:text-cyan-400' : 'text-gray-900 dark:text-white'
+                isSeated ? 'text-emerald-600 dark:text-emerald-400' : isCalled ? 'text-racing-flag dark:text-racing-flag' : 'text-gray-900 dark:text-white'
               }`}>
                 {isSeated ? '✅ พร้อมเล่นแล้ว' : isCalled ? '🔔 ถึงคิวคุณแล้ว!' : '⌛ กำลังรอคิว'}
               </h2>
@@ -121,7 +121,7 @@ export function WalkInStatusView({ queue, onCancel, onRefresh }: WalkInStatusVie
             {!isSeated && !isCalled && (
               <div className="mt-8 pt-8 border-t border-gray-200 dark:border-white/10 space-y-1">
                 <p className="text-gray-500 dark:text-white/40 text-sm">เวลารอโดยประมาณ</p>
-                <p className="text-3xl font-bold text-cyan-600 dark:text-cyan-400">
+                <p className="text-3xl font-bold text-racing-flag dark:text-racing-flag">
                   ~{queue.estimatedWaitMinutes ?? (queue.queuesAhead ?? 0) * 30} นาที
                 </p>
               </div>
