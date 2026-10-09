@@ -69,11 +69,11 @@ export function VerifyEmailView() {
   // Loading state
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-purple-500/10 via-background to-pink-500/10">
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-racing-flag/10 via-background to-racing-flag-soft/10">
         <div className="w-full max-w-md">
           <div className="bg-surface rounded-2xl shadow-xl border border-border p-8 text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <span className="w-10 h-10 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
+            <div className="w-20 h-20 bg-gradient-to-br from-racing-flag/20 to-racing-flag-soft/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <span className="w-10 h-10 border-4 border-racing-flag/30 border-t-racing-flag rounded-full animate-spin" />
             </div>
             <h1 className="text-2xl font-bold text-foreground mb-2">
               กำลังยืนยันอีเมล
@@ -90,7 +90,7 @@ export function VerifyEmailView() {
   // Error state
   if (status === 'error') {
     return (
-      <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-purple-500/10 via-background to-pink-500/10">
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-racing-flag/10 via-background to-racing-flag-soft/10">
         <div className="w-full max-w-md">
           <div className="bg-surface rounded-2xl shadow-xl border border-border p-8 text-center">
             <div className="w-20 h-20 bg-error/10 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -106,7 +106,7 @@ export function VerifyEmailView() {
             <div className="space-y-3">
               <Link
                 href="/auth/register"
-                className="block py-3 px-6 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-xl font-medium hover:from-purple-400 hover:to-pink-500 transition-all shadow-lg shadow-purple-500/25"
+                className="block py-3 px-6 bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag rounded-xl font-medium hover:from-racing-flag hover:to-racing-flag-soft transition-all shadow-lg shadow-racing-flag/25"
               >
                 สมัครสมาชิกใหม่
               </Link>
@@ -126,7 +126,7 @@ export function VerifyEmailView() {
 
   // Success state
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-purple-500/10 via-background to-pink-500/10">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-racing-flag/10 via-background to-racing-flag-soft/10">
       <div className="w-full max-w-md">
         <div className="bg-surface rounded-2xl shadow-xl border border-border p-8 text-center">
           <div className="w-20 h-20 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -142,7 +142,7 @@ export function VerifyEmailView() {
           
           <Link
             href="/auth/login"
-            className="inline-block py-3 px-6 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-xl font-medium hover:from-purple-400 hover:to-pink-500 transition-all shadow-lg shadow-purple-500/25"
+            className="inline-block py-3 px-6 bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag rounded-xl font-medium hover:from-racing-flag hover:to-racing-flag-soft transition-all shadow-lg shadow-racing-flag/25"
           >
             ไปหน้าเข้าสู่ระบบ
           </Link>

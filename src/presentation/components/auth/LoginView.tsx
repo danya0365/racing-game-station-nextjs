@@ -94,15 +94,15 @@ export function LoginView() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-purple-500/10 via-background to-pink-500/10">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-racing-flag/10 via-background to-racing-flag-soft/10">
       <div className="w-full max-w-md">
         {/* Logo & Title */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-3">
-            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-3xl shadow-lg">
+            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-3xl shadow-lg">
               🏎️
             </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
+            <span className="text-2xl font-bold bg-gradient-to-r from-racing-flag to-racing-flag-soft bg-clip-text text-transparent">
               Racing Game Station
             </span>
           </Link>
@@ -124,7 +124,7 @@ export function LoginView() {
                 onClick={() => setLoginMethod('email')}
                 className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all ${
                   loginMethod === 'email'
-                    ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/30'
+                    ? 'bg-racing-flag text-racing-on-flag shadow-lg shadow-racing-flag/30'
                     : 'text-muted hover:text-foreground'
                 }`}
               >
@@ -135,7 +135,7 @@ export function LoginView() {
                 onClick={() => setLoginMethod('phone')}
                 className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all ${
                   loginMethod === 'phone'
-                    ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/30'
+                    ? 'bg-racing-flag text-racing-on-flag shadow-lg shadow-racing-flag/30'
                     : 'text-muted hover:text-foreground'
                 }`}
               >
@@ -181,7 +181,7 @@ export function LoginView() {
                     actions.clearError();
                   }}
                   placeholder="your@email.com"
-                  className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all ${
+                  className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-racing-flag/50 transition-all ${
                     emailError ? 'border-error' : 'border-input-border'
                   }`}
                   disabled={state.isSubmitting}
@@ -206,7 +206,7 @@ export function LoginView() {
                       actions.clearError();
                     }}
                     placeholder="••••••••"
-                    className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all pr-12 ${
+                    className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-racing-flag/50 transition-all pr-12 ${
                       passwordError ? 'border-error' : 'border-input-border'
                     }`}
                     disabled={state.isSubmitting}
@@ -231,14 +231,14 @@ export function LoginView() {
                       type="checkbox"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
-                      className="w-4 h-4 rounded border-input-border text-purple-500 focus:ring-purple-500"
+                      className="w-4 h-4 rounded border-input-border text-racing-flag focus:ring-racing-flag"
                     />
                     <span className="text-sm text-muted">จดจำฉัน</span>
                   </label>
                 )}
                 {!config.features.rememberMe && <div />}
                 {config.features.forgotPassword && (
-                  <Link href="/auth/forgot-password" className="text-sm text-purple-400 hover:text-purple-300 transition-colors">
+                  <Link href="/auth/forgot-password" className="text-sm text-racing-flag hover:text-racing-flag-soft transition-colors">
                     ลืมรหัสผ่าน?
                   </Link>
                 )}
@@ -247,7 +247,7 @@ export function LoginView() {
               <button
                 type="submit"
                 disabled={state.isSubmitting}
-                className="w-full py-3 px-4 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-xl font-medium hover:from-purple-400 hover:to-pink-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-500/25"
+                className="w-full py-3 px-4 bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag rounded-xl font-medium hover:from-racing-flag hover:to-racing-flag-soft transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-racing-flag/25"
               >
                 {state.isSubmitting ? (
                   <span className="flex items-center justify-center gap-2">
@@ -279,7 +279,7 @@ export function LoginView() {
                       actions.clearError();
                     }}
                     placeholder="0812345678"
-                    className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all ${
+                    className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-racing-flag/50 transition-all ${
                       phoneError ? 'border-error' : 'border-input-border'
                     }`}
                     disabled={state.isSubmitting}
@@ -306,7 +306,7 @@ export function LoginView() {
                     }}
                     placeholder="000000"
                     maxLength={6}
-                    className="w-full px-4 py-3 rounded-xl border border-input-border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all text-center text-2xl tracking-widest"
+                    className="w-full px-4 py-3 rounded-xl border border-input-border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-racing-flag/50 transition-all text-center text-2xl tracking-widest"
                     disabled={state.isSubmitting}
                     autoFocus
                   />
@@ -316,7 +316,7 @@ export function LoginView() {
                   <button
                     type="button"
                     onClick={() => actions.resetOTPState()}
-                    className="w-full mt-2 text-sm text-purple-400 hover:text-purple-300 transition-colors"
+                    className="w-full mt-2 text-sm text-racing-flag hover:text-racing-flag-soft transition-colors"
                   >
                     เปลี่ยนเบอร์โทรศัพท์
                   </button>
@@ -326,7 +326,7 @@ export function LoginView() {
               <button
                 type="submit"
                 disabled={state.isSubmitting}
-                className="w-full py-3 px-4 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-xl font-medium hover:from-purple-400 hover:to-pink-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-500/25"
+                className="w-full py-3 px-4 bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag rounded-xl font-medium hover:from-racing-flag hover:to-racing-flag-soft transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-racing-flag/25"
               >
                 {state.isSubmitting ? (
                   <span className="flex items-center justify-center gap-2">
@@ -373,7 +373,7 @@ export function LoginView() {
           {config.email.allowRegistration && (
             <p className="mt-6 text-center text-sm text-muted">
               ยังไม่มีบัญชี?{' '}
-              <Link href="/auth/register" className="text-purple-400 hover:text-purple-300 font-medium transition-colors">
+              <Link href="/auth/register" className="text-racing-flag hover:text-racing-flag-soft font-medium transition-colors">
                 สมัครสมาชิก
               </Link>
             </p>
@@ -383,9 +383,9 @@ export function LoginView() {
         {/* Footer */}
         <p className="mt-8 text-center text-xs text-muted">
           การเข้าสู่ระบบหมายถึงคุณยอมรับ{' '}
-          <Link href="/terms" className="text-purple-400 hover:text-purple-300">เงื่อนไขการใช้งาน</Link>
+          <Link href="/terms" className="text-racing-flag hover:text-racing-flag-soft">เงื่อนไขการใช้งาน</Link>
           {' '}และ{' '}
-          <Link href="/privacy" className="text-purple-400 hover:text-purple-300">นโยบายความเป็นส่วนตัว</Link>
+          <Link href="/privacy" className="text-racing-flag hover:text-racing-flag-soft">นโยบายความเป็นส่วนตัว</Link>
         </p>
       </div>
     </div>

@@ -68,7 +68,7 @@ export function ResetPasswordView() {
   // Token error state
   if (tokenError) {
     return (
-      <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-purple-500/10 via-background to-pink-500/10">
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-racing-flag/10 via-background to-racing-flag-soft/10">
         <div className="w-full max-w-md">
           <div className="bg-surface rounded-2xl shadow-xl border border-border p-8 text-center">
             <div className="w-20 h-20 bg-error/10 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -83,7 +83,7 @@ export function ResetPasswordView() {
             
             <Link
               href="/auth/forgot-password"
-              className="inline-block py-3 px-6 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-xl font-medium hover:from-purple-400 hover:to-pink-500 transition-all shadow-lg shadow-purple-500/25"
+              className="inline-block py-3 px-6 bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag rounded-xl font-medium hover:from-racing-flag hover:to-racing-flag-soft transition-all shadow-lg shadow-racing-flag/25"
             >
               ขอลิงก์รีเซ็ตรหัสผ่านใหม่
             </Link>
@@ -106,7 +106,7 @@ export function ResetPasswordView() {
   // Success state
   if (resetSuccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-purple-500/10 via-background to-pink-500/10">
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-racing-flag/10 via-background to-racing-flag-soft/10">
         <div className="w-full max-w-md">
           <div className="bg-surface rounded-2xl shadow-xl border border-border p-8 text-center">
             <div className="w-20 h-20 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -122,7 +122,7 @@ export function ResetPasswordView() {
             
             <Link
               href="/auth/login"
-              className="inline-block py-3 px-6 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-xl font-medium hover:from-purple-400 hover:to-pink-500 transition-all shadow-lg shadow-purple-500/25"
+              className="inline-block py-3 px-6 bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag rounded-xl font-medium hover:from-racing-flag hover:to-racing-flag-soft transition-all shadow-lg shadow-racing-flag/25"
             >
               ไปหน้าเข้าสู่ระบบ
             </Link>
@@ -133,15 +133,15 @@ export function ResetPasswordView() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-purple-500/10 via-background to-pink-500/10">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-racing-flag/10 via-background to-racing-flag-soft/10">
       <div className="w-full max-w-md">
         {/* Logo & Title */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-3">
-            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-3xl shadow-lg">
+            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-3xl shadow-lg">
               🏎️
             </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
+            <span className="text-2xl font-bold bg-gradient-to-r from-racing-flag to-racing-flag-soft bg-clip-text text-transparent">
               Racing Game Station
             </span>
           </Link>
@@ -183,7 +183,7 @@ export function ResetPasswordView() {
                     actions.clearError();
                   }}
                   placeholder="อย่างน้อย 6 ตัวอักษร"
-                  className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all pr-12 ${
+                  className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-racing-flag/50 transition-all pr-12 ${
                     passwordError ? 'border-error' : 'border-input-border'
                   }`}
                   disabled={state.isSubmitting}
@@ -250,7 +250,7 @@ export function ResetPasswordView() {
                     actions.clearError();
                   }}
                   placeholder="กรอกรหัสผ่านอีกครั้ง"
-                  className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all pr-12 ${
+                  className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-racing-flag/50 transition-all pr-12 ${
                     confirmPasswordError ? 'border-error' : 'border-input-border'
                   }`}
                   disabled={state.isSubmitting}
@@ -276,7 +276,7 @@ export function ResetPasswordView() {
             <button
               type="submit"
               disabled={state.isSubmitting}
-              className="w-full py-3 px-4 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-xl font-medium hover:from-purple-400 hover:to-pink-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-500/25"
+              className="w-full py-3 px-4 bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag rounded-xl font-medium hover:from-racing-flag hover:to-racing-flag-soft transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-racing-flag/25"
             >
               {state.isSubmitting ? (
                 <span className="flex items-center justify-center gap-2">

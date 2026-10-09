@@ -39,10 +39,10 @@ export function ForgotPasswordView() {
   // Show success message
   if (emailSent) {
     return (
-      <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-purple-500/10 via-background to-pink-500/10">
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-racing-flag/10 via-background to-racing-flag-soft/10">
         <div className="w-full max-w-md">
           <div className="bg-surface rounded-2xl shadow-xl border border-border p-8 text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 bg-gradient-to-br from-racing-flag/20 to-racing-flag-soft/20 rounded-full flex items-center justify-center mx-auto mb-6">
               <span className="text-5xl">✉️</span>
             </div>
             <h1 className="text-2xl font-bold text-foreground mb-2">
@@ -61,7 +61,7 @@ export function ForgotPasswordView() {
                 setEmailSent(false);
                 actions.clearSuccessMessage();
               }}
-              className="text-purple-400 hover:text-purple-300 font-medium transition-colors"
+              className="text-racing-flag hover:text-racing-flag-soft font-medium transition-colors"
             >
               ส่งอีกครั้ง
             </button>
@@ -82,15 +82,15 @@ export function ForgotPasswordView() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-purple-500/10 via-background to-pink-500/10">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-racing-flag/10 via-background to-racing-flag-soft/10">
       <div className="w-full max-w-md">
         {/* Logo & Title */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-3">
-            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-3xl shadow-lg">
+            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-3xl shadow-lg">
               🏎️
             </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
+            <span className="text-2xl font-bold bg-gradient-to-r from-racing-flag to-racing-flag-soft bg-clip-text text-transparent">
               Racing Game Station
             </span>
           </Link>
@@ -129,7 +129,7 @@ export function ForgotPasswordView() {
                   actions.clearError();
                 }}
                 placeholder="your@email.com"
-                className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all ${
+                className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-racing-flag/50 transition-all ${
                   emailError ? 'border-error' : 'border-input-border'
                 }`}
                 disabled={state.isSubmitting}
@@ -143,7 +143,7 @@ export function ForgotPasswordView() {
             <button
               type="submit"
               disabled={state.isSubmitting}
-              className="w-full py-3 px-4 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-xl font-medium hover:from-purple-400 hover:to-pink-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-500/25"
+              className="w-full py-3 px-4 bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag rounded-xl font-medium hover:from-racing-flag hover:to-racing-flag-soft transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-racing-flag/25"
             >
               {state.isSubmitting ? (
                 <span className="flex items-center justify-center gap-2">
