@@ -1,0 +1,269 @@
+/* ============================================
+   Racing Theme — ธีมจากโลโก้จริง
+
+   เพิ่มเป็นชุดแยกจาก theme.css (ไม่แก้ของเดิม)
+   สีถอดจาก public/assets/logo/ ด้วยการสแมปพิกเซล:
+     narathiwat.png → ขาว / แดง TURISMO (#E10600) / ดำ
+     pattani.png    → เงิน / ทอง (#D9A441) / ดำ
+
+   วิธีใช้: ใส่ data-racing="narathiwas" หรือ "pattani" ไว้ที่ <html>
+   (BranchThemeScript จัดการให้)
+
+   สองโหมด: :root คือโหมดสว่าง, .dark คือโหมดมืด — ปุ่มสลับธีมยังใช้ได้
+   หน้าที่ยังไม่ผูกธีมจะได้ค่า light เดิมจาก theme.css ไม่ขยับ
+   ============================================ */
+
+/* ---------- โหมดสว่าง (ค่า base — ใช้ได้แม้ยังไม่มี data-racing) ---------- */
+:root {
+  /* พื้นผิว — ร่วมทั้งสองสาขา เพราะโลโก้ทั้งคู่ตั้งอยู่บนพื้นเข้ม */
+  --racing-bg: #f5f5f3;
+  --racing-panel: #ffffff;
+  --racing-panel-2: #f4f4f2;
+  --racing-line: #e2e2df;
+  --racing-line-soft: #ececea;
+
+  /* ตัวอักษร */
+  --racing-fg: #16161a;
+  --racing-fg-2: #55555f;
+  --racing-fg-3: #8a8a95;
+
+  color-scheme: light;
+}
+
+/* ---------- สีเน้นโหมดสว่าง — เข้มกว่าโหมดมืด เพราะพื้นขาวต้องการ contrast สูงกว่า ---------- */
+[data-racing="narathiwas"] {
+  --racing-flag: #c10500;
+  --racing-flag-soft: #e10600;
+  --racing-flag-dim: rgba(193, 5, 0, 0.08);
+}
+
+[data-racing="pattani"] {
+  --racing-flag: #8a6318;
+  --racing-flag-soft: #a87a24;
+  --racing-flag-dim: rgba(138, 99, 24, 0.1);
+}
+
+/* ---------- โหมดมืด (ตรงกับโลโก้ — ดำสนิท ขาวตัวอักษร) ----------
+   พื้นผิวมืดเป็นของร่วมอีกครั้ง: ตอนนี้ใช้ .dark ล้วน ไม่ผูก data-racing
+   เพราะเดิมประกาศไว้แค่ .dark[data-racing="narathiwas"] ทำให้ปัตตานี
+   ได้พื้นสว่างแต่ตัวอักษรสีขาว — ขาวบนขาวจนอ่านไม่ออก
+   specificity เท่ากับ [data-racing=...] และอยู่ทีหลัง จึงชนะเสมอ */
+.dark {
+  --racing-bg: #08080a;
+  --racing-panel: #121216;
+  --racing-panel-2: #191920;
+  --racing-line: #26262f;
+  --racing-line-soft: #1d1d24;
+
+  --racing-fg: #f4f4f2;
+  --racing-fg-2: #9a9aa6;
+  --racing-fg-3: #64646f;
+
+  color-scheme: dark;
+}
+
+/* ---------- สีเน้นโหมดมืด ---------- */
+.dark[data-racing="narathiwas"] {
+  --racing-flag: #e10600;
+  --racing-flag-soft: #ff2a1f;
+  --racing-flag-dim: rgba(225, 6, 0, 0.14);
+}
+
+.dark[data-racing="pattani"] {
+  --racing-fg: #e8e8ec;
+  --racing-fg-2: #a0a0aa;
+  --racing-fg-3: #6a6a74;
+
+  --racing-flag: #d9a441;
+  --racing-flag-soft: #f0c674;
+  --racing-flag-dim: rgba(217, 164, 65, 0.14);
+}
+
+[data-racing] {
+  /* LED สถานะ — เหมือนกันทุกสาขาและทั้งสองโหมด เพราะต้องอ่านสถานะได้
+     โดยไม่สับสนกับสีแบรนด์ */
+  --racing-led-go: #16a34a;
+  --racing-led-warn: #d97706;
+  --racing-led-off: #a1a1aa;
+}
+
+.dark[data-racing] {
+  --racing-led-go: #22c07c;
+  --racing-led-warn: #f0a31a;
+  --racing-led-off: #5a5a64;
+}
+
+/* ============================================
+   Tailwind v4 Mapping — เฉพาะ utility ของธีมนี้
+   ของเดิมทั้งหมดยังทำงานปกติ
+   ============================================ */
+@theme inline {
+  --color-racing-bg: var(--racing-bg);
+  --color-racing-panel: var(--racing-panel);
+  --color-racing-panel-2: var(--racing-panel-2);
+  --color-racing-line: var(--racing-line);
+  --color-racing-line-soft: var(--racing-line-soft);
+
+  --color-racing-fg: var(--racing-fg);
+  --color-racing-fg-2: var(--racing-fg-2);
+  --color-racing-fg-3: var(--racing-fg-3);
+
+  --color-racing-flag: var(--racing-flag);
+  --color-racing-flag-soft: var(--racing-flag-soft);
+
+  --color-racing-led-go: var(--racing-led-go);
+  --color-racing-led-warn: var(--racing-led-warn);
+  --color-racing-led-off: var(--racing-led-off);
+}
+
+/* ============================================
+   Utilities
+   ============================================ */
+
+/** พื้นหลังลายธงผ้าหมักสีถี่ */
+@utility racing-checker {
+  background-image:
+    linear-gradient(
+      45deg,
+      color-mix(in srgb, var(--racing-fg-3), transparent 70%) 25%,
+      transparent 25%,
+      transparent 75%,
+      color-mix(in srgb, var(--racing-fg-3), transparent 70%) 75%
+    ),
+    linear-gradient(
+      45deg,
+      color-mix(in srgb, var(--racing-fg-3), transparent 70%) 25%,
+      transparent 25%,
+      transparent 75%,
+      color-mix(in srgb, var(--racing-fg-3), transparent 70%) 75%
+    );
+  background-size:
+    16px 16px,
+    16px 16px;
+  background-position:
+    0 0,
+    8px 8px;
+}
+
+/** แถบสีเน้นไล่ลงสี — ใช้เป็นเส้นหัวข้อหรือขอบการ์ด */
+@utility racing-flag-rule {
+  background-image: linear-gradient(
+    180deg,
+    var(--racing-flag-soft),
+    var(--racing-flag)
+  );
+}
+
+/** กรอบการ์ดมาตรฐานของธีมนี้ */
+@utility racing-card {
+  background-color: var(--racing-panel);
+  border: 1px solid var(--racing-line);
+  border-radius: 12px;
+}
+
+/** ป้ายตัวอักษรหน่อยๆ แบบ telemetry (ตัวเลข + หน่วย) */
+@utility racing-label {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--racing-fg-3);
+}
+
+/** ตัวเลขหลักของการ์ดสถานะ */
+@utility racing-figure {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================
+   App shell — header / footer / modal
+   อยู่ใน @layer components เพื่อให้ utility ของ Tailwind
+   (เช่น md:flex) ทับได้เมื่อต้องการ
+   ============================================ */
+@layer components {
+  /** แถบบน/ล่างของ app — พื้นโปร่งแสงเหนือเนื้อหา */
+  .racing-chrome {
+    background-color: color-mix(in srgb, var(--racing-panel) 82%, transparent);
+    backdrop-filter: blur(12px);
+    border-color: var(--racing-line);
+  }
+
+  /** ลิงก์เมนู — ขีดล่างเป็นสีเน้นเฉพาะหน้าที่อยู่ */
+  .racing-nav-link {
+    position: relative;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    color: var(--racing-fg-2);
+    transition:
+      color 0.15s ease,
+      background-color 0.15s ease;
+  }
+  .racing-nav-link:hover {
+    color: var(--racing-fg);
+    background-color: var(--racing-panel-2);
+  }
+  .racing-nav-link[aria-current="page"] {
+    color: var(--racing-fg);
+    background-color: var(--racing-panel-2);
+    box-shadow: inset 0 -2px 0 var(--racing-flag);
+  }
+
+  /** ปุ่มสาขาในหัว */
+  .racing-branch-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--racing-flag) 32%, transparent);
+    background-color: var(--racing-flag-dim);
+    color: var(--racing-flag);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease;
+  }
+  .racing-branch-chip:hover {
+    background-color: color-mix(in srgb, var(--racing-flag) 22%, transparent);
+    border-color: color-mix(in srgb, var(--racing-flag) 52%, transparent);
+  }
+
+  /** วงกลมอาตริบัตผู้ใช้ — ไล่สีจากสีเน้นของสาขา */
+  .racing-avatar {
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    background-image: linear-gradient(
+      135deg,
+      var(--racing-flag-soft),
+      var(--racing-flag)
+    );
+    color: #fff;
+    font-weight: 700;
+  }
+
+  /** โครงเมนู dropdown / modal */
+  .racing-panel-solid {
+    background-color: var(--racing-panel);
+    border: 1px solid var(--racing-line);
+    box-shadow: 0 24px 60px -30px rgb(0 0 0 / 0.55);
+  }
+
+  /** แถบสีเน้นบาง ๆ ด้านบนของ modal */
+  .racing-panel-top {
+    background-image: linear-gradient(
+      180deg,
+      var(--racing-flag-dim),
+      transparent
+    );
+  }
+}

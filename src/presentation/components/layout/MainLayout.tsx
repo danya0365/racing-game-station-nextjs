@@ -2,6 +2,7 @@
 
 import { ReactNode } from "react";
 import { BranchGate } from "../branch/BranchGate";
+import { BranchThemeSync } from "../branch/BranchThemeSync";
 import { ChatWidget } from "../chat/ChatWidget";
 import { MainFooter } from "./MainFooter";
 import { MainHeader } from "./MainHeader";
@@ -17,7 +18,10 @@ interface MainLayoutProps {
 export function MainLayout({ children }: MainLayoutProps) {
   return (
     <BranchGate>
-      <div className="h-screen w-screen overflow-hidden flex flex-col bg-background">
+      {/* Keeps the racing accent in step with client-side navigation */}
+      <BranchThemeSync />
+
+      <div className="h-screen w-screen overflow-hidden flex flex-col bg-racing-bg">
         {/* Header */}
         <MainHeader />
 

@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { getShopNow, getShopTodayString } from '@/src/lib/date';
+import { getShopNow, getShopTodayString } from "@/src/lib/date";
 
-import type { Machine } from '@/src/application/repositories/IMachineRepository';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { HomePresenter, HomeViewModel } from './HomePresenter';
-import { createClientHomePresenter } from './HomePresenterClientFactory';
+import type { Machine } from "@/src/application/repositories/IMachineRepository";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { HomePresenter, HomeViewModel } from "./HomePresenter";
+import { createClientHomePresenter } from "./HomePresenterClientFactory";
 
 export interface HomePresenterState {
   viewModel: HomeViewModel | null;
@@ -26,7 +26,7 @@ export interface HomePresenterActions {
 
 /**
  * Custom hook for Home presenter
- * 
+ *
  * ✅ Improvements:
  * - Presenter created inside hook with useMemo
  * - Visibility-aware polling
@@ -34,20 +34,22 @@ export interface HomePresenterActions {
  */
 export function useHomePresenter(
   initialViewModel?: HomeViewModel,
-  presenterOverride?: HomePresenter
+  presenterOverride?: HomePresenter,
+  /** Branch to scope every fetch to. Omit for the staff dashboard (all branches). */
+  branchId?: string,
 ): [HomePresenterState, HomePresenterActions] {
   // ✅ Create presenter inside hook
   // Accept override for easier testing
   const presenter = useMemo(
     () => presenterOverride ?? createClientHomePresenter(),
-    [presenterOverride]
+    [presenterOverride],
   );
-  
+
   // ✅ Track mounted state
   const isMountedRef = useRef(true);
 
   const [viewModel, setViewModel] = useState<HomeViewModel | null>(
-    initialViewModel || null
+    initialViewModel || null,
   );
   const [loading, setLoading] = useState(!initialViewModel);
   const [error, setError] = useState<string | null>(null);
@@ -64,46 +66,59 @@ export function useHomePresenter(
     try {
       const todayStr = getShopTodayString();
       const nowStr = getShopNow().toISOString();
-      const newViewModel = await presenter.getViewModel(todayStr, nowStr);
+      const newViewModel = await presenter.getViewModel(
+        todayStr,
+        nowStr,
+        branchId,
+      );
       if (isMountedRef.current) {
         setViewModel(newViewModel);
       }
     } catch (err) {
       if (isMountedRef.current) {
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+        const errorMessage =
+          err instanceof Error ? err.message : "Unknown error";
         setError(errorMessage);
-        console.error('Error loading home data:', err);
+        console.error("Error loading home data:", err);
       }
     } finally {
       if (isMountedRef.current) {
         setLoading(false);
       }
     }
-  }, [presenter]);
+  }, [presenter, branchId]);
 
   /**
    * Refresh data (visibility-aware)
    */
   const refreshData = useCallback(async () => {
     // ✅ Skip if tab not visible
-    if (typeof document !== 'undefined' && document.visibilityState === 'hidden') {
+    if (
+      typeof document !== "undefined" &&
+      document.visibilityState === "hidden"
+    ) {
       return;
     }
-    
+
     try {
       const todayStr = getShopTodayString();
       const nowStr = getShopNow().toISOString();
-      const newViewModel = await presenter.getViewModel(todayStr, nowStr);
+      const newViewModel = await presenter.getViewModel(
+        todayStr,
+        nowStr,
+        branchId,
+      );
       if (isMountedRef.current) {
         setViewModel(newViewModel);
       }
     } catch (err) {
       if (isMountedRef.current) {
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+        const errorMessage =
+          err instanceof Error ? err.message : "Unknown error";
         setError(errorMessage);
       }
     }
-  }, [presenter]);
+  }, [presenter, branchId]);
 
   /**
    * Select a machine
@@ -140,18 +155,18 @@ export function useHomePresenter(
   // ✅ Visibility-aware auto-refresh every 30 seconds
   useEffect(() => {
     let intervalId: NodeJS.Timeout | null = null;
-    
+
     const startPolling = () => {
       if (intervalId) clearInterval(intervalId);
       intervalId = setInterval(() => {
-        if (document.visibilityState === 'visible') {
+        if (document.visibilityState === "visible") {
           refreshData();
         }
       }, 30000);
     };
-    
+
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
+      if (document.visibilityState === "visible") {
         refreshData();
         startPolling();
       } else {
@@ -161,13 +176,13 @@ export function useHomePresenter(
         }
       }
     };
-    
+
     startPolling();
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
       if (intervalId) clearInterval(intervalId);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [refreshData]);
 

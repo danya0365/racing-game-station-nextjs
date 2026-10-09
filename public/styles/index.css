@@ -9,13 +9,15 @@
    Racing Game Station — Main Entry Point
    All styles are organized into separate modules:
 
-   1. theme.css      → @theme tokens, CSS variables, dark mode
-   2. fonts.css      → MiSans Thai font family
-   3. base.css       → Base element styles (body, scrollbar)
-   4. components.css → Animations, patterns, component styles
+   1. theme.css         → @theme tokens, CSS variables, dark mode
+   2. racing-theme.css  → ธีมจากโลโก้จริง (สลับตามสาขาด้วย data-racing)
+   3. fonts.css         → MiSans Thai font family
+   4. base.css          → Base element styles (body, scrollbar)
+   5. components.css    → Animations, patterns, component styles
    ============================================ */
 
 @import "./theme.css";
+@import "./racing-theme.css";
 @import "./fonts.css";
 
 @layer base {

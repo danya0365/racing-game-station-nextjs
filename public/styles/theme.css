@@ -84,10 +84,20 @@
    Tailwind v4 Theme Mapping
    ============================================ */
 @theme inline {
-  /* Typography */
+  /* Typography
+     MiSans Thai ships 99 glyphs: the Thai block plus ฿ (U+0E3F), and nothing
+     else — no Latin letters, no digits 0-9, no arrows. Everything it lacks
+     falls through to the system face, so digits on screen are set in a
+     different typeface from the Thai around them. That is intended here:
+     MiSans first keeps Thai on brand, and the Latin fallback supplies the
+     numerals. Verified across every weight in
+     public/fonts/MiSans_Thai/Web_Fonts/WOFF2/ (digits 0/10 each, ฿ present). */
   --font-sans:
-    "MiSans Thai", "MiSans Thai Variable", system-ui, -apple-system, sans-serif;
-  --font-mono: "MiSans Thai", "MiSans Thai Variable", ui-monospace, monospace;
+    "MiSans Thai", "MiSans Thai Variable", system-ui, -apple-system, "Segoe UI",
+    Roboto, "Noto Sans", "Helvetica Neue", sans-serif;
+  --font-mono:
+    "MiSans Thai", "MiSans Thai Variable", ui-monospace, "SF Mono", Menlo,
+    Consolas, monospace;
 
   /* Base semantic colors */
   --color-background: var(--background);

@@ -1,40 +1,23 @@
 "use client";
 
 import { Machine } from "@/src/application/repositories/IMachineRepository";
+import { useActiveBranch } from "@/src/presentation/components/branch/BranchScope";
+import { DURATION_OPTIONS } from "@/src/config/booking.config";
+import { BRANCHES } from "@/src/config/branch.config";
 import { HomeViewModel } from "@/src/presentation/presenters/home/HomePresenter";
 import { useHomePresenter } from "@/src/presentation/presenters/home/useHomePresenter";
-import { useBranchStore } from "@/src/presentation/stores/useBranchStore";
-import "dayjs/locale/th";
+import Image from "next/image";
 import Link from "next/link";
-import { PageHeader } from "../ui/PageHeader";
-
-interface DashboardStats {
-  totalMachines: number;
-  availableMachines: number;
-  occupiedMachines: number;
-  todayBookings: number;
-  activeBookings: number;
-  walkInQueueCount: number;
-  averageWaitTime: number;
-  generalCustomers: number;
-  totalPlayers: number;
-  waitingInQueue: number;
-}
 
 /**
- * HomeView - Racing Game Station Landing Page
+ * HomeView — หน้าแรกลูกค้า
  *
- * Redesigned to support:
- * - Booking system (จองล่วงหน้า)
- * - Walk-in queue (เข้าคิวหน้าร้าน)
- * - Session management (การใช้งานเครื่อง)
- * - Real-time status
+ * โครงแบบ "pit wall": เลขสถานะสามค่าเท่ากันเป็นอันดับแรก (คิวรอ / เครื่องว่าง /
+ * เข้าเล่นวันนี้) เพราะคำถามแรกของคนที่มาร้านคือ "ต้องรอนานไหม" แล้วค่อยเป็น
+ * ปุ่มหลักสองปุ่มที่ครอบคลุมการใช้งานเกือบทั้งหมด
  *
- * Features:
- * ✅ Hero section with racing theme
- * ✅ Quick action cards
- * ✅ Live dashboard
- * ✅ Dark mode support via CSS variables
+ * สีมาจากธีม racing (public/styles/racing-theme.css) ซึ่งสลับ accent
+ * ตาม data-racing — ค่าใน component นี้ไม่ผูกสีแบรนด์ไว้เลย
  */
 export function HomeView({
   initialViewModel,
@@ -42,164 +25,157 @@ export function HomeView({
   initialViewModel?: HomeViewModel;
 }) {
   // Links carry the branch prefix so a customer stays on the branch they picked
-  const branchSlug = useBranchStore((st) => st.branch.slug);
+  const branch = useActiveBranch();
+  const branchSlug = branch.slug;
   const branchHref = (path: string) => `/${branchSlug}${path}`;
 
-  const [{ viewModel, loading: isLoading }, { refreshData }] =
-    useHomePresenter(initialViewModel);
+  const [{ viewModel, loading: isLoading }] = useHomePresenter(
+    initialViewModel,
+    undefined,
+    branch.id,
+  );
 
-  // Derive stats from viewModel
   const machines = viewModel?.machines || [];
-  const stats: DashboardStats = {
+  const stats = {
     totalMachines: machines.length,
     availableMachines: machines.filter((m) => m.status === "available").length,
-    occupiedMachines: machines.filter((m) => m.status === "occupied").length,
     todayBookings: viewModel?.todayBookings || 0,
-    activeBookings: viewModel?.activeBookings || 0,
     walkInQueueCount: viewModel?.walkInQueueCount || 0,
-    averageWaitTime: viewModel?.queueStats.averageWaitMinutes || 0,
     generalCustomers: viewModel?.generalCustomers || 0,
     totalPlayers: viewModel?.totalPlayers || 0,
     waitingInQueue: viewModel?.queueStats.waitingCount || 0,
+    averageWaitTime: viewModel?.queueStats.averageWaitMinutes || 0,
   };
 
   const loading = isLoading && !viewModel;
 
   return (
-    <div className="bg-background overflow-auto scrollbar-thin">
-      <PageHeader
-        title="Racing Game Station"
-        rightContent={
-          <>
-            <div className="px-4 py-2 rounded-xl bg-surface border border-border flex flex-col items-center min-w-[100px]">
-              <span className="text-xs text-muted mb-1">เครื่องว่าง</span>
-              <span className="text-xl font-bold text-accent-emerald">
-                {loading ? "-" : stats.availableMachines}
-                <span className="text-sm text-muted font-normal ml-1">
-                  / {stats.totalMachines}
-                </span>
-              </span>
-            </div>
-            <div className="px-4 py-2 rounded-xl bg-surface border border-border flex flex-col items-center min-w-[100px]">
-              <span className="text-xs text-muted mb-1">คิวรอ</span>
-              <span className="text-xl font-bold text-accent-amber">
-                {loading ? "-" : stats.waitingInQueue}
-              </span>
-            </div>
-          </>
-        }
-      />
-
-      <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
-        {/* Quick Actions - Primary Utility */}
-        <section>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <QuickActionCard
-              href={branchHref("/walk-in")}
-              icon="🏁"
-              title="เข้าคิวทันที"
-              description="เล่นเลย ไม่ต้องจอง"
-              color="cyan"
-              isPrimary
-            />
-            <QuickActionCard
-              href={branchHref("/time-booking")}
-              icon="📅"
-              title="จองล่วงหน้า"
-              description="ล็อคเวลาที่ต้องการ"
-              color="purple"
-            />
-            <QuickActionCard
-              href={branchHref("/customer/booking-history")}
-              icon="📋"
-              title="ประวัติการจอง"
-              description="เช็คสถานะของคุณ"
-              color="pink"
-            />
-            <QuickActionCard
-              href="/qr-scan"
-              icon="📱"
-              title="สแกน QR"
-              description="เช็คอิน / จ่ายเงิน"
-              color="green"
-            />
-          </div>
+    <div className="bg-racing-bg text-racing-fg overflow-auto scrollbar-thin">
+      <div className="max-w-6xl mx-auto px-4 py-6 md:py-8 space-y-8">
+        {/* ---------- Pit board: สามค่าที่ตอบคำถามแรก ---------- */}
+        <section className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-racing-line border border-racing-line rounded-xl overflow-hidden">
+          <StatCell
+            label="คิวรอตอนนี้"
+            value={loading ? null : stats.waitingInQueue}
+            unit="คน"
+            sub={
+              stats.waitingInQueue > 0 && stats.averageWaitTime > 0
+                ? `รอประมาณ ${stats.averageWaitTime} นาที`
+                : "ยังไม่มีคิวรอ"
+            }
+            emphasis
+          />
+          <StatCell
+            label="เครื่องว่าง"
+            value={loading ? null : stats.availableMachines}
+            total={stats.totalMachines}
+            tone="go"
+            sub={
+              stats.totalMachines - stats.availableMachines > 0
+                ? `กำลังเล่น/ปิด ${stats.totalMachines - stats.availableMachines} เครื่อง`
+                : "เครื่องว่างทั้งหมด"
+            }
+          />
+          <StatCell
+            label="เข้าเล่นวันนี้"
+            value={loading ? null : stats.totalPlayers}
+            unit="คน"
+            sub={`จองล่วงหน้า ${stats.todayBookings} รายการ`}
+          />
         </section>
 
-        {/* Real-time Machine Status */}
+        {/* ---------- ปุ่มหลักสองปุ่ม ---------- */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <ActionButton
+            href={branchHref("/walk-in")}
+            icon="🏁"
+            title="เข้าคิวเล่นเลย"
+            description="ไม่ต้องจอง เข้าคิวหน้าร้านได้เลย"
+            primary
+          />
+          <ActionButton
+            href={branchHref("/time-booking")}
+            icon="📅"
+            title="จองล่วงหน้า"
+            description="ล็อกเวลาที่ต้องการ ราคาเหมือนกัน"
+          />
+        </section>
+
+        {/* ---------- สถานะเครื่อง ---------- */}
         <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold flex items-center gap-2">
-              <span className="w-2 h-6 md:h-8 rounded-full bg-accent-purple" />
-              สถานะเครื่อง
+          <div className="flex items-center justify-between gap-3 flex-wrap mb-3">
+            <h2 className="font-bold text-[15px] tracking-tight">
+              เครื่องที่ใช้ได้ตอนนี้
             </h2>
-            <div className="flex gap-2 text-xs">
-              <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-accent-emerald/10 text-accent-emerald">
-                <span className="w-2 h-2 rounded-full bg-accent-emerald" /> ว่าง
-              </div>
-              <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-accent-orange/10 text-accent-orange">
-                <span className="w-2 h-2 rounded-full bg-accent-orange" />{" "}
-                ไม่ว่าง
-              </div>
+            <div className="flex gap-3">
+              <LegendDot color="var(--racing-led-go)" label="ว่าง" />
+              <LegendDot color="var(--racing-flag)" label="กำลังเล่น" />
+              <LegendDot color="var(--racing-led-off)" label="ปิด" />
             </div>
           </div>
 
           {loading ? (
-            <div className="flex justify-center py-12">
-              <div className="animate-spin text-accent-purple text-2xl">⚡</div>
+            <div className="racing-card p-10 text-center text-racing-fg-3 text-sm">
+              กำลังโหลดสถานะเครื่อง…
+            </div>
+          ) : machines.length === 0 ? (
+            <div className="racing-card p-10 text-center">
+              <p className="text-racing-fg-2 text-sm">
+                ยังไม่มีเครื่องที่เปิดให้เล่นในสาขานี้
+              </p>
+              <p className="text-racing-fg-3 text-xs mt-1">
+                ลองสลับไปดูอีกสาขา หรือโทรสอบถามทางร้าน
+              </p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
               {machines.map((machine) => (
-                <MachineStatusCard key={machine.id} machine={machine} />
+                <MachineCard key={machine.id} machine={machine} />
               ))}
             </div>
           )}
         </section>
 
-        {/* Today's Schedule Overview */}
-        <section className="bg-surface/30 rounded-2xl p-6 border border-border/50">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-medium text-foreground">ภาพรวมวันนี้</h3>
+        {/* ---------- ราคา ---------- */}
+        <section>
+          <div className="flex items-center justify-between gap-3 flex-wrap mb-3">
+            <h2 className="font-bold text-[15px] tracking-tight">ราคา</h2>
             <Link
               href={branchHref("/time-booking")}
-              className="text-sm text-accent-purple hover:opacity-80"
+              className="text-[13px] text-racing-fg-2 hover:text-racing-fg transition-colors"
             >
-              ดูตารางเวลาเต็ม →
+              ดูตารางเวลาว่าง →
             </Link>
           </div>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-4 rounded-xl bg-surface border border-border">
-              <div className="text-sm text-muted mb-1">จองวันนี้แล้ว</div>
-              <div className="text-2xl font-bold">
-                {stats.todayBookings}{" "}
-                <span className="text-sm font-normal text-muted">รายการ</span>
-              </div>
-            </div>
-            <div className="p-4 rounded-xl bg-surface border border-border">
-              <div className="text-sm text-muted mb-1">คิว Walk-in</div>
-              <div className="text-2xl font-bold text-accent-amber">
-                {stats.walkInQueueCount}{" "}
-                <span className="text-sm font-normal text-muted">คิว</span>
-              </div>
-            </div>
-            <div className="p-4 rounded-xl bg-surface border border-border">
-              <div className="text-sm text-muted mb-1">ลูกค้าทั่วไป</div>
-              <div className="text-2xl font-bold text-accent-blue">
-                {stats.generalCustomers}{" "}
-                <span className="text-sm font-normal text-muted">คน</span>
-              </div>
-            </div>
-            <div className="p-4 rounded-xl bg-surface border border-border">
-              <div className="text-sm text-muted mb-1">ผู้เล่นวันนี้</div>
-              <div className="text-2xl font-bold text-accent-emerald">
-                {stats.totalPlayers}{" "}
-                <span className="text-sm font-normal text-muted">คน</span>
-              </div>
-            </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+            {DURATION_OPTIONS.map((d) => (
+              <RateCard key={d.time} rate={d} />
+            ))}
           </div>
         </section>
+
+        {/* ---------- สาขา ---------- */}
+        <section>
+          <div className="flex items-center justify-between gap-3 flex-wrap mb-3">
+            <h2 className="font-bold text-[15px] tracking-tight">สาขา</h2>
+            <span className="text-[13px] text-racing-fg-3">
+              สลับได้จากปุ่มชื่อสาขาที่มุมขวาบน
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {BRANCHES.map((b) => (
+              <BranchCard
+                key={b.id}
+                slug={b.slug}
+                name={b.shortName}
+                logo={b.logo}
+                active={b.slug === branchSlug}
+              />
+            ))}
+          </div>
+        </section>
+
+        <div className="racing-checker h-2 rounded-sm opacity-50" />
       </div>
     </div>
   );
@@ -209,140 +185,282 @@ export function HomeView({
 // Sub-components
 // ============================================
 
-interface QuickActionCardProps {
+interface StatCellProps {
+  label: string;
+  value: number | null;
+  unit?: string;
+  total?: number;
+  sub?: string;
+  /** ใหญ่กว่าอีกสองช่อง — คือคำตอบของคำถามแรก */
+  emphasis?: boolean;
+  /** สี LED ตามสถานะ ไม่ใช่สีแบรนด์ */
+  tone?: "go";
+}
+
+function StatCell({
+  label,
+  value,
+  unit,
+  total,
+  sub,
+  emphasis,
+  tone,
+}: StatCellProps) {
+  return (
+    <div className="bg-racing-panel px-4 py-3.5">
+      <div className="racing-label">{label}</div>
+      <div
+        className={`racing-figure mt-1.5 ${
+          emphasis ? "text-[38px]" : "text-[32px]"
+        } ${tone === "go" ? "text-racing-led-go" : ""}`}
+      >
+        {value === null ? (
+          "–"
+        ) : (
+          <>
+            {value}
+            {unit ? (
+              <span className="text-[15px] font-medium text-racing-fg-3 ml-1">
+                {unit}
+              </span>
+            ) : null}
+            {total !== undefined ? (
+              <span className="text-[15px] font-medium text-racing-fg-3 ml-0.5">
+                / {total}
+              </span>
+            ) : null}
+          </>
+        )}
+      </div>
+      {sub ? (
+        <div
+          className={`text-xs mt-1.5 ${
+            emphasis ? "text-racing-fg font-medium" : "text-racing-fg-2"
+          }`}
+        >
+          {sub}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+interface ActionButtonProps {
   href: string;
   icon: string;
   title: string;
   description: string;
-  color: "purple" | "cyan" | "pink" | "green" | "orange";
-  isPrimary?: boolean;
+  primary?: boolean;
 }
 
-const colorMap = {
-  purple: {
-    gradient: "gradient-purple-bg",
-    border: "border-accent-purple/30 hover:border-accent-purple/60",
-    iconBg: "gradient-purple",
-    shadow: "hover:shadow-accent-purple/20",
-  },
-  cyan: {
-    gradient: "gradient-cyan-bg",
-    border: "border-accent-cyan/30 hover:border-accent-cyan/60",
-    iconBg: "gradient-cyan",
-    shadow: "hover:shadow-accent-cyan/20",
-  },
-  pink: {
-    gradient: "gradient-pink-bg",
-    border: "border-accent-pink/30 hover:border-accent-pink/60",
-    iconBg: "gradient-pink",
-    shadow: "hover:shadow-accent-pink/20",
-  },
-  green: {
-    gradient: "gradient-green-bg",
-    border: "border-accent-emerald/30 hover:border-accent-emerald/60",
-    iconBg: "gradient-green",
-    shadow: "hover:shadow-accent-emerald/20",
-  },
-  orange: {
-    gradient: "gradient-orange-bg",
-    border: "border-accent-orange/30 hover:border-accent-orange/60",
-    iconBg: "gradient-orange",
-    shadow: "hover:shadow-accent-orange/20",
-  },
-};
-
-function QuickActionCard({
+function ActionButton({
   href,
   icon,
   title,
   description,
-  color,
-  isPrimary,
-}: QuickActionCardProps) {
-  const colors = colorMap[color];
-
+  primary,
+}: ActionButtonProps) {
   return (
-    <Link href={href}>
-      <div
-        className={`
-          group relative p-6 rounded-2xl 
-          ${colors.gradient}
-          border ${colors.border}
-          transition-all duration-300
-          hover:scale-105 hover:-translate-y-1
-          hover:shadow-xl ${colors.shadow}
-          cursor-pointer
-          ${isPrimary ? "ring-2 ring-accent-emerald/50" : ""}
-          h-full
-        `}
+    <Link
+      href={href}
+      className={`group flex items-center gap-3 px-4 py-4 rounded-xl border transition-all duration-200 ${
+        primary
+          ? "bg-linear-to-b from-racing-flag-soft to-racing-flag border-transparent shadow-[0_10px_26px_-12px_var(--racing-flag)] hover:brightness-110"
+          : "bg-racing-panel border-racing-line hover:border-racing-fg-3"
+      }`}
+    >
+      <span
+        className={`w-10 h-10 shrink-0 grid place-items-center rounded-[10px] text-[17px] border ${
+          primary
+            ? "bg-black/25 border-white/25"
+            : "bg-racing-panel-2 border-racing-line"
+        }`}
       >
-        <div
-          className={`
-            inline-flex items-center justify-center 
-            w-16 h-16 rounded-2xl 
-            ${colors.iconBg}
-            text-4xl mb-4 
-            shadow-lg
-            group-hover:scale-110 transition-transform
-          `}
+        {icon}
+      </span>
+      <span className="min-w-0">
+        <span
+          className={`block font-bold text-[17px] tracking-tight ${
+            primary ? "text-white" : "text-racing-fg"
+          }`}
         >
-          {icon}
-        </div>
-        <h3 className="text-xl font-bold text-foreground mb-2">{title}</h3>
-        <p className="text-muted text-sm">{description}</p>
-
-        {/* Arrow indicator */}
-        <div className="absolute top-6 right-6 text-muted group-hover:text-foreground transition-colors">
-          →
-        </div>
-
-        {isPrimary && (
-          <div className="absolute -top-3 left-6 px-3 py-1 bg-accent-emerald text-white text-xs font-bold rounded-full shadow-lg animate-bounce">
-            แนะนำ
-          </div>
-        )}
-      </div>
+          {title}
+        </span>
+        <span
+          className={`block text-xs mt-0.5 ${
+            primary ? "text-white/80" : "text-racing-fg-2"
+          }`}
+        >
+          {description}
+        </span>
+      </span>
+      <span
+        className={`ml-auto text-[16px] shrink-0 ${
+          primary ? "text-white/85" : "text-racing-fg-3"
+        }`}
+        aria-hidden
+      >
+        →
+      </span>
     </Link>
   );
 }
 
-function MachineStatusCard({ machine }: { machine: Machine }) {
-  const statusConfig = {
-    available: {
-      color: "bg-accent-emerald",
-      text: "ว่าง",
-      bgClass: "bg-accent-emerald/10 border-accent-emerald/30",
-    },
-    occupied: {
-      color: "bg-accent-orange",
-      text: "ไม่ว่าง",
-      bgClass: "bg-accent-orange/10 border-accent-orange/30",
-    },
-    maintenance: {
-      color: "bg-muted",
-      text: "ปิดปรับปรุง",
-      bgClass: "bg-muted/10 border-muted/30",
-    },
-  };
+function LegendDot({ color, label }: { color: string; label: string }) {
+  return (
+    <span className="flex items-center gap-1.5 text-[11.5px] text-racing-fg-2">
+      <span
+        className="w-[7px] h-[7px] rounded-full"
+        style={{ backgroundColor: color }}
+        aria-hidden
+      />
+      {label}
+    </span>
+  );
+}
 
-  const config = statusConfig[machine.status] || statusConfig.maintenance;
+const STATUS_META = {
+  available: { label: "ว่าง", tone: "go" },
+  occupied: { label: "กำลังเล่น", tone: "busy" },
+  maintenance: { label: "ปิด", tone: "off" },
+} as const;
+
+function MachineCard({ machine }: { machine: Machine }) {
+  const meta = STATUS_META[machine.status] ?? STATUS_META.maintenance;
 
   return (
     <div
-      className={`p-4 rounded-xl border ${config.bgClass} transition-all hover:scale-105`}
+      className={`relative pl-4 pr-3.5 py-3 rounded-xl bg-racing-panel border border-racing-line overflow-hidden ${
+        meta.tone === "off" ? "opacity-60" : ""
+      }`}
     >
-      <div className="text-center">
-        <div className="text-2xl mb-2">🎮</div>
-        <h4 className="font-bold text-foreground text-sm truncate">
-          {machine.name}
-        </h4>
-        <div className="flex items-center justify-center gap-1.5 mt-2">
+      {/* แถบสถานะด้านซ้าย — อ่านได้โดยไม่ต้องอ่านตัวอักษร */}
+      <span
+        className="absolute inset-y-0 left-0 w-[3px]"
+        style={{
+          backgroundColor:
+            meta.tone === "go"
+              ? "var(--racing-led-go)"
+              : meta.tone === "busy"
+                ? "var(--racing-flag)"
+                : "var(--racing-led-off)",
+        }}
+        aria-hidden
+      />
+      <div className="flex items-center justify-between gap-2">
+        <span className="racing-label !text-[9.5px]">
+          RIG {String(machine.position).padStart(2, "0")}
+        </span>
+        <span
+          className={`flex items-center gap-1.5 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-racing-panel-2 ${
+            meta.tone === "go"
+              ? "text-racing-led-go"
+              : meta.tone === "busy"
+                ? "text-racing-flag"
+                : "text-racing-fg-2"
+          }`}
+        >
           <span
-            className={`w-2 h-2 rounded-full ${config.color} animate-pulse`}
+            className={`w-1.5 h-1.5 rounded-full ${
+              meta.tone === "go"
+                ? "bg-racing-led-go animate-pulse"
+                : meta.tone === "busy"
+                  ? "bg-racing-flag"
+                  : "bg-racing-led-off"
+            }`}
+            aria-hidden
           />
-          <span className="text-xs text-muted">{config.text}</span>
-        </div>
+          {meta.label}
+        </span>
+      </div>
+      <h3 className="font-bold text-[14.5px] tracking-tight mt-2 truncate">
+        {machine.name}
+      </h3>
+      {machine.description ? (
+        <p className="text-xs text-racing-fg-2 leading-relaxed mt-0.5 line-clamp-2">
+          {machine.description}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+function RateCard({ rate }: { rate: (typeof DURATION_OPTIONS)[number] }) {
+  return (
+    <div
+      className={`px-3.5 py-3 rounded-xl border ${
+        rate.popular
+          ? "border-racing-flag bg-linear-to-b from-[var(--racing-flag-dim)] to-racing-panel"
+          : "bg-racing-panel border-racing-line"
+      }`}
+    >
+      <div
+        className={`racing-label !text-[9.5px] ${
+          rate.popular ? "!text-racing-flag" : ""
+        }`}
+      >
+        {rate.labelEn}
+        {rate.popular ? " · คุ้มสุด" : ""}
+      </div>
+      <div className="racing-figure !text-[22px] mt-1.5">
+        <span className="sr-only">{rate.label}</span>
+        {rate.priceDisplay}
+      </div>
+      <div className="text-[11.5px] text-racing-fg-2 mt-1">
+        {rate.label} · {rate.pricePerMinute.toFixed(2)} บาท/นาที
       </div>
     </div>
+  );
+}
+
+function BranchCard({
+  slug,
+  name,
+  logo,
+  active,
+}: {
+  slug: string;
+  name: string;
+  logo: string;
+  active: boolean;
+}) {
+  return (
+    <Link
+      href={`/${slug}`}
+      aria-current={active ? "page" : undefined}
+      className={`flex items-center gap-3.5 px-3.5 py-3 rounded-xl border transition-colors ${
+        active
+          ? "border-racing-flag bg-racing-panel"
+          : "bg-racing-panel border-racing-line hover:border-racing-fg-3"
+      }`}
+    >
+      <Image
+        src={logo}
+        alt={`โลโก้สาขา${name}`}
+        width={128}
+        height={36}
+        className="h-9 w-auto max-w-[128px] object-contain object-left shrink-0"
+      />
+      <span className="min-w-0">
+        <span className="block font-bold text-[14px] tracking-tight">
+          {name}
+        </span>
+        <span className="block text-[11.5px] text-racing-fg-2">
+          {active ? "สาขาที่คุณอยู่ตอนนี้" : "ดูสถานะและจองได้ที่นี่"}
+        </span>
+      </span>
+      {active ? (
+        <span className="ml-auto shrink-0 text-[10px] font-semibold tracking-wider uppercase text-racing-flag px-2 py-0.5 rounded-full border border-racing-flag">
+          ปัจจุบัน
+        </span>
+      ) : (
+        <span
+          className="ml-auto shrink-0 text-racing-fg-3 text-[16px]"
+          aria-hidden
+        >
+          →
+        </span>
+      )}
+    </Link>
   );
 }

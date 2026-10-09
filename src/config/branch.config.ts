@@ -22,6 +22,13 @@ export interface Branch {
   name: string;
   /** Short label for header/footer */
   shortName: string;
+  /**
+   * Logo in public/assets/logo/ — transparent WebP, sits on any ground.
+   *
+   * WebP not PNG: the source PNGs are 500–780KB and these render at 36px.
+   * The .webp files are ~45–63KB at the same apparent sharpness (q=90).
+   */
+  logo: string;
 }
 
 /**
@@ -43,12 +50,14 @@ export const BRANCHES: Branch[] = [
     slug: "narathiwas",
     name: "Racing Game Station นราธิวาส",
     shortName: "นราธิวาส",
+    logo: "/assets/logo/narathiwat.webp",
   },
   {
     id: BRANCH_IDS.PATTANI,
     slug: "pattani",
     name: "Racing Game Station ปัตตานี",
     shortName: "ปัตตานี",
+    logo: "/assets/logo/pattani.webp",
   },
 ];
 

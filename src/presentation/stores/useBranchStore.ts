@@ -1,6 +1,11 @@
 "use client";
 
 import { Branch, BRANCHES, DEFAULT_BRANCH } from "@/src/config/branch.config";
+import {
+  clearStoredBranch,
+  persistBranch,
+  readStoredBranchSlug,
+} from "@/src/lib/branchStorage";
 import { create } from "zustand";
 
 interface BranchStore {
@@ -30,8 +35,6 @@ interface BranchStore {
   openPicker: () => void;
   closePicker: () => void;
 }
-
-const BRANCH_STORAGE_KEY = "rgs-selected-branch";
 
 const BY_SLUG: Record<string, Branch> = {};
 const BY_ID: Record<string, Branch> = {};
@@ -84,12 +87,7 @@ export const useBranchStore = create<BranchStore>((set, get) => ({
 
   clearBranch: () => {
     set({ hasChosen: false, isPickerOpen: true });
-    if (typeof window === "undefined") return;
-    try {
-      window.localStorage.removeItem(BRANCH_STORAGE_KEY);
-    } catch {
-      // non-fatal
-    }
+    clearStoredBranch();
   },
 }));
 
@@ -99,27 +97,14 @@ export const useBranchStore = create<BranchStore>((set, get) => ({
  */
 export function hydrateBranch(): boolean {
   if (typeof window === "undefined") return false;
-  try {
-    const saved = window.localStorage.getItem(BRANCH_STORAGE_KEY);
-    if (saved && BY_SLUG[saved]) {
-      useBranchStore.setState({ branch: BY_SLUG[saved], hasChosen: true });
-      return true;
-    }
-  } catch {
-    // localStorage blocked — treat as "not chosen yet"
+  const saved = readStoredBranchSlug();
+  if (saved && BY_SLUG[saved]) {
+    useBranchStore.setState({ branch: BY_SLUG[saved], hasChosen: true });
+    return true;
   }
   // First visit on this device — the gate must ask before anything else.
   // Set here rather than in the component's effect so BranchGate stays free of
   // a setState-during-effect (which cascades an extra render on every mount).
   useBranchStore.setState({ isPickerOpen: true });
   return false;
-}
-
-function persistBranch(slug: string): void {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.setItem(BRANCH_STORAGE_KEY, slug);
-  } catch {
-    // non-fatal
-  }
 }

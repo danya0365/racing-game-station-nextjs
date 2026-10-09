@@ -3,6 +3,7 @@
 import { BRANCHES, Branch } from "@/src/config/branch.config";
 import { useBranchStore } from "@/src/presentation/stores/useBranchStore";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useEffect } from "react";
 import { Portal } from "../ui/Portal";
 
@@ -69,14 +70,12 @@ export function BranchModal({ open, dismissible, onClose }: BranchModalProps) {
           onClick={dismissible ? onClose : undefined}
         />
 
-        <div className="relative w-full max-w-md bg-surface border border-border rounded-2xl shadow-2xl overflow-hidden animate-modal-in">
-          <div className="p-5 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border-b border-border flex justify-between items-center">
+        <div className="racing-panel-solid relative w-full max-w-md rounded-2xl overflow-hidden animate-modal-in">
+          <div className="racing-panel-top p-5 border-b border-racing-line flex justify-between items-center">
             <div>
-              <h2 className="font-bold text-lg text-foreground">
-                📍 เลือกสาขา
-              </h2>
+              <h2 className="font-bold text-lg text-racing-fg">เลือกสาขา</h2>
               {!dismissible && (
-                <p className="text-xs text-muted mt-0.5">
+                <p className="text-xs text-racing-fg-2 mt-0.5">
                   เลือกสาขาที่ต้องการใช้บริการ — เปลี่ยนได้ตลอดเวลา
                 </p>
               )}
@@ -84,7 +83,7 @@ export function BranchModal({ open, dismissible, onClose }: BranchModalProps) {
             {dismissible && (
               <button
                 onClick={onClose}
-                className="text-muted hover:text-foreground transition-colors text-xl leading-none"
+                className="text-racing-fg-3 hover:text-racing-fg transition-colors text-xl leading-none"
                 type="button"
                 aria-label="ปิด"
               >
@@ -103,24 +102,30 @@ export function BranchModal({ open, dismissible, onClose }: BranchModalProps) {
                   type="button"
                   className={`w-full text-left p-4 rounded-xl border transition-all duration-200 ${
                     isCurrent
-                      ? "border-accent-cyan bg-cyan-500/10"
-                      : "border-border bg-background hover:border-accent-cyan hover:bg-cyan-500/5"
+                      ? "border-racing-flag bg-racing-flag-dim"
+                      : "border-racing-line bg-racing-panel hover:border-racing-flag hover:bg-racing-flag-dim"
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-lg shrink-0">
-                      📍
-                    </div>
+                    {/* Each branch's own mark — this dialog shows both at once,
+                        so the logo is what distinguishes them, not just text. */}
+                    <Image
+                      src={branch.logo}
+                      alt=""
+                      width={92}
+                      height={24}
+                      className="h-6 w-auto max-w-23 object-contain object-left shrink-0"
+                    />
                     <div className="min-w-0 flex-1">
-                      <p className="font-semibold text-foreground truncate">
+                      <p className="font-semibold text-racing-fg truncate">
                         สาขา{branch.shortName}
                       </p>
-                      <p className="text-xs text-muted truncate">
+                      <p className="text-xs text-racing-fg-2 truncate">
                         {branch.name}
                       </p>
                     </div>
                     {isCurrent && (
-                      <span className="text-xs px-2 py-1 rounded-lg bg-cyan-500/20 text-accent-cyan font-medium shrink-0">
+                      <span className="text-xs px-2 py-1 rounded-lg bg-racing-flag-dim text-racing-flag font-medium shrink-0">
                         สาขาปัจจุบัน
                       </span>
                     )}
@@ -131,10 +136,10 @@ export function BranchModal({ open, dismissible, onClose }: BranchModalProps) {
           </div>
 
           {dismissible && (
-            <div className="p-4 border-t border-border bg-muted-light/20">
+            <div className="p-4 border-t border-racing-line bg-racing-panel-2">
               <button
                 onClick={onClose}
-                className="w-full py-2.5 rounded-xl border border-border text-sm text-muted hover:text-foreground transition-colors"
+                className="w-full py-2.5 rounded-xl border border-racing-line text-sm text-racing-fg-2 hover:text-racing-fg hover:border-racing-flag transition-colors"
                 type="button"
               >
                 ยกเลิก

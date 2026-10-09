@@ -1,25 +1,50 @@
-'use client';
+"use client";
 
-import { BRANCHES } from '@/src/config/branch.config';
-import { getNavLinks } from '@/src/config/navigation.config';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useBranchStore } from '@/src/presentation/stores/useBranchStore';
-import { useAuthPresenter } from '../../presenters/auth/useAuthPresenter';
-import { Portal } from '../ui/Portal';
-import { ThemeToggle } from '../ui/ThemeToggle';
-import { MobileMenu } from './MobileMenu';
+import { BRANCHES } from "@/src/config/branch.config";
+import { getNavLinks } from "@/src/config/navigation.config";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+import { useBranchStore } from "@/src/presentation/stores/useBranchStore";
+import { useAuthPresenter } from "../../presenters/auth/useAuthPresenter";
+import { Portal } from "../ui/Portal";
+import { ThemeToggle } from "../ui/ThemeToggle";
+import { MobileMenu } from "./MobileMenu";
 
 /**
  * Pages whose view renders its own full-screen header above the app header.
  * Those views put their own branch button in theirs, so the one here is hidden
  * to avoid showing two.
  */
-const SELF_HEADED_ROUTES = ['/time-booking', '/walk-in'];
+const SELF_HEADED_ROUTES = ["/time-booking", "/walk-in"];
 
 /** Branch prefixes — routes above also exist under /pattani and /narathiwas */
 const BRANCH_PREFIXES = BRANCHES.map((b) => `/${b.slug}`);
+
+/**
+ * The single nav link that owns the current path, or null.
+ *
+ * Longest href wins. Each link deciding for itself looked simpler but marked
+ * two entries at once on /narathiwas/time-booking — the branch home is a prefix
+ * of every other branch page, so "หน้าแรก" matched alongside "จองเวลา".
+ */
+function findActiveNavHref(
+  pathname: string,
+  links: { href: string }[],
+): string | null {
+  const trimmed = pathname.replace(/\/+$/, "");
+  let best: string | null = null;
+  for (const { href } of links) {
+    const candidate = href.replace(/\/+$/, "");
+    const matches =
+      trimmed === candidate || trimmed.startsWith(`${candidate}/`);
+    if (matches && (best === null || candidate.length > best.length)) {
+      best = candidate;
+    }
+  }
+  return best;
+}
 
 export function MainHeader() {
   const router = useRouter();
@@ -30,52 +55,64 @@ export function MainHeader() {
   const hasChosenBranch = useBranchStore((s) => s.hasChosen);
   const openBranchPicker = useBranchStore((s) => s.openPicker);
   const navLinks = getNavLinks(branch);
+  const activeNavHref = findActiveNavHref(pathname, navLinks);
   const hasBranchPrefix = BRANCH_PREFIXES.some((p) => pathname.startsWith(p));
-  const pathWithoutBranch = pathname.split('/').slice(hasBranchPrefix ? 2 : 1).join('/');
-  const isCoveredByOwnHeader = SELF_HEADED_ROUTES.includes(`/${pathWithoutBranch}`);
+  const pathWithoutBranch = pathname
+    .split("/")
+    .slice(hasBranchPrefix ? 2 : 1)
+    .join("/");
+  const isCoveredByOwnHeader = SELF_HEADED_ROUTES.includes(
+    `/${pathWithoutBranch}`,
+  );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     await authActions.signOut();
     setIsUserMenuOpen(false);
-    router.push('/');
+    router.push("/");
   };
 
   // Get display name - prefer fullName from profile, fallback to email
-  const displayName = authState.profile?.fullName || authState.user?.email?.split('@')[0] || 'ผู้ใช้';
+  const displayName =
+    authState.profile?.fullName ||
+    authState.user?.email?.split("@")[0] ||
+    "ผู้ใช้";
   const userInitial = displayName.charAt(0).toUpperCase();
 
   return (
     <>
-      <header className="h-16 bg-surface/80 backdrop-blur-lg border-b border-border/50 flex items-center justify-between px-4 md:px-8 z-50">
-        {/* Logo */}
-        <Link href={`/${branch.slug}`} className="flex items-center gap-3 group">
-          <div className="flex items-center gap-3 transition-transform duration-200 group-hover:scale-105">
-            {/* Racing Icon */}
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg">
-              <span className="text-2xl">🏎️</span>
-            </div>
-            
-            <span 
-              className="text-xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent hidden sm:block transition-all duration-300 group-hover:drop-shadow-[0_0_10px_rgba(0,212,255,0.5)]"
-            >
-              Racing Game Station
-            </span>
-          </div>
+      <header className="racing-chrome h-16 border-b flex items-center justify-between px-4 md:px-8 z-50">
+        {/* Logo — the branch's own file, so switching branch swaps the mark */}
+        <Link
+          href={`/${branch.slug}`}
+          className="flex items-center gap-3 group shrink-0"
+        >
+          <Image
+            src={branch.logo}
+            alt={`Racing Game Station ${branch.shortName}`}
+            width={190}
+            height={40}
+            priority
+            className="h-9 w-auto max-w-[190px] object-contain object-left transition-transform duration-200 group-hover:scale-105"
+          />
         </Link>
 
         {/* Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => (
-            <NavLink key={link.href} href={link.href}>
+            <NavLink
+              key={link.href}
+              href={link.href}
+              isCurrent={activeNavHref === link.href}
+            >
               {link.label}
             </NavLink>
           ))}
         </nav>
 
         {/* Right Section */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {/* Current branch — opens the switch modal. Lives in the header rather
               than floating above it so it never covers the nav links.
 
@@ -87,10 +124,24 @@ export function MainHeader() {
             <button
               onClick={openBranchPicker}
               type="button"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-cyan-500/30 bg-cyan-500/10 text-accent-cyan text-sm font-medium transition-all hover:bg-cyan-500/20 hover:border-cyan-500/50"
+              className="racing-branch-chip"
               aria-label={`สาขาปัจจุบัน: ${branch.shortName} — คลิกเพื่อเปลี่ยนสาขา`}
             >
-              <span aria-hidden>📍</span>
+              <svg
+                className="w-3.5 h-3.5 shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+                aria-hidden
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 21s-7-5.6-7-11a7 7 0 1114 0c0 5.4-7 11-7 11z"
+                />
+                <circle cx="12" cy="10" r="2.5" />
+              </svg>
               <span className="max-w-[100px] truncate">{branch.shortName}</span>
               <svg
                 className="w-3.5 h-3.5 shrink-0 transition-transform duration-200"
@@ -114,31 +165,34 @@ export function MainHeader() {
           </div>
 
           {/* Auth Section */}
-          {authState.isLoading ? (
-            null
-          ) : authState.isAuthenticated ? (
+          {authState.isLoading ? null : authState.isAuthenticated ? (
             /* User Menu - Logged In */
             <div className="relative">
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="flex items-center gap-2 px-2 py-1 rounded-xl hover:bg-muted-light/50 transition-all"
+                className="flex items-center gap-2 px-2 py-1 rounded-xl hover:bg-racing-panel-2 transition-all"
               >
                 {/* Avatar */}
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-semibold text-sm shadow-lg shadow-cyan-500/20">
+                <div className="racing-avatar w-9 h-9 text-sm">
                   {userInitial}
                 </div>
                 {/* Name - Desktop only */}
-                <span className="hidden lg:block text-sm font-medium text-text-primary max-w-[120px] truncate">
+                <span className="hidden lg:block text-sm font-medium text-racing-fg max-w-[120px] truncate">
                   {displayName}
                 </span>
                 {/* Dropdown Arrow */}
-                <svg 
-                  className={`w-4 h-4 text-text-muted transition-transform duration-200 ${isUserMenuOpen ? 'rotate-180' : ''}`} 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
+                <svg
+                  className={`w-4 h-4 text-racing-fg-3 transition-transform duration-200 ${isUserMenuOpen ? "rotate-180" : ""}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </button>
 
@@ -146,18 +200,20 @@ export function MainHeader() {
               {isUserMenuOpen && (
                 <>
                   {/* Backdrop */}
-                  <div 
-                    className="fixed inset-0 z-40" 
+                  <div
+                    className="fixed inset-0 z-40"
                     onClick={() => setIsUserMenuOpen(false)}
                   />
-                  
-                  <div
-                    className="absolute right-0 top-full mt-2 w-56 bg-surface border border-border rounded-xl shadow-xl shadow-black/20 z-50 overflow-hidden animate-modal-in"
-                  >
+
+                  <div className="racing-panel-solid absolute right-0 top-full mt-2 w-56 rounded-xl z-50 overflow-hidden animate-modal-in">
                     {/* User Info */}
-                    <div className="px-4 py-3 border-b border-border bg-muted-light/30">
-                      <p className="text-sm font-medium text-text-primary truncate">{displayName}</p>
-                      <p className="text-xs text-text-muted truncate">{authState.user?.email}</p>
+                    <div className="px-4 py-3 border-b border-racing-line bg-racing-panel-2">
+                      <p className="text-sm font-medium text-racing-fg truncate">
+                        {displayName}
+                      </p>
+                      <p className="text-xs text-racing-fg-2 truncate">
+                        {authState.user?.email}
+                      </p>
                     </div>
 
                     {/* Menu Items */}
@@ -165,36 +221,68 @@ export function MainHeader() {
                       <Link
                         href="/profile"
                         onClick={() => setIsUserMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-text-secondary hover:bg-muted-light/50 transition-colors"
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-racing-fg-2 hover:text-racing-fg hover:bg-racing-panel-2 transition-colors"
                       >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                          />
                         </svg>
                         โปรไฟล์
                       </Link>
                       <Link
                         href="/customer/queue-history"
                         onClick={() => setIsUserMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-text-secondary hover:bg-muted-light/50 transition-colors"
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-racing-fg-2 hover:text-racing-fg hover:bg-racing-panel-2 transition-colors"
                       >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
                         </svg>
                         ประวัติการจอง
                       </Link>
                     </div>
 
                     {/* Logout */}
-                    <div className="py-2 border-t border-border">
+                    <div className="py-2 border-t border-racing-line">
                       <button
                         onClick={handleLogout}
                         disabled={authState.isSubmitting}
                         className="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-50"
                       >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                          />
                         </svg>
-                        {authState.isSubmitting ? 'กำลังออกจากระบบ...' : 'ออกจากระบบ'}
+                        {authState.isSubmitting
+                          ? "กำลังออกจากระบบ..."
+                          : "ออกจากระบบ"}
                       </button>
                     </div>
                   </div>
@@ -202,22 +290,32 @@ export function MainHeader() {
               )}
             </div>
           ) : null}
-          
+
           {/* Mobile Menu Button */}
-          <button 
+          <button
             onClick={() => setIsMobileMenuOpen(true)}
-            className="md:hidden w-10 h-10 rounded-lg bg-surface border border-border flex items-center justify-center hover:bg-muted-light transition-colors"
+            className="md:hidden w-10 h-10 rounded-lg bg-racing-panel border border-racing-line flex items-center justify-center text-racing-fg hover:bg-racing-panel-2 transition-colors"
+            aria-label="เปิดเมนู"
           >
-            <span className="text-xl">☰</span>
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+              aria-hidden
+            >
+              <path strokeLinecap="round" d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
           </button>
         </div>
       </header>
 
       {/* Mobile Menu */}
       <Portal>
-        <MobileMenu 
-          isOpen={isMobileMenuOpen} 
-          onClose={() => setIsMobileMenuOpen(false)} 
+        <MobileMenu
+          isOpen={isMobileMenuOpen}
+          onClose={() => setIsMobileMenuOpen(false)}
         />
       </Portal>
     </>
@@ -227,16 +325,18 @@ export function MainHeader() {
 interface NavLinkProps {
   href: string;
   children: React.ReactNode;
+  /** Decided by the caller — see activeNavHref */
+  isCurrent: boolean;
 }
 
-function NavLink({ href, children }: NavLinkProps) {
+function NavLink({ href, children, isCurrent }: NavLinkProps) {
   return (
-    <Link href={href}>
-      <span
-        className="text-sm font-medium text-gray-400 hover:text-cyan-400 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer inline-block"
-      >
-        {children}
-      </span>
+    <Link
+      href={href}
+      className="racing-nav-link"
+      aria-current={isCurrent ? "page" : undefined}
+    >
+      {children}
     </Link>
   );
 }

@@ -2,6 +2,7 @@
 
 import { BRANCHES, Branch } from "@/src/config/branch.config";
 import { useBranchStore } from "@/src/presentation/stores/useBranchStore";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 /**
@@ -26,14 +27,15 @@ export function BranchPicker() {
   };
 
   return (
-    <div className="min-h-full flex items-center justify-center bg-racing-gradient px-4 py-12">
+    <div className="min-h-full flex items-center justify-center bg-racing-bg px-4 py-12">
       <div className="w-full max-w-2xl">
         <div className="text-center mb-8">
-          <div className="text-6xl mb-4">🏎️</div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">เลือกสาขา</h1>
-          <p className="text-muted">เลือกสาขาที่ต้องการจองเวลาหรือเข้าคิว</p>
+          <h1 className="text-3xl font-bold text-racing-fg mb-2">เลือกสาขา</h1>
+          <p className="text-racing-fg-2">
+            เลือกสาขาที่ต้องการจองเวลาหรือเข้าคิว
+          </p>
           {hasChosen && (
-            <p className="text-sm text-accent-cyan mt-2">
+            <p className="text-sm text-racing-flag mt-2">
               สาขาปัจจุบันของคุณ: {currentBranch.shortName}
             </p>
           )}
@@ -45,30 +47,30 @@ export function BranchPicker() {
               key={branch.id}
               onClick={() => handleSelect(branch)}
               type="button"
-              className="group relative overflow-hidden rounded-2xl border border-border bg-surface/80 backdrop-blur-lg p-6 text-left transition-all duration-200 hover:border-accent-cyan hover:shadow-lg hover:-translate-y-0.5"
+              className="group relative overflow-hidden rounded-2xl border border-racing-line bg-racing-panel p-6 text-left transition-all duration-200 hover:border-racing-flag hover:shadow-lg hover:-translate-y-0.5"
             >
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-2xl shadow-lg shrink-0">
-                  📍
-                </div>
-                <div className="min-w-0">
-                  <h2 className="text-lg font-bold text-foreground transition-colors group-hover:text-accent-cyan">
-                    สาขา{branch.shortName}
-                  </h2>
-                  <p className="text-sm text-muted mt-1">{branch.name}</p>
-                  {hasChosen && branch.id === currentBranch.id && (
-                    <p className="text-xs text-accent-cyan mt-1">
-                      สาขาปัจจุบัน
-                    </p>
-                  )}
-                </div>
+              <div className="flex flex-col gap-4">
+                {/* The logo already says "Racing Game Station <branch>", so the
+                    branch name is not repeated beside it. */}
+                <Image
+                  src={branch.logo}
+                  alt={`${branch.name} — เลือกสาขานี้`}
+                  width={280}
+                  height={80}
+                  className="h-14 w-auto max-w-70 object-contain object-left"
+                />
+                {hasChosen && branch.id === currentBranch.id && (
+                  <span className="self-start text-xs px-2 py-1 rounded-lg bg-racing-flag-dim text-racing-flag font-medium">
+                    สาขาปัจจุบัน
+                  </span>
+                )}
               </div>
 
               <div className="mt-4 flex gap-2">
-                <span className="text-xs px-3 py-1.5 rounded-lg bg-cyan-500/15 text-accent-cyan font-medium">
+                <span className="text-xs px-3 py-1.5 rounded-lg bg-racing-flag-dim text-racing-flag font-medium">
                   จองเวลา
                 </span>
-                <span className="text-xs px-3 py-1.5 rounded-lg bg-purple-500/15 text-accent-purple font-medium">
+                <span className="text-xs px-3 py-1.5 rounded-lg bg-racing-panel-2 border border-racing-line text-racing-fg-2 font-medium">
                   เข้าคิว
                 </span>
               </div>
