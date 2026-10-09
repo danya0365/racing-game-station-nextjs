@@ -1,8 +1,16 @@
-'use client';
+"use client";
 
-import { MouseEvent, ReactNode } from 'react';
+import { MouseEvent, ReactNode } from "react";
 
-type GlowColor = 'cyan' | 'purple' | 'pink' | 'green' | 'red' | 'orange' | 'emerald-dark' | 'red-dark';
+type GlowColor =
+  | "cyan"
+  | "purple"
+  | "pink"
+  | "green"
+  | "red"
+  | "orange"
+  | "emerald-dark"
+  | "red-dark";
 
 interface GlowButtonProps {
   children: ReactNode;
@@ -10,57 +18,64 @@ interface GlowButtonProps {
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
   className?: string;
-  size?: 'sm' | 'md' | 'lg';
-  type?: 'button' | 'submit' | 'reset';
+  size?: "sm" | "md" | "lg";
+  type?: "button" | "submit" | "reset";
 }
 
-const glowColors: Record<GlowColor, { base: string; glow: string; hover: string }> = {
+const glowColors: Record<
+  GlowColor,
+  { base: string; glow: string; hover: string }
+> = {
+  /* The three brand colours all resolve to the branch accent now, so they are
+     the same gradient rather than three shades of the old cyan/purple/pink.
+     The names stay because they are part of the public prop; callers that pass
+     a colour for meaning (green = confirmed, red = failed) are untouched. */
   cyan: {
-    base: 'from-cyan-400 to-cyan-600',
-    glow: 'shadow-cyan-500/50 hover:shadow-cyan-400/60',
-    hover: 'hover:from-cyan-300 hover:to-cyan-500',
+    base: "from-racing-flag to-racing-flag",
+    glow: "shadow-racing-flag/50 hover:shadow-racing-flag/60",
+    hover: "hover:from-racing-flag-soft hover:to-racing-flag-soft",
   },
   purple: {
-    base: 'from-purple-400 to-purple-600',
-    glow: 'shadow-purple-500/50 hover:shadow-purple-400/60',
-    hover: 'hover:from-purple-300 hover:to-purple-500',
+    base: "from-racing-flag to-racing-flag",
+    glow: "shadow-racing-flag/50 hover:shadow-racing-flag/60",
+    hover: "hover:from-racing-flag-soft hover:to-racing-flag-soft",
   },
   pink: {
-    base: 'from-pink-400 to-pink-600',
-    glow: 'shadow-pink-500/50 hover:shadow-pink-400/60',
-    hover: 'hover:from-pink-300 hover:to-pink-500',
+    base: "from-racing-flag to-racing-flag",
+    glow: "shadow-racing-flag/50 hover:shadow-racing-flag/60",
+    hover: "hover:from-racing-flag-soft hover:to-racing-flag-soft",
   },
   green: {
-    base: 'from-emerald-400 to-emerald-600',
-    glow: 'shadow-emerald-500/50 hover:shadow-emerald-400/60',
-    hover: 'hover:from-emerald-300 hover:to-emerald-500',
+    base: "from-emerald-400 to-emerald-600",
+    glow: "shadow-emerald-500/50 hover:shadow-emerald-400/60",
+    hover: "hover:from-emerald-300 hover:to-emerald-500",
   },
   red: {
-    base: 'from-red-400 to-red-600',
-    glow: 'shadow-red-500/50 hover:shadow-red-400/60',
-    hover: 'hover:from-red-300 hover:to-red-500',
+    base: "from-red-400 to-red-600",
+    glow: "shadow-red-500/50 hover:shadow-red-400/60",
+    hover: "hover:from-red-300 hover:to-red-500",
   },
   orange: {
-    base: 'from-orange-400 to-orange-600',
-    glow: 'shadow-orange-500/50 hover:shadow-orange-400/60',
-    hover: 'hover:from-orange-300 hover:to-orange-500',
+    base: "from-orange-400 to-orange-600",
+    glow: "shadow-orange-500/50 hover:shadow-orange-400/60",
+    hover: "hover:from-orange-300 hover:to-orange-500",
   },
-  'emerald-dark': {
-    base: 'from-emerald-800 to-emerald-950',
-    glow: 'shadow-emerald-900/30 hover:shadow-emerald-800/40',
-    hover: 'hover:from-emerald-700 hover:to-emerald-900',
+  "emerald-dark": {
+    base: "from-emerald-800 to-emerald-950",
+    glow: "shadow-emerald-900/30 hover:shadow-emerald-800/40",
+    hover: "hover:from-emerald-700 hover:to-emerald-900",
   },
-  'red-dark': {
-    base: 'from-red-800 to-red-950',
-    glow: 'shadow-red-900/30 hover:shadow-red-800/40',
-    hover: 'hover:from-red-700 hover:to-red-900',
+  "red-dark": {
+    base: "from-red-800 to-red-950",
+    glow: "shadow-red-900/30 hover:shadow-red-800/40",
+    hover: "hover:from-red-700 hover:to-red-900",
   },
 };
 
 const sizeStyles = {
-  sm: 'px-4 py-2 text-sm',
-  md: 'px-6 py-3 text-base',
-  lg: 'px-8 py-4 text-lg',
+  sm: "px-4 py-2 text-sm",
+  md: "px-6 py-3 text-base",
+  lg: "px-8 py-4 text-lg",
 };
 
 /**
@@ -69,12 +84,12 @@ const sizeStyles = {
  */
 export function GlowButton({
   children,
-  color = 'cyan',
+  color = "cyan",
   onClick,
   disabled = false,
-  className = '',
-  size = 'md',
-  type = 'button',
+  className = "",
+  size = "md",
+  type = "button",
 }: GlowButtonProps) {
   const colorConfig = glowColors[color];
 
@@ -94,15 +109,15 @@ export function GlowButton({
         hover:scale-105 hover:-translate-y-0.5
         active:scale-95 active:translate-y-0
         ${sizeStyles[size]}
-        ${disabled ? 'opacity-50 cursor-not-allowed hover:scale-100 hover:translate-y-0' : 'cursor-pointer'}
+        ${disabled ? "opacity-50 cursor-not-allowed hover:scale-100 hover:translate-y-0" : "cursor-pointer"}
         ${className}
       `}
     >
       {/* Inner glow effect */}
       <span className="absolute inset-0 bg-gradient-to-t from-black/20 to-white/20" />
-      
+
       {/* Shine effect on hover - using CSS animation */}
-      <span 
+      <span
         className="
           absolute inset-0 opacity-0 
           bg-gradient-to-r from-transparent via-white/30 to-transparent

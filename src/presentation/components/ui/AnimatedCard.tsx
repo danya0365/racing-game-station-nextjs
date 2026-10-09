@@ -28,8 +28,8 @@ export function AnimatedCard({
         bg-surface/80 backdrop-blur-xl 
         border border-border/50
         transition-all duration-300 ease-out
-        hover:shadow-xl hover:shadow-cyan-500/10
-        hover:border-cyan-500/30
+        hover:shadow-xl hover:shadow-racing-flag/10
+        hover:border-racing-flag/30
         hover:-translate-y-1
         ${onClick && !disabled ? 'cursor-pointer' : ''}
         ${disabled ? 'opacity-50 hover:translate-y-0 hover:shadow-none' : ''}
@@ -40,7 +40,7 @@ export function AnimatedCard({
       <div 
         className="
           absolute inset-0 opacity-0 transition-opacity duration-300
-          bg-gradient-to-br from-cyan-500/5 via-transparent to-purple-500/5
+          bg-gradient-to-br from-racing-flag/5 via-transparent to-racing-flag-soft/5
           group-hover:opacity-100
         "
       />
