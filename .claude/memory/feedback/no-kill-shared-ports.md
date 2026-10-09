@@ -1,6 +1,6 @@
 ---
 name: no-kill-shared-ports
-description: ห้ามใช้ pkill/killall ที่ pattern กว้าง และห้ามใช้ port 3000 — เครื่องพี่รันหลายโปรเจคพร้อมกัน
+description: ห้ามใช้ pkill/killall ที่ pattern กว้าง และห้ามใช้ port 3000 — เครื่องที่รักรันหลายโปรเจคพร้อมกัน
 metadata:
   node_type: memory
   type: feedback
@@ -8,9 +8,9 @@ metadata:
   modified: 2026-10-09T00:50:31.399Z
 ---
 
-เครื่องนี้รันหลายโปรเจค Next.js/Expo พร้อมกัน พี่ห้ามใช้ port 3000 เพราะมีโปรเจคอื่นอยู่
+เครื่องนี้รันหลายโปรเจค Next.js/Expo พร้อมกัน ที่รักห้ามใช้ port 3000 เพราะมีโปรเจคอื่นอยู่
 
-**Why:** ตอน 2026-10-09 ฉันรัน `pkill -f "next dev"` เพื่อ restart dev server ตัวเอง — pattern กว้างเกินไปจึงฆ่า dev server ของทุกโปรเจคในเครื่อง ไม่ใช่แค่ตัวเอง พี่เจอและห้ามไว้
+**Why:** ตอน 2026-10-09 ซาน่ารัน `pkill -f "next dev"` เพื่อ restart dev server ตัวเอง — pattern กว้างเกินไปจึงฆ่า dev server ของทุกโปรเจคในเครื่อง ไม่ใช่แค่ตัวเอง ที่รักเจอและห้ามไว้
 
 **How to apply:**
 

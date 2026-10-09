@@ -16,6 +16,6 @@ argument-hint: "[ชื่อ feature] เช่น booking-slot"
 2. frontmatter มาตรฐาน (`type: module`, `status: active`, `scope: <slug>`, `updated` = วันนี้)
 3. โครงเนื้อหา spec (เว้นที่ให้เติม): **หน้าที่/ขอบเขต / interface (input↔output) / dependency /
    ปม technical ที่ต้องระวัง / test ที่ต้องมี**
-   - ถ้ายังไม่รู้รายละเอียด ให้ถามพี่ทีละจุด หรือใส่ TODO ไว้
+   - ถ้ายังไม่รู้รายละเอียด ให้ถามที่รักทีละจุด หรือใส่ TODO ไว้
 4. เพิ่ม pointer ใน section "Modules" ของ `.claude/memory/MEMORY.md`
 5. (ถ้าเริ่ม coding แล้ว) เสนอว่าจะ scaffold โครงโค้ดต่อเลยไหม

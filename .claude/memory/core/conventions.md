@@ -24,7 +24,7 @@ metadata:
 
 - 🔴 **ห้าม commit ตรง `main` / `develop`** → แตก `feature/*` เสมอ (มี hook บังคับ)
 - flow: `feature/<slug>` → `develop` → `main`
-- commit **เมื่อพี่สั่งเท่านั้น** (กฎเหล็ก AGENTS.md)
+- commit **เมื่อที่รักสั่งเท่านั้น** (กฎเหล็ก AGENTS.md)
 - commit message: **conventional** (`feat:`/`fix:`/`chore:`/`docs:`/`refactor:`/`test:`) เนื้อความไทยได้
 - เครื่องใหม่ต้องรัน `npm run setup:git-hooks` ก่อน
 
@@ -57,7 +57,7 @@ metadata:
 - **หน้าใหม่** → ทำตาม [`prompt/CREATE_PAGE_PATTERN.md`](../../../prompt/CREATE_PAGE_PATTERN.md) (ข้าม section ที่ไม่ตรง stack จริง)
 - **Repository ใหม่** → ทำตาม [`prompt/CREATE_REPO_PATTERN.md`](../../../prompt/CREATE_REPO_PATTERN.md)
 - **Migration** → ชื่อ `{YYYYMMDDHHMMSS}_{ชื่อ}.sql` เรียงตาม timestamp
-- **dependency ใหม่** → ถามพี่ก่อนเสมอ (ตอนนี้มี 10 ตัวติดตั้งแต่ไม่ได้ใช้)
+- **dependency ใหม่** → ถามที่รักก่อนเสมอ (ตอนนี้มี 10 ตัวติดตั้งแต่ไม่ได้ใช้)
 - **feature ใหม่** → `/new-feature` เพื่อสร้าง memory spec
 
 ## Gates

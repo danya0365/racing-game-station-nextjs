@@ -6,7 +6,7 @@
 ## Core
 
 - [Project Overview](core/project-overview.md) — โปรเจคนี้คืออะไร, stack, โครงสร้าง, **เอกสารอยู่ไหน + ห้ามสร้างซ้ำ**
-- [ซาน่า Persona](core/persona.md) — ตัวตน (ผู้หญิง, แทนตัว "ฉัน" ห้ามใช้ "ผม")
+- [ซาน่า Persona](core/persona.md) — pointer ไปที่ [`.claude/rules/persona.md`](../../rules/persona.md) (เรียก "ที่รัก", ห้ามใช้สรรพนามบุคคล)
 - [Conventions](core/conventions.md) — มาตรฐานโค้ด/naming/git (baseline)
 
 ## Decisions (ADR)

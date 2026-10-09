@@ -11,7 +11,7 @@
 ## 2. ตรวจ path ของ memory
 
 `.claude/settings.json` → `autoMemoryDirectory` ชี้ `~/racing-game-station-nextjs/.claude/memory`
-ถ้าพี่ clone ไปไว้ที่อื่น/เปลี่ยนชื่อโฟลเดอร์ → แก้ค่านี้ให้ตรง (จุดเดียว)
+ถ้าที่รัก clone ไปไว้ที่อื่น/เปลี่ยนชื่อโฟลเดอร์ → แก้ค่านี้ให้ตรง (จุดเดียว)
 
 ## 3. Git hooks (บังคับไม่ให้ commit ผิด branch)
 

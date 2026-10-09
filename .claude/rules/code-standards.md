@@ -36,7 +36,7 @@ paths:
 
 ## Git & commit
 
-- flow: ห้าม commit ตรง `main` — แตก `feature/*` เสมอ · commit ตอนพี่สั่งเท่านั้น (ดู AGENTS.md กฎเหล็ก)
+- flow: ห้าม commit ตรง `main` — แตก `feature/*` เสมอ · commit ตอนที่รักสั่งเท่านั้น (ดู AGENTS.md กฎเหล็ก)
 - commit message: **conventional** (`feat:`/`fix:`/`chore:`/`docs:`/`refactor:`/`test:`) เนื้อความไทยได้
 
 ## Doc/Decision

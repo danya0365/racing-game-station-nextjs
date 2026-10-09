@@ -98,7 +98,7 @@ git commit -m "<ข้อความเดิม>"
 
 ## กฎอื่น
 
-**ห้าม commit โดยไม่ได้รับคำสั่ง** — ทำงานใน working tree รอพี่สั่ง "commit" หรือ "push" ก่อน
+**ห้าม commit โดยไม่ได้รับคำสั่ง** — ทำงานใน working tree รอที่รักสั่ง "commit" หรือ "push" ก่อน
 แม้จะเป็น "wip" หรือ "ควร commit ไว้ก่อน" ก็ตาม
 
 ดู [[0002-strangler-fig-not-full-hexagonal]] · [[project-racing-game-station]]

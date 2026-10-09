@@ -57,7 +57,7 @@ metadata:
 
 ### คุมขนาด index
 - ถ้า `MEMORY.md` ใกล้ ~150 บรรทัด → archive ของที่ไม่ active ออกก่อน หรือยุบ pointer ที่ซ้ำซ้อน
-- ซาน่า ต้อง **เตือนพี่** เมื่อ index ใกล้เต็ม (`/memory-status` ช่วยตรวจ)
+- ซาน่า ต้อง **เตือนที่รัก** เมื่อ index ใกล้เต็ม (`/memory-status` ช่วยตรวจ)
 
 ### Archive (ย้ายเข้า library)
 1. `git mv` ไฟล์ → `_archive/`
