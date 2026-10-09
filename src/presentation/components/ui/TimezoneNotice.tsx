@@ -56,7 +56,7 @@ export function TimezoneNotice() {
       >
         <div className="flex items-center gap-3">
           <span className="text-lg">🌍</span>
-          <span className="text-amber-400 text-sm font-medium">
+          <span className="text-amber-700 dark:text-amber-400 text-sm font-medium">
             เขตเวลาต่างกัน
           </span>
           <span className="text-muted">•</span>
@@ -88,7 +88,7 @@ export function TimezoneNotice() {
       {/* Collapse Button */}
       <button
         onClick={toggleCollapsed}
-        className="absolute top-2 right-2 px-2 py-1 text-xs text-muted hover:text-foreground hover:bg-white/10 rounded-lg transition-all"
+        className="absolute top-2 right-2 px-2 py-1 text-xs text-muted hover:text-foreground hover:bg-foreground/10 rounded-lg transition-all"
         title="ย่อ"
       >
         ▲ ย่อ
@@ -97,13 +97,13 @@ export function TimezoneNotice() {
       <div className="flex items-start gap-3">
         <span className="text-2xl">🌍</span>
         <div className="flex-1">
-          <p className="font-bold text-amber-400 mb-2">
+          <p className="font-bold text-amber-700 dark:text-amber-400 mb-2">
             ⚠️ เขตเวลาของคุณต่างจากร้าน
           </p>
           
           <div className="grid grid-cols-2 gap-4 text-sm">
             {/* User's timezone */}
-            <div className="bg-black/20 rounded-lg p-3">
+            <div className="bg-foreground/5 dark:bg-black/20 rounded-lg p-3">
               <p className="text-muted text-xs mb-1">{userDisplayName}</p>
               <p className="text-3xl font-bold text-foreground font-mono tracking-tight">
                 {timezoneInfo.userCurrentTime}
@@ -125,7 +125,7 @@ export function TimezoneNotice() {
             </div>
           </div>
           
-          <p className="text-xs text-amber-400/80 mt-3">
+          <p className="text-xs text-amber-600 dark:text-amber-400/90 mt-3">
             💡 เวลาที่แสดงทั้งหมดเป็น <strong>{shopTimezoneInfo.displayNameTH} ({shopTimezoneInfo.countryEN})</strong> กรุณาคำนวณเวลาก่อนมาถึงร้าน
           </p>
         </div>
@@ -148,7 +148,7 @@ export function TimezoneNoticeCompact() {
   return (
     <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 rounded-full text-xs">
       <span>🌍</span>
-      <span className="text-amber-400">
+      <span className="text-amber-700 dark:text-amber-400">
         เวลาของคุณ <strong className="font-mono">{timezoneInfo.userCurrentTime}</strong> ({timezoneInfo.userOffset})
       </span>
       <span className="text-muted">•</span>

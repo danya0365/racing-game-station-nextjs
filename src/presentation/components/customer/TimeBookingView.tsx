@@ -333,7 +333,7 @@ export function TimeBookingView({
                 return (
                   <div key={s} className="flex items-center gap-2">
                     <div
-                      className={`flex items-center gap-1 sm:gap-2 ${isActive ? "text-racing-flag" : "text-gray-400 dark:text-white/40"}`}
+                      className={`flex items-center gap-1 sm:gap-2 ${isActive ? "text-racing-flag" : "text-gray-500 dark:text-white/50"}`}
                     >
                       <div
                         className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold ${
