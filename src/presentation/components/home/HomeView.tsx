@@ -272,23 +272,26 @@ function ActionButton({
       <span
         className={`w-10 h-10 shrink-0 grid place-items-center rounded-[10px] text-[17px] border ${
           primary
-            ? "bg-black/25 border-white/25"
+            ? "bg-racing-on-flag/10 border-racing-on-flag/25"
             : "bg-racing-panel-2 border-racing-line"
         }`}
       >
         {icon}
       </span>
       <span className="min-w-0">
+        {/* on-flag, not white: Pattani's gold puts white text at 3.84:1, under
+            the 4.5:1 AA threshold. The token carries whichever colour passes for
+            that branch and mode. */}
         <span
           className={`block font-bold text-[17px] tracking-tight ${
-            primary ? "text-white" : "text-racing-fg"
+            primary ? "text-racing-on-flag" : "text-racing-fg"
           }`}
         >
           {title}
         </span>
         <span
           className={`block text-xs mt-0.5 ${
-            primary ? "text-white/80" : "text-racing-fg-2"
+            primary ? "text-racing-on-flag/80" : "text-racing-fg-2"
           }`}
         >
           {description}
@@ -296,7 +299,7 @@ function ActionButton({
       </span>
       <span
         className={`ml-auto text-[16px] shrink-0 ${
-          primary ? "text-white/85" : "text-racing-fg-3"
+          primary ? "text-racing-on-flag/85" : "text-racing-fg-3"
         }`}
         aria-hidden
       >

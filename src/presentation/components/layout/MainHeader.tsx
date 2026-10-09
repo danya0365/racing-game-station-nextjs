@@ -82,7 +82,10 @@ export function MainHeader() {
 
   return (
     <>
-      <header className="racing-chrome h-16 border-b flex items-center justify-between px-4 md:px-8 z-50">
+      {/* h-20, not h-16: the logos are ~2.4:1, so a legible 150px-wide lockup
+          needs ~62px of height. In a 64px bar it had to drop to 36px tall and
+          85px wide, which read as a smudge rather than a mark. */}
+      <header className="racing-chrome h-20 border-b flex items-center justify-between px-4 md:px-8 z-50">
         {/* Logo — the branch's own file, so switching branch swaps the mark */}
         <Link
           href={`/${branch.slug}`}
@@ -91,10 +94,14 @@ export function MainHeader() {
           <Image
             src={branch.logo}
             alt={`Racing Game Station ${branch.shortName}`}
-            width={190}
-            height={40}
+            width={branch.logoWidth}
+            height={branch.logoHeight}
             priority
-            className="h-9 w-auto max-w-[190px] object-contain object-left transition-transform duration-200 group-hover:scale-105"
+            /* Box tracks the file's own ratio (branch.logoWidth/Height), so the
+               logo fills the header instead of being letterboxed inside a box
+               with a different shape. Sized in em rather than px so the whole
+               lockup scales with the root font size. */
+            className="h-12 w-auto max-w-50 object-contain object-left transition-transform duration-200 group-hover:scale-105"
           />
         </Link>
 

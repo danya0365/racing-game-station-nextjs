@@ -19,9 +19,16 @@
 
 - [Known Issues Backlog](modules/known-issues-backlog.md) — dead code, dependency ที่ไม่ได้ใช้, ช่องโหว่ที่ยังไม่แก้ · อ่านเมื่อเลือกงานถัดไป
 
+## Feedback
+
+- [ห้าม pkill ที่ pattern กว้าง / ห้ามใช้ port 3000](feedback/no-kill-shared-ports.md) — เครื่องรันหลายโปรเจคพร้อมกัน · **อ่านก่อนหยุด process หรือ start dev server**
+
 ## Working Log
 
-<!-- log งานที่กำลังทำ — ยังไม่มี -->
+- **racing theme** — ธีมสีจากโลโก้จริงต่อสาขา commit 3 ก้อนแล้ว (`d7f7e02` `48f89df` `dc5604c`)
+  เหลือ migrate สี hardcode 2,341 จุด · backend 708 / auth 162 / ui 147 / customer 127 /
+  walk-in 103 / booking 73 / qr-scan 28 / profile 47 · `app/(docs)` 746 เป็นคู่มือไม่ใช่ flow ลูกค้า
+  · lint 107 errors เป็นของเก่า · build เตือน `middleware` → `proxy`
 
 ## Reference
 

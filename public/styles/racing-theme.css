@@ -30,17 +30,28 @@
   color-scheme: light;
 }
 
-/* ---------- สีเน้นโหมดสว่าง — เข้มกว่าโหมดมืด เพราะพื้นขาวต้องการ contrast สูงกว่า ---------- */
+/* ---------- สีเน้นโหมดสว่าง — เข้มกว่าโหมดมืด เพราะพื้นขาวต้องการ contrast สูงกว่า ----------
+   --racing-on-flag คือสีตัวอักษรที่วางบน --racing-flag ได้โดยผ่าน WCAG AA
+   ทั้งสองสาขาใช้สีต่างกัน: แดงต้องใช้ขาว (6.38:1) แต่ทองต้องใช้ดำ (5.41:1)
+   ถ้าฝังสีตัวอักษรไว้ที่เดียว ปุ่มหลักของปัตตานีจะเป็นขาวบนทอง —
+   อ่านไม่ออกและไม่ผ่านเกณฑ์ */
 [data-racing="narathiwas"] {
   --racing-flag: #c10500;
   --racing-flag-soft: #e10600;
   --racing-flag-dim: rgba(193, 5, 0, 0.08);
+  --racing-on-flag: #ffffff;
+  --racing-on-flag-soft: #ffffff;
 }
 
 [data-racing="pattani"] {
   --racing-flag: #8a6318;
   --racing-flag-soft: #a87a24;
   --racing-flag-dim: rgba(138, 99, 24, 0.1);
+  /* White on #8a6318 reaches 5.41:1, but the button's gradient starts at
+     --racing-flag-soft (#a87a24) and the text sits over that lighter end, where
+     white drops to 3.84:1. So the token tracks the soft end, not the flag. */
+  --racing-on-flag: #16161a; /* 4.70:1 on flag-soft */
+  --racing-on-flag-soft: #16161a;
 }
 
 /* ---------- โหมดมืด (ตรงกับโลโก้ — ดำสนิท ขาวตัวอักษร) ----------
@@ -62,11 +73,16 @@
   color-scheme: dark;
 }
 
-/* ---------- สีเน้นโหมดมืด ---------- */
+/* ---------- สีเน้นโหมดมืด ----------
+   on-flag ต่างจากโหมดสว่างอีก: ทองสว่างขึ้นมากในโหมดมืด (ขาวบนทอง
+   ได้แค่ 1.61:1) จึงต้องเป็นดำ และแดงอ่อน #ff2a1f ก็ตกไปทางดำเช่นกัน
+   ค่าใน comment คือ contrast ที่วัดได้จริงทั้งคู่ */
 .dark[data-racing="narathiwas"] {
   --racing-flag: #e10600;
   --racing-flag-soft: #ff2a1f;
   --racing-flag-dim: rgba(225, 6, 0, 0.14);
+  --racing-on-flag: #ffffff; /* 4.97:1 */
+  --racing-on-flag-soft: #0a0a0a; /* 5.28:1 */
 }
 
 .dark[data-racing="pattani"] {
@@ -77,6 +93,8 @@
   --racing-flag: #d9a441;
   --racing-flag-soft: #f0c674;
   --racing-flag-dim: rgba(217, 164, 65, 0.14);
+  --racing-on-flag: #0a0a0a; /* 8.80:1 */
+  --racing-on-flag-soft: #0a0a0a; /* 12.29:1 */
 }
 
 [data-racing] {
@@ -159,6 +177,9 @@
 
   --color-racing-flag: var(--racing-flag);
   --color-racing-flag-soft: var(--racing-flag-soft);
+  /* Text colour that is legible ON the flag, per branch and per mode. */
+  --color-racing-on-flag: var(--racing-on-flag);
+  --color-racing-on-flag-soft: var(--racing-on-flag-soft);
   /* Dim flag has call sites (branch cards, "current branch" badges) but was
      missing here, so Tailwind emitted no utility for it and those backgrounds
      never painted. */

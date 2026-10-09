@@ -25,10 +25,21 @@ export interface Branch {
   /**
    * Logo in public/assets/logo/ — transparent WebP, sits on any ground.
    *
-   * WebP not PNG: the source PNGs are 500–780KB and these render at 36px.
+   * WebP not PNG: the source PNGs are 500–780KB and these render at ~36px.
    * The .webp files are ~45–63KB at the same apparent sharpness (q=90).
    */
   logo: string;
+  /**
+   * Intrinsic pixel size of the file, needed for `next/image` so it reserves the
+   * right box before the bytes arrive.
+   *
+   * These are per branch rather than one shared value because the two logos are
+   * not the same shape — 760×322 against 760×310. Sizing the box from a single
+   * ratio makes `object-contain` letterbox one of them, and the header logo came
+   * out at 85px wide in a 190px slot because of exactly that.
+   */
+  logoWidth: number;
+  logoHeight: number;
 }
 
 /**
@@ -51,6 +62,8 @@ export const BRANCHES: Branch[] = [
     name: "Racing Game Station นราธิวาส",
     shortName: "นราธิวาส",
     logo: "/assets/logo/narathiwat.webp",
+    logoWidth: 760,
+    logoHeight: 322,
   },
   {
     id: BRANCH_IDS.PATTANI,
@@ -58,6 +71,8 @@ export const BRANCHES: Branch[] = [
     name: "Racing Game Station ปัตตานี",
     shortName: "ปัตตานี",
     logo: "/assets/logo/pattani.webp",
+    logoWidth: 760,
+    logoHeight: 310,
   },
 ];
 
