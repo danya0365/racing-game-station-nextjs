@@ -63,22 +63,22 @@ export const useBranchStore = create<BranchStore>((set, get) => ({
     if (!found) return;
     // Reaching a branch URL counts as choosing it — no need to ask again.
     if (found.id === get().branch.id && get().hasChosen) return;
-    set({ branch: found, hasChosen: true });
     persistBranch(found.slug);
+    set({ branch: found, hasChosen: true });
   },
 
   setBranchById: (id) => {
     const found = BY_ID[id];
     if (!found) return;
     if (found.id === get().branch.id && get().hasChosen) return;
-    set({ branch: found, hasChosen: true });
     persistBranch(found.slug);
+    set({ branch: found, hasChosen: true });
   },
 
   selectBranch: (branch) => {
     if (branch.id === get().branch.id && get().hasChosen) return;
-    set({ branch, hasChosen: true });
     persistBranch(branch.slug);
+    set({ branch, hasChosen: true });
   },
 
   openPicker: () => set({ isPickerOpen: true }),

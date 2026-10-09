@@ -287,7 +287,7 @@ export function QRScanView() {
 
             {/* URL Display */}
             <div className="bg-surface border border-border rounded-xl px-6 py-3 inline-block mb-8">
-              <code className="text-racing-flag text-sm md:text-base">
+              <code className="text-racing-flag-text text-sm md:text-base">
                 {bookingUrl || 'กำลังโหลด...'}
               </code>
             </div>

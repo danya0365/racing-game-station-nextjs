@@ -125,7 +125,7 @@ export function BranchModal({ open, dismissible, onClose }: BranchModalProps) {
                       </p>
                     </div>
                     {isCurrent && (
-                      <span className="text-xs px-2 py-1 rounded-lg bg-racing-flag-dim text-racing-flag font-medium shrink-0">
+                      <span className="text-xs px-2 py-1 rounded-lg bg-racing-flag-dim text-racing-flag-text font-medium shrink-0">
                         สาขาปัจจุบัน
                       </span>
                     )}

@@ -45,7 +45,7 @@ export function QuickReplyButtons({ replies }: QuickReplyButtonsProps) {
             disabled={isLoading}
             className="
               text-xs px-3 py-1.5 rounded-full
-              bg-racing-flag/10 text-racing-flag
+              bg-racing-flag/10 text-racing-flag-text
               border border-racing-flag/20
               hover:bg-racing-flag/20 hover:border-racing-flag/40
               active:scale-95

@@ -175,7 +175,7 @@ export function HomeView({
           </div>
         </section>
 
-        <div className="racing-checker h-2 rounded-sm opacity-50" />
+        <div className="bg-racing-checker h-2 rounded-sm opacity-50" />
       </div>
     </div>
   );
@@ -359,7 +359,7 @@ function MachineCard({ machine }: { machine: Machine }) {
             meta.tone === "go"
               ? "text-racing-led-go"
               : meta.tone === "busy"
-                ? "text-racing-flag"
+                ? "text-racing-flag-text"
                 : "text-racing-fg-2"
           }`}
         >
@@ -399,7 +399,7 @@ function RateCard({ rate }: { rate: (typeof DURATION_OPTIONS)[number] }) {
     >
       <div
         className={`racing-label !text-[9.5px] ${
-          rate.popular ? "!text-racing-flag" : ""
+          rate.popular ? "!text-racing-flag-text" : ""
         }`}
       >
         {rate.labelEn}
@@ -453,7 +453,7 @@ function BranchCard({
         </span>
       </span>
       {active ? (
-        <span className="ml-auto shrink-0 text-[10px] font-semibold tracking-wider uppercase text-racing-flag px-2 py-0.5 rounded-full border border-racing-flag">
+        <span className="ml-auto shrink-0 text-[10px] font-semibold tracking-wider uppercase text-racing-flag-text px-2 py-0.5 rounded-full border border-racing-flag">
           ปัจจุบัน
         </span>
       ) : (

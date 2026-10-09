@@ -163,7 +163,7 @@ export function RegisterView() {
             <button
               onClick={() => actions.resendEmailVerification(state.verificationEmail || '')}
               disabled={state.isSubmitting}
-              className="text-racing-flag hover:text-racing-flag-soft font-medium transition-colors disabled:opacity-50"
+              className="text-racing-flag-text hover:text-racing-flag-text font-medium transition-colors disabled:opacity-50"
             >
               {state.isSubmitting ? 'กำลังส่ง...' : 'ส่งอีเมลยืนยันใหม่'}
             </button>
@@ -403,13 +403,13 @@ export function RegisterView() {
                     setAcceptTerms(e.target.checked);
                     setTermsError(null);
                   }}
-                  className="w-5 h-5 rounded border-input-border text-racing-flag focus:ring-racing-flag mt-0.5"
+                  className="w-5 h-5 rounded border-input-border text-racing-flag-text focus:ring-racing-flag mt-0.5"
                 />
                 <span className="text-sm text-muted">
                   ฉันยอมรับ{' '}
-                  <Link href="/terms" className="text-racing-flag hover:text-racing-flag-soft">เงื่อนไขการใช้งาน</Link>
+                  <Link href="/terms" className="text-racing-flag-text hover:text-racing-flag-text">เงื่อนไขการใช้งาน</Link>
                   {' '}และ{' '}
-                  <Link href="/privacy" className="text-racing-flag hover:text-racing-flag-soft">นโยบายความเป็นส่วนตัว</Link>
+                  <Link href="/privacy" className="text-racing-flag-text hover:text-racing-flag-text">นโยบายความเป็นส่วนตัว</Link>
                 </span>
               </label>
               {termsError && (
@@ -465,7 +465,7 @@ export function RegisterView() {
           {/* Login Link */}
           <p className="mt-6 text-center text-sm text-muted">
             มีบัญชีอยู่แล้ว?{' '}
-            <Link href="/auth/login" className="text-racing-flag hover:text-racing-flag-soft font-medium transition-colors">
+            <Link href="/auth/login" className="text-racing-flag-text hover:text-racing-flag-text font-medium transition-colors">
               เข้าสู่ระบบ
             </Link>
           </p>

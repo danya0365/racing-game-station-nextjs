@@ -146,7 +146,7 @@ export function ChatWidget() {
                   w-10 h-10 flex items-center justify-center
                   bg-white/5 border border-white/10
                   hover:bg-racing-flag/20 hover:border-racing-flag/40
-                  rounded-xl text-gray-300 hover:text-racing-flag
+                  rounded-xl text-gray-300 hover:text-racing-flag-text
                   disabled:opacity-30 disabled:cursor-not-allowed
                   active:scale-95 transition-all duration-200
                   shrink-0 cursor-pointer

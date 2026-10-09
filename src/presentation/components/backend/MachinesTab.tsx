@@ -49,13 +49,13 @@ export function MachinesTab({ machines, isUpdating, onUpdateStatus, onUpdateMach
   const getStatusConfig = (status: string) => {
     switch (status) {
       case 'available':
-        return { label: 'ว่าง', color: 'bg-emerald-500', textColor: 'text-emerald-400' };
+        return { label: 'ว่าง', color: 'bg-racing-led-go', textColor: 'text-racing-led-go' };
       case 'occupied':
-        return { label: 'กำลังเล่น', color: 'bg-orange-500', textColor: 'text-orange-400' };
+        return { label: 'กำลังเล่น', color: 'bg-racing-led-warn', textColor: 'text-racing-led-warn' };
       case 'maintenance':
-        return { label: 'ซ่อมบำรุง', color: 'bg-gray-500', textColor: 'text-gray-400' };
+        return { label: 'ซ่อมบำรุง', color: 'bg-racing-led-off', textColor: 'text-racing-led-off' };
       default:
-        return { label: status, color: 'bg-gray-500', textColor: 'text-gray-400' };
+        return { label: status, color: 'bg-racing-led-off', textColor: 'text-racing-led-off' };
     }
   };
 
@@ -87,26 +87,26 @@ export function MachinesTab({ machines, isUpdating, onUpdateStatus, onUpdateMach
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3 w-full cursor-pointer hover:opacity-80 transition-opacity" onClick={() => setViewingMachine(machine)}>
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-2xl flex-shrink-0">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-2xl flex-shrink-0">
                     🎮
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="font-bold text-foreground flex items-center gap-2 truncate">
                       {machine.name}
                       {!machine.isActive && (
-                        <span className="px-2 py-0.5 bg-red-500/20 text-red-400 text-xs rounded-full flex-shrink-0">
+                        <span className="px-2 py-0.5 bg-racing-led-stop/15 text-racing-led-stop text-xs rounded-full flex-shrink-0">
                           ซ่อน
                         </span>
                       )}
                     </h4>
                     <p className="text-sm text-muted">เครื่องที่ {machine.position}</p>
                   </div>
-                  <button className="text-muted hover:text-cyan-400 transition-colors p-2" title="รายละเอียด" onClick={(e) => { e.stopPropagation(); setViewingMachine(machine); }}>
+                  <button className="text-muted hover:text-racing-flag-text transition-colors p-2" title="รายละเอียด" onClick={(e) => { e.stopPropagation(); setViewingMachine(machine); }}>
                     ℹ️
                   </button>
                 </div>
                 <div className="flex items-center gap-2 mt-2">
-                  <span className={`px-3 py-1 rounded-full ${statusConfig.color} text-white text-xs font-medium whitespace-nowrap`}>
+                  <span className={`px-3 py-1 rounded-full ${statusConfig.color} text-racing-led-on text-xs font-medium whitespace-nowrap`}>
                     {statusConfig.label}
                   </span>
                 </div>
@@ -249,45 +249,45 @@ function AddMachineModal({ onClose, onSave, isUpdating, onUploadImage }: AddMach
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-backdrop-in" onClick={onClose} />
       <div className="relative w-full max-w-lg bg-surface border border-border rounded-2xl shadow-2xl overflow-hidden animate-modal-in">
-        <div className="p-4 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border-b border-border flex justify-between items-center">
+        <div className="p-4 bg-racing-flag-dim border-b border-border flex justify-between items-center">
           <h3 className="font-bold text-lg text-foreground">➕ เพิ่มเครื่องใหม่</h3>
           <button onClick={onClose} className="text-muted hover:text-foreground transition-colors" type="button">✕</button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-4 space-y-4 max-h-[80vh] overflow-y-auto scrollbar-thin">
           <div>
-            <label className="block text-sm text-muted mb-1">ชื่อเครื่อง <span className="text-red-500">*</span></label>
+            <label className="block text-sm text-muted mb-1">ชื่อเครื่อง <span className="text-racing-led-stop">*</span></label>
             <input
               type="text"
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-cyan-500 text-foreground"
+              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-racing-flag text-foreground"
               placeholder="เช่น Game Station 1"
             />
           </div>
 
           <div>
-            <label className="block text-sm text-muted mb-1">รายละเอียด <span className="text-red-500">*</span></label>
+            <label className="block text-sm text-muted mb-1">รายละเอียด <span className="text-racing-led-stop">*</span></label>
             <textarea
               required
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-cyan-500 text-foreground resize-none"
+              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-racing-flag text-foreground resize-none"
               rows={3}
               placeholder="เช่น เครื่อง Formula Racing Game Station พร้อมพวงมาลัย..."
             />
           </div>
 
           <div>
-            <label className="block text-sm text-muted mb-1">ลำดับเครื่อง <span className="text-red-500">*</span></label>
+            <label className="block text-sm text-muted mb-1">ลำดับเครื่อง <span className="text-racing-led-stop">*</span></label>
             <input
               type="number"
               min="1"
               required
               value={formData.position}
               onChange={(e) => setFormData({ ...formData, position: parseInt(e.target.value) || 1 })}
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-cyan-500 text-foreground"
+              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-racing-flag text-foreground"
             />
           </div>
 
@@ -296,7 +296,7 @@ function AddMachineModal({ onClose, onSave, isUpdating, onUploadImage }: AddMach
             <select
               value={formData.branchId}
               onChange={(e) => setFormData({ ...formData, branchId: e.target.value })}
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-cyan-500 text-foreground"
+              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-racing-flag text-foreground"
             >
               {BRANCHES.map((branch) => (
                 <option key={branch.id} value={branch.id}>
@@ -311,7 +311,7 @@ function AddMachineModal({ onClose, onSave, isUpdating, onUploadImage }: AddMach
             <select
               value={formData.type}
               onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-cyan-500 text-foreground"
+              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-racing-flag text-foreground"
             >
               {MACHINE_TYPES.map((type) => (
                 <option key={type.value} value={type.value}>
@@ -400,7 +400,7 @@ function EditMachineModal({ machine, onClose, onSave, isUpdating, onUploadImage 
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-backdrop-in" onClick={onClose} />
       <div className="relative w-full max-w-lg bg-surface border border-border rounded-2xl shadow-2xl overflow-hidden animate-modal-in">
         {/* Header */}
-        <div className="p-4 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border-b border-border flex justify-between items-center">
+        <div className="p-4 bg-racing-flag-dim border-b border-border flex justify-between items-center">
           <h3 className="font-bold text-lg text-foreground">✏️ แก้ไขเครื่อง</h3>
           <button onClick={onClose} className="text-muted hover:text-foreground transition-colors" type="button">✕</button>
         </div>
@@ -415,7 +415,7 @@ function EditMachineModal({ machine, onClose, onSave, isUpdating, onUploadImage 
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-cyan-500 text-foreground"
+              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-racing-flag text-foreground"
               placeholder="เช่น Game Station 1"
             />
           </div>
@@ -426,7 +426,7 @@ function EditMachineModal({ machine, onClose, onSave, isUpdating, onUploadImage 
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-cyan-500 text-foreground resize-none"
+              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-racing-flag text-foreground resize-none"
               rows={3}
               placeholder="เช่น เครื่อง Formula Racing Game Station พร้อมพวงมาลัย..."
             />
@@ -441,7 +441,7 @@ function EditMachineModal({ machine, onClose, onSave, isUpdating, onUploadImage 
               required
               value={formData.position}
               onChange={(e) => setFormData({ ...formData, position: parseInt(e.target.value) || 1 })}
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-cyan-500 text-foreground"
+              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-racing-flag text-foreground"
             />
           </div>
 
@@ -462,7 +462,7 @@ function EditMachineModal({ machine, onClose, onSave, isUpdating, onUploadImage 
             <select
               value={formData.type}
               onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-cyan-500 text-foreground"
+              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-racing-flag text-foreground"
             >
               {MACHINE_TYPES.map((type) => (
                 <option key={type.value} value={type.value}>
@@ -478,7 +478,7 @@ function EditMachineModal({ machine, onClose, onSave, isUpdating, onUploadImage 
             <select
               value={formData.status}
               onChange={(e) => setFormData({ ...formData, status: e.target.value as MachineStatus })}
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-cyan-500 text-foreground"
+              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-racing-flag text-foreground"
             >
               <option value="available">✅ ว่าง</option>
               <option value="occupied">🏁 กำลังเล่น</option>
@@ -496,7 +496,7 @@ function EditMachineModal({ machine, onClose, onSave, isUpdating, onUploadImage 
               type="button"
               onClick={() => setFormData({ ...formData, isActive: !formData.isActive })}
               className={`relative w-14 h-8 rounded-full transition-colors ${
-                formData.isActive ? 'bg-emerald-500' : 'bg-gray-500'
+                formData.isActive ? 'bg-racing-led-go' : 'bg-racing-led-off'
               }`}
             >
               <span className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow transition-transform ${
@@ -539,13 +539,13 @@ function MachineDetailModal({ machine, onClose }: MachineDetailModalProps) {
   const getStatusConfig = (status: string) => {
     switch (status) {
       case 'available':
-        return { label: 'ว่าง (ใช้งานได้)', color: 'bg-emerald-500/20 text-emerald-400', icon: '✅' };
+        return { label: 'ว่าง (ใช้งานได้)', color: 'bg-racing-led-go/15 text-racing-led-go', icon: '✅' };
       case 'occupied':
-        return { label: 'กำลังเล่น', color: 'bg-orange-500/20 text-orange-400', icon: '🏁' };
+        return { label: 'กำลังเล่น', color: 'bg-racing-led-warn/15 text-racing-led-warn', icon: '🏁' };
       case 'maintenance':
-        return { label: 'ซ่อมบำรุง', color: 'bg-gray-500/20 text-gray-400', icon: '🔧' };
+        return { label: 'ซ่อมบำรุง', color: 'bg-racing-led-off/15 text-racing-led-off', icon: '🔧' };
       default:
-        return { label: status, color: 'bg-gray-500/20 text-gray-400', icon: '❓' };
+        return { label: status, color: 'bg-racing-led-off/15 text-racing-led-off', icon: '❓' };
     }
   };
 
@@ -558,7 +558,7 @@ function MachineDetailModal({ machine, onClose }: MachineDetailModalProps) {
       <div className="relative w-full max-w-md bg-surface border border-border rounded-2xl shadow-2xl overflow-hidden animate-modal-in">
         {/* Header (Image if available) */}
         {machine.imageUrl ? (
-          <div className="h-48 w-full relative bg-muted-light/20">
+          <div className="h-48 w-full relative bg-muted-light">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
               src={machine.imageUrl} 
@@ -573,7 +573,7 @@ function MachineDetailModal({ machine, onClose }: MachineDetailModalProps) {
             <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors backdrop-blur-sm shadow-md" type="button">✕</button>
           </div>
         ) : (
-          <div className="p-4 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border-b border-border flex justify-between items-center">
+          <div className="p-4 bg-racing-flag-dim border-b border-border flex justify-between items-center">
             <h3 className="font-bold text-lg text-foreground flex items-center gap-2">
               ℹ️ รายละเอียดเครื่อง
             </h3>
@@ -589,7 +589,9 @@ function MachineDetailModal({ machine, onClose }: MachineDetailModalProps) {
                <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusConfig.color} border border-white/5`}>
                  {statusConfig.icon} {statusConfig.label}
                </span>
-               <span className={`px-2 py-0.5 rounded-md text-xs font-semibold ${machine.isActive ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-500'}`}>
+               <span className={`px-2 py-0.5 rounded-md text-xs font-semibold ${machine.isActive
+                ? 'bg-racing-led-go/10 text-racing-led-go'
+                : 'bg-racing-led-stop/10 text-racing-led-stop'}`}>
                  {machine.isActive ? '👁️ แสดงในระบบ' : '🚫 ซ่อนจากผู้ใช้'}
                </span>
              </div>
@@ -600,7 +602,7 @@ function MachineDetailModal({ machine, onClose }: MachineDetailModalProps) {
             <div className="grid grid-cols-2 gap-y-4">
                <div>
                   <p className="text-xs text-muted mb-1">รหัสเครื่อง (ID)</p>
-                  <p className="font-mono text-sm break-all text-cyan-400">{machine.id.slice(0, 8)}...</p>
+                  <p className="font-mono text-sm break-all text-racing-flag-text">{machine.id.slice(0, 8)}...</p>
                </div>
                <div>
                   <p className="text-xs text-muted mb-1">ลำดับเครื่อง</p>
@@ -608,7 +610,7 @@ function MachineDetailModal({ machine, onClose }: MachineDetailModalProps) {
                </div>
                <div>
                   <p className="text-xs text-muted mb-1">ประเภท</p>
-                  <p className="text-sm font-medium bg-secondary/30 inline-block px-2 py-1 rounded text-cyan-300">🎮 {typeLabel}</p>
+                  <p className="text-sm font-medium bg-muted-light inline-block px-2 py-1 rounded text-racing-flag-text">🎮 {typeLabel}</p>
                </div>
             </div>
             

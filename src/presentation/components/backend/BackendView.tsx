@@ -63,16 +63,16 @@ export function BackendView({ initialViewModel }: BackendViewProps) {
   return (
     <div className="h-full overflow-auto scrollbar-thin">
       {/* Header */}
-      <section className="px-4 md:px-8 py-6 bg-gradient-to-br from-purple-500/10 via-background to-pink-500/10 border-b border-border">
+      <section className="px-4 md:px-8 py-6 bg-gradient-to-br from-racing-flag/10 via-background to-racing-flag-soft/10 border-b border-border">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-3xl shadow-lg">
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-3xl shadow-lg shadow-racing-flag/25">
                 ⚙️
               </div>
               <div>
                 <h1 className="text-3xl font-bold">
-                  <span className="bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-racing-flag to-racing-flag-soft bg-clip-text text-transparent">
                     แอดมิน Dashboard
                   </span>
                 </h1>
@@ -216,7 +216,7 @@ function TabButton({ active, onClick, children }: { active: boolean; onClick: ()
       onClick={onClick}
       className={`px-4 py-2 rounded-lg font-medium transition-all ${
         active
-          ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/30'
+          ? 'bg-racing-flag text-racing-on-flag shadow-lg shadow-racing-flag/30'
           : 'bg-surface text-muted hover:bg-muted-light hover:text-foreground'
       }`}
     >

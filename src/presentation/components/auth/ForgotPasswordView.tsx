@@ -61,7 +61,7 @@ export function ForgotPasswordView() {
                 setEmailSent(false);
                 actions.clearSuccessMessage();
               }}
-              className="text-racing-flag hover:text-racing-flag-soft font-medium transition-colors"
+              className="text-racing-flag-text hover:text-racing-flag-text font-medium transition-colors"
             >
               ส่งอีกครั้ง
             </button>

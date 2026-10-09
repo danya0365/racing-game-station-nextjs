@@ -158,16 +158,20 @@ export function BookingHistoryView() {
   // Get status styling
   const getStatusConfig = (status: string) => {
     switch (status) {
+      // `onColor` is the text that sits on `color`. The fills come from two
+      // different sets, so the text colour is per-status: a branch flag is dark
+      // in light mode but bright in dark mode (where white on it would fall
+      // under AA), while the LED fills take the LED on-colour.
       case 'confirmed':
-        return { label: 'ยืนยันแล้ว', color: 'bg-emerald-500', textColor: 'text-emerald-400', icon: '✅' };
+        return { label: 'ยืนยันแล้ว', color: 'bg-racing-led-go', onColor: 'text-racing-led-on', textColor: 'text-racing-led-go', icon: '✅' };
       case 'pending':
-        return { label: 'รอยืนยัน', color: 'bg-amber-500', textColor: 'text-amber-400', icon: '⏳' };
+        return { label: 'รอยืนยัน', color: 'bg-racing-led-warn', onColor: 'text-racing-led-on', textColor: 'text-racing-led-warn', icon: '⏳' };
       case 'completed':
-        return { label: 'เสร็จสิ้น', color: 'bg-racing-flag-soft', textColor: 'text-racing-flag-soft', icon: '✔️' };
+        return { label: 'เสร็จสิ้น', color: 'bg-racing-flag-soft', onColor: 'text-racing-on-flag', textColor: 'text-racing-flag-text', icon: '✔️' };
       case 'cancelled':
-        return { label: 'ยกเลิก', color: 'bg-red-500', textColor: 'text-red-400', icon: '❌' };
+        return { label: 'ยกเลิก', color: 'bg-racing-led-stop', onColor: 'text-racing-led-on', textColor: 'text-racing-led-stop', icon: '❌' };
       default:
-        return { label: status, color: 'bg-gray-500', textColor: 'text-gray-400', icon: '❓' };
+        return { label: status, color: 'bg-racing-led-off', onColor: 'text-racing-led-on', textColor: 'text-racing-led-off', icon: '❓' };
     }
   };
 
@@ -323,16 +327,16 @@ export function BookingHistoryView() {
 
         {/* Stats Overview */}
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-emerald-400">{totalAvailable}</div>
+          <div className="bg-racing-led-go/10 border border-racing-led-go/30 rounded-xl p-4 text-center">
+            <div className="text-2xl font-bold text-racing-led-go">{totalAvailable}</div>
             <div className="text-sm text-muted">สล็อตว่าง</div>
           </div>
-          <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-red-400">{totalBooked}</div>
+          <div className="bg-racing-led-stop/10 border border-racing-led-stop/30 rounded-xl p-4 text-center">
+            <div className="text-2xl font-bold text-racing-led-stop">{totalBooked}</div>
             <div className="text-sm text-muted">สล็อตจองแล้ว</div>
           </div>
           <div className="bg-racing-flag/10 border border-racing-flag/30 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-racing-flag">{bookings.length}</div>
+            <div className="text-2xl font-bold text-racing-flag-text">{bookings.length}</div>
             <div className="text-sm text-muted">รายการจอง</div>
           </div>
         </div>
@@ -353,11 +357,11 @@ export function BookingHistoryView() {
               {schedule.timeSlots.map((slot) => {
                 let slotClass = '';
                 if (slot.status === 'available') {
-                  slotClass = 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400';
+                  slotClass = 'bg-racing-led-go/15 border-racing-led-go/30 text-racing-led-go';
                 } else if (slot.status === 'booked') {
-                  slotClass = 'bg-red-500/20 border-red-500/30 text-red-400';
+                  slotClass = 'bg-racing-led-stop/15 border-racing-led-stop/30 text-racing-led-stop';
                 } else {
-                  slotClass = 'bg-gray-500/20 border-gray-500/30 text-gray-500';
+                  slotClass = 'bg-racing-led-off/15 border-racing-led-off/30 text-racing-led-off';
                 }
                 
                 return (
@@ -373,15 +377,15 @@ export function BookingHistoryView() {
             </div>
             <div className="flex gap-4 mt-4 text-sm">
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-emerald-500/30 border border-emerald-500/50" />
+                <div className="w-4 h-4 rounded bg-racing-led-go/25 border border-racing-led-go/50" />
                 <span className="text-muted">ว่าง</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-red-500/30 border border-red-500/50" />
+                <div className="w-4 h-4 rounded bg-racing-led-stop/25 border border-racing-led-stop/50" />
                 <span className="text-muted">จองแล้ว</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-gray-500/30 border border-gray-500/50" />
+                <div className="w-4 h-4 rounded bg-racing-led-off/25 border border-racing-led-off/50" />
                 <span className="text-muted">ผ่านไปแล้ว</span>
               </div>
             </div>
@@ -405,19 +409,19 @@ export function BookingHistoryView() {
                         <span className="font-bold text-foreground">{machine.name}</span>
                       </div>
                       <div className="flex gap-2 text-xs">
-                        <span className="px-2 py-1 bg-emerald-500/20 text-emerald-400 rounded-full">
+                        <span className="px-2 py-1 bg-racing-led-go/15 text-racing-led-go rounded-full">
                           ว่าง {machineSchedule.availableSlots}
                         </span>
-                        <span className="px-2 py-1 bg-red-500/20 text-red-400 rounded-full">
+                        <span className="px-2 py-1 bg-racing-led-stop/15 text-racing-led-stop rounded-full">
                           จอง {machineSchedule.bookedSlots}
                         </span>
                       </div>
                     </div>
                     <div className="grid grid-cols-12 sm:grid-cols-16 md:grid-cols-24 gap-1">
                       {machineSchedule.timeSlots.map((slot) => {
-                        let slotColor = 'bg-gray-500/30';
-                        if (slot.status === 'available') slotColor = 'bg-emerald-500/50';
-                        else if (slot.status === 'booked') slotColor = 'bg-red-500/50';
+                        let slotColor = 'bg-racing-led-off/25';
+                        if (slot.status === 'available') slotColor = 'bg-racing-led-go/45';
+                        else if (slot.status === 'booked') slotColor = 'bg-racing-led-stop/45';
                         
                         return (
                           <div
@@ -434,15 +438,15 @@ export function BookingHistoryView() {
             </div>
             <div className="flex gap-4 mt-4 text-sm">
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-emerald-500/50" />
+                <div className="w-4 h-4 rounded bg-racing-led-go/45" />
                 <span className="text-muted">ว่าง</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-red-500/50" />
+                <div className="w-4 h-4 rounded bg-racing-led-stop/45" />
                 <span className="text-muted">จองแล้ว</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-gray-500/30" />
+                <div className="w-4 h-4 rounded bg-racing-led-off/25" />
                 <span className="text-muted">ผ่านไปแล้ว</span>
               </div>
             </div>
@@ -480,7 +484,7 @@ export function BookingHistoryView() {
                       }`}
                     >
                       {isOwner && (
-                        <div className="mb-2 px-2 py-0.5 bg-racing-flag/20 text-racing-flag text-xs font-bold rounded-full inline-block">
+                        <div className="mb-2 px-2 py-0.5 bg-racing-flag/20 text-racing-flag-text text-xs font-bold rounded-full inline-block">
                           ⭐ การจองของคุณ
                         </div>
                       )}
@@ -497,7 +501,7 @@ export function BookingHistoryView() {
                             <p className="font-bold text-foreground">
                               {booking.localStartTime.slice(0, 5)} - {booking.localEndTime.slice(0, 5)}
                               {selectedMachineId === 'all' && machine && (
-                                <span className="ml-2 px-2 py-0.5 bg-racing-flag/20 text-racing-flag text-xs rounded-full">
+                                <span className="ml-2 px-2 py-0.5 bg-racing-flag/20 text-racing-flag-text text-xs rounded-full">
                                   {machine.name}
                                 </span>
                               )}
@@ -514,7 +518,7 @@ export function BookingHistoryView() {
                           </div>
                         </div>
 
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold text-white ${statusConfig.color}`}>
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${statusConfig.onColor} ${statusConfig.color}`}>
                           {statusConfig.icon} {statusConfig.label}
                         </span>
                       </div>

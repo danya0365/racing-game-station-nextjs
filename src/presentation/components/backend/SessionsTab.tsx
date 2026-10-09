@@ -63,14 +63,16 @@ export function SessionsTab({
            label="รอบการเล่นทั้งหมด" 
            value={`${sessionStats.totalSessions}`}
            subLabel="รวมที่กำลังเล่นและประวัติย้อนหลัง"
-           color="from-purple-500 to-indigo-600" 
+           color="from-racing-flag to-racing-flag-soft"
+           onColor="text-racing-on-flag"  
          />
          <StatsCard 
            icon="🟢"
            label="กำลังเล่น" 
            value={`${sessionStats.activeSessions}`}
            subLabel="เครื่องที่ใช้งานอยู่ณ ขณะนี้"
-           color="from-emerald-500 to-teal-500" 
+           color="from-racing-led-go to-racing-led-go"
+           onColor="text-racing-led-on"  
            alert={sessionStats.activeSessions > 0}
          />
          <StatsCard 
@@ -78,14 +80,16 @@ export function SessionsTab({
            label="เสร็จสิ้นแล้ว" 
            value={`${sessionStats.completedSessions}`}
            subLabel="จบการทำงานวันนี้"
-           color="from-blue-500 to-cyan-500" 
+           color="from-racing-led-info to-racing-led-info"
+           onColor="text-racing-led-on"  
          />
          <StatsCard 
            icon="💰"
            label="รายได้รวม" 
            value={`฿${sessionStats.totalRevenue.toLocaleString()}`} 
            subLabel="รายได้จากการเล่นทั้งหมด"
-           color="from-amber-400 to-orange-500" 
+           color="from-racing-led-warn to-racing-led-warn"
+           onColor="text-racing-led-on"  
          />
       </div>
 
@@ -113,14 +117,14 @@ export function SessionsTab({
               onClick={() => handleFilterChange('active')}
               label="กำลังเล่น"
               count={sessions.filter(s => !s.endTime).length}
-              activeClass="bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md"
+              activeClass="bg-racing-led-go text-racing-led-on shadow-md"
             />
             <FilterButton 
               active={filter === 'completed'} 
               onClick={() => handleFilterChange('completed')}
               label="จบแล้ว"
               count={sessions.filter(s => !!s.endTime).length}
-              activeClass="bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md"
+              activeClass="bg-racing-led-info text-racing-led-on shadow-md"
             />
           </div>
         </div>
@@ -139,18 +143,18 @@ export function SessionsTab({
                 key={session.id} 
                 className={`group flex flex-col md:flex-row items-center justify-between p-4 rounded-xl border transition-all cursor-pointer relative overflow-hidden
                   ${!session.endTime 
-                    ? 'bg-emerald-500/5 border-emerald-500/20 hover:bg-emerald-500/10' 
-                    : 'bg-surface hover:bg-surface/80 border-border hover:border-purple-500/30'
+                    ? 'bg-racing-led-go/5 border-racing-led-go/25 hover:bg-racing-led-go/10'
+                    : 'bg-surface hover:bg-surface/80 border-border hover:border-racing-flag/40'
                   }
                 `}
                 onClick={() => setSelectedSession(session)}
               >
-                {!session.endTime && <div className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500" />}
+                {!session.endTime && <div className="absolute left-0 top-0 bottom-0 w-1 bg-racing-led-go" />}
                 
                 <div className="flex items-center gap-4 w-full md:w-auto">
                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-xl font-bold shadow-lg shrink-0 ${
                      !session.endTime 
-                       ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white animate-pulse-slow' 
+                       ? 'bg-racing-led-go text-racing-led-on animate-pulse-slow' 
                        : 'bg-surface border border-border text-muted'
                    }`}>
                      {session.sourceType === 'manual' ? 'M' : 'B'}
@@ -159,7 +163,7 @@ export function SessionsTab({
                      <div className="flex items-center gap-2">
                         <p className="font-bold text-foreground text-lg">{session.customerName}</p>
                         {session.sourceType === 'booking' && (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">จองล่วงหน้า</span>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-racing-flag-dim text-racing-flag-text border border-racing-flag/25">จองล่วงหน้า</span>
                         )}
                      </div>
                      <p className="text-xs text-muted flex items-center gap-2 mt-0.5">
@@ -176,8 +180,8 @@ export function SessionsTab({
                      {!session.endTime ? (
                        <div className="flex flex-col items-end">
                          <div className="flex items-center gap-1.5 mb-1">
-                           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                           <span className="text-emerald-500 font-bold text-sm">กำลังเล่น</span>
+                           <span className="w-2 h-2 rounded-full bg-racing-led-go animate-pulse" />
+                           <span className="text-racing-led-go font-bold text-sm">กำลังเล่น</span>
                          </div>
                          <div>
                             <SessionTimer startTime={session.startTime} estimatedEndTime={session.estimatedEndTime} />
@@ -198,7 +202,7 @@ export function SessionsTab({
                    <div className="flex flex-col items-end min-w-[80px]">
                      {session.totalAmount > 0 ? (
                        <>
-                         <span className="text-lg font-bold text-amber-500">฿{session.totalAmount}</span>
+                         <span className="text-lg font-bold text-racing-led-warn">฿{session.totalAmount}</span>
                          <span className="text-[10px] text-muted">
                            {session.paymentStatus === 'paid' ? 'ชำระแล้ว' : 'ยังไม่ชำระ'}
                          </span>
@@ -223,7 +227,7 @@ export function SessionsTab({
              <button
                disabled={currentPage === 1}
                onClick={() => onPageChange(currentPage - 1)}
-               className="px-3 py-1.5 rounded-lg text-sm bg-surface border border-border hover:bg-muted-light/10 disabled:opacity-50 transition-colors"
+               className="px-3 py-1.5 rounded-lg text-sm bg-surface border border-border hover:bg-muted-light disabled:opacity-50 transition-colors"
              >
                ก่อนหน้า
              </button>
@@ -242,8 +246,8 @@ export function SessionsTab({
                        onClick={() => onPageChange(page)}
                        className={`w-8 h-8 rounded-lg text-sm font-medium transition-all ${
                          currentPage === page
-                           ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md' 
-                           : 'bg-surface border border-border hover:bg-muted-light/10 text-muted'
+                           ? 'bg-racing-flag text-racing-on-flag shadow-md' 
+                           : 'bg-surface border border-border hover:bg-muted-light text-muted'
                        }`}
                      >
                        {page}
@@ -261,7 +265,7 @@ export function SessionsTab({
              <button
                disabled={currentPage === totalPages}
                onClick={() => onPageChange(currentPage + 1)}
-               className="px-3 py-1.5 rounded-lg text-sm bg-surface border border-border hover:bg-muted-light/10 disabled:opacity-50 transition-colors"
+               className="px-3 py-1.5 rounded-lg text-sm bg-surface border border-border hover:bg-muted-light disabled:opacity-50 transition-colors"
              >
                ถัดไป
              </button>
@@ -283,37 +287,55 @@ export function SessionsTab({
 }
 
 // Reusable Stats Card Component (Matches Dashboard)
-function StatsCard({ icon, label, value, subLabel, color, alert }: { icon: string; label: string; value: string; subLabel: string; color: string; alert?: boolean }) {
+//
+// `onColor` exists for the same reason as in DashboardTab: the LED fills turn
+// bright in dark mode, where white text on them measures 2.5-3.8:1.
+function StatsCard({
+  icon,
+  label,
+  value,
+  subLabel,
+  color,
+  onColor,
+  alert,
+}: {
+  icon: string;
+  label: string;
+  value: string;
+  subLabel: string;
+  color: string;
+  onColor: string;
+  alert?: boolean;
+}) {
   return (
     <div
       className={`relative overflow-hidden rounded-2xl p-5 shadow-lg cursor-default transition-all duration-300 hover:translate-y-[-2px] hover:shadow-xl group
-        ${alert ? 'ring-2 ring-red-500/50 animate-pulse-slow' : ''}
+        ${alert ? 'ring-2 ring-racing-led-stop/50 animate-pulse-slow' : ''}
       `}
     >
       {/* Dynamic Background */}
       <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-90`} />
-      <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
       
       {/* Decorative Circles */}
       <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-white/10 blur-xl" />
       <div className="absolute -left-6 -bottom-6 w-20 h-20 rounded-full bg-black/10 blur-xl" />
 
-      <div className="relative z-10 text-white">
+      <div className={`relative z-10 ${onColor}`}>
         <div className="flex justify-between items-start mb-2">
           <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg text-2xl shadow-inner">
             {icon}
           </div>
           {alert && (
-            <span className="px-2 py-0.5 bg-red-500 text-white text-[10px] font-bold rounded-full uppercase tracking-wider shadow-sm">
+            <span className="px-2 py-0.5 bg-black/40 text-current text-[10px] font-bold rounded-full uppercase tracking-wider shadow-sm">
               Active
             </span>
           )}
         </div>
         
         <div className="mt-3">
-          <div className="text-3xl font-bold tracking-tight shadow-black/20 drop-shadow-sm">{value}</div>
+          <div className="text-3xl font-bold tracking-tight drop-shadow-sm">{value}</div>
           <div className="text-sm font-medium opacity-90 mb-1">{label}</div>
-          <div className="text-xs opacity-70 font-light flex items-center gap-1">
+          <div className="text-xs opacity-80 font-light flex items-center gap-1">
             {subLabel}
           </div>
         </div>
@@ -327,7 +349,7 @@ function FilterButton({
   onClick, 
   label, 
   count, 
-  activeClass = 'bg-white text-black shadow-md' 
+  activeClass = 'bg-racing-flag text-racing-on-flag shadow-md' 
 }: { 
   active: boolean; 
   onClick: () => void; 
@@ -341,11 +363,11 @@ function FilterButton({
       className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
         active 
           ? activeClass 
-          : 'text-muted hover:bg-muted-light/10 hover:text-foreground'
+          : 'text-muted hover:bg-muted-light hover:text-foreground'
       }`}
     >
       {label}
-      <span className={`px-1.5 py-0.5 rounded-md text-[10px] ${active ? 'bg-black/10' : 'bg-muted-light/10'}`}>
+      <span className={`px-1.5 py-0.5 rounded-md text-[10px] ${active ? 'bg-black/20' : 'bg-muted-light'}`}>
         {count}
       </span>
     </button>

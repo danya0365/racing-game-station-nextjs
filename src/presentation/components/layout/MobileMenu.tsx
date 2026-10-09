@@ -104,7 +104,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                 onClose();
               }}
               type="button"
-              className="w-full flex items-center justify-between gap-2 px-4 py-3 rounded-xl border border-racing-flag/35 bg-racing-flag-dim text-racing-flag text-sm font-medium transition-all hover:bg-racing-flag/20"
+              className="w-full flex items-center justify-between gap-2 px-4 py-3 rounded-xl border border-racing-flag/35 bg-racing-flag-dim text-racing-flag-text text-sm font-medium transition-all hover:bg-racing-flag/20"
               aria-label={`สาขาปัจจุบัน: ${branch.shortName} — คลิกเพื่อเปลี่ยนสาขา`}
             >
               <span className="flex items-center gap-2 min-w-0">

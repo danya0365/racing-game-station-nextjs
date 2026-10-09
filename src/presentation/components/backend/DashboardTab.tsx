@@ -60,7 +60,8 @@ export function DashboardTab({ viewModel }: DashboardTabProps) {
           label="การใช้งานเครื่อง" 
           value={`${viewModel.machineStats.occupiedMachines}/${viewModel.machineStats.totalMachines}`} 
           subLabel={`${viewModel.machineStats.availableMachines} เครื่องว่าง`}
-          color="from-blue-500 to-cyan-500" 
+          color="from-racing-led-info to-racing-led-info"
+          onColor="text-racing-led-on"  
         />
         
         <StatsCard 
@@ -68,7 +69,8 @@ export function DashboardTab({ viewModel }: DashboardTabProps) {
           label="เวลารอโดยประมาณ" 
           value={`${viewModel.walkInQueueStats.averageWaitMinutes} นาที`}
           subLabel={`${viewModel.waitingQueues.length} คิวรอหน้าร้าน`}
-          color="from-purple-500 to-pink-500" 
+          color="from-racing-flag to-racing-flag-soft"
+          onColor="text-racing-on-flag"  
           alert={viewModel.waitingQueues.length > 5}
         />
 
@@ -77,7 +79,8 @@ export function DashboardTab({ viewModel }: DashboardTabProps) {
           label="รายได้วันนี้" 
           value={`฿${(viewModel.sessionStats.totalRevenue || 0).toLocaleString()}`}
           subLabel={`${viewModel.sessionStats.completedSessions} รอบจบแล้ว`}
-          color="from-amber-400 to-orange-500" 
+          color="from-racing-led-warn to-racing-led-warn"
+          onColor="text-racing-led-on"  
         />
 
         <StatsCard 
@@ -85,7 +88,8 @@ export function DashboardTab({ viewModel }: DashboardTabProps) {
           label="จำนวนการเล่นวันนี้" 
           value={`${viewModel.sessionStats.totalSessions}`}
           subLabel="รวมทุกช่องทาง"
-          color="from-emerald-500 to-green-600" 
+          color="from-racing-led-go to-racing-led-go"
+          onColor="text-racing-led-on"  
         />
       </div>
 
@@ -106,21 +110,21 @@ export function DashboardTab({ viewModel }: DashboardTabProps) {
             {/* ⚠️ Overdue Section */}
             {overdueBookings.length > 0 && (
               <div className="mb-6 animate-pulse-slow">
-                <div className="flex items-center gap-2 text-red-500 font-bold mb-2">
+                <div className="flex items-center gap-2 text-racing-led-stop font-bold mb-2">
                   <span>⚠️</span>
                   <span>เลยเวลาจอง (Overdue) - รีบติดต่อลูกค้า!</span>
                 </div>
                 <div className="space-y-2">
                   {overdueBookings.map((booking) => (
-                    <div key={booking.id} className="group flex items-center justify-between p-3 rounded-xl bg-red-500/10 border border-red-500/30 hover:bg-red-500/20 transition-all">
+                    <div key={booking.id} className="group flex items-center justify-between p-3 rounded-xl bg-racing-led-stop/10 border border-racing-led-stop/30 hover:bg-racing-led-stop/20 transition-all">
                       <div className="flex items-center gap-4">
-                        <div className="flex flex-col items-center justify-center w-14 h-14 bg-red-500 text-white rounded-lg shadow-lg shadow-red-500/30">
+                        <div className="flex flex-col items-center justify-center w-14 h-14 bg-racing-led-stop text-white rounded-lg shadow-lg shadow-racing-led-stop/30">
                           <span className="text-sm font-bold">{booking.localStartTime}</span>
                           <span className="text-[10px] opacity-90">เลยเวลา</span>
                         </div>
                         <div>
-                          <div className="font-bold text-lg text-red-400">{booking.customerName}</div>
-                          <div className="flex items-center gap-2 text-sm text-red-300/80">
+                          <div className="font-bold text-lg text-racing-led-stop">{booking.customerName}</div>
+                          <div className="flex items-center gap-2 text-sm text-racing-led-stop opacity-80">
                             <span>📞 {booking.customerPhone}</span>
                             <span>•</span>
                             <span>{getMachineName(booking.machineId)}</span>
@@ -128,7 +132,7 @@ export function DashboardTab({ viewModel }: DashboardTabProps) {
                         </div>
                       </div>
                       <div className="text-right">
-                         <span className="text-xs font-bold text-red-500 bg-white/90 px-2 py-1 rounded-md">
+                         <span className="text-xs font-bold text-racing-led-stop bg-surface px-2 py-1 rounded-md">
                            รอ Check-in
                          </span>
                       </div>
@@ -150,9 +154,9 @@ export function DashboardTab({ viewModel }: DashboardTabProps) {
                 <h4 className="text-sm font-bold text-muted mb-2 uppercase tracking-wide">กำลังจะมาถึงเร็วๆ นี้</h4>
                 <div className="space-y-3">
                   {upcomingBookings.map((booking) => (
-                    <div key={booking.id} className="group flex items-center justify-between p-3 rounded-xl bg-surface hover:bg-surface/80 border border-border border-l-4 border-l-emerald-500 transition-all">
+                    <div key={booking.id} className="group flex items-center justify-between p-3 rounded-xl bg-surface hover:bg-surface/80 border border-border border-l-4 border-l-racing-led-go transition-all">
                       <div className="flex items-center gap-4">
-                        <div className="flex flex-col items-center justify-center w-14 h-14 bg-emerald-500/10 rounded-lg text-emerald-400">
+                        <div className="flex flex-col items-center justify-center w-14 h-14 bg-racing-led-go/10 rounded-lg text-racing-led-go">
                           <span className="text-sm font-bold">{booking.localStartTime}</span>
                           <span className="text-[10px] opacity-70">ถึง {booking.localEndTime}</span>
                         </div>
@@ -167,7 +171,7 @@ export function DashboardTab({ viewModel }: DashboardTabProps) {
                       </div>
                       
                       <div className="text-right">
-                         <div className="text-emerald-400 font-medium text-sm px-3 py-1 bg-emerald-500/5 rounded-full border border-emerald-500/20">
+                         <div className="text-racing-led-go font-medium text-sm px-3 py-1 bg-racing-led-go/5 rounded-full border border-racing-led-go/20">
                            {getMachineName(booking.machineId)}
                          </div>
                       </div>
@@ -190,18 +194,18 @@ export function DashboardTab({ viewModel }: DashboardTabProps) {
         {/* 📊 3. Performance & Traffic Source */}
         <div className="space-y-6">
           <AnimatedCard className="p-6">
-            <h3 className="text-xl font-bold mb-4">� ที่มาลูกค้าวันนี้</h3>
+            <h3 className="text-xl font-bold mb-4">📈 ที่มาลูกค้าวันนี้</h3>
             
             <div className="space-y-4">
               {/* Walk-in Bar */}
               <div>
                 <div className="flex justify-between text-sm mb-1">
                   <span>🚶 Walk-in</span>
-                  <span className="text-purple-400">{trafficStats.walkIn} ({Math.round(trafficStats.walkIn/trafficStats.total*100)}%)</span>
+                  <span className="text-racing-flag-text">{trafficStats.walkIn} ({Math.round(trafficStats.walkIn/trafficStats.total*100)}%)</span>
                 </div>
                 <div className="h-3 bg-surface rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-1000"
+                    className="h-full bg-gradient-to-r from-racing-flag to-racing-flag-soft rounded-full transition-all duration-1000"
                     style={{ width: `${(trafficStats.walkIn / trafficStats.total) * 100}%` }}
                   />
                 </div>
@@ -211,11 +215,11 @@ export function DashboardTab({ viewModel }: DashboardTabProps) {
               <div>
                 <div className="flex justify-between text-sm mb-1">
                   <span>📅 Booking</span>
-                  <span className="text-emerald-400">{trafficStats.booking} ({Math.round(trafficStats.booking/trafficStats.total*100)}%)</span>
+                  <span className="text-racing-led-go">{trafficStats.booking} ({Math.round(trafficStats.booking/trafficStats.total*100)}%)</span>
                 </div>
                 <div className="h-3 bg-surface rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full transition-all duration-1000"
+                    className="h-full bg-gradient-to-r from-racing-led-go to-racing-led-info rounded-full transition-all duration-1000"
                     style={{ width: `${(trafficStats.booking / trafficStats.total) * 100}%` }}
                   />
                 </div>
@@ -224,22 +228,22 @@ export function DashboardTab({ viewModel }: DashboardTabProps) {
 
             <div className="mt-6 pt-6 border-t border-border grid grid-cols-2 gap-4 text-center">
               <div>
-                <div className="text-2xl font-bold text-red-400">{viewModel.bookingStats.cancelledBookings}</div>
+                <div className="text-2xl font-bold text-racing-led-stop">{viewModel.bookingStats.cancelledBookings}</div>
                 <div className="text-xs text-muted">ยกเลิกจอง</div>
               </div>
               <div>
-                 <div className="text-2xl font-bold text-orange-400">{viewModel.walkInQueueStats.cancelledToday}</div>
+                 <div className="text-2xl font-bold text-racing-led-warn">{viewModel.walkInQueueStats.cancelledToday}</div>
                 <div className="text-xs text-muted">หลุดคิว</div>
               </div>
             </div>
           </AnimatedCard>
 
           {/* Quick Actions / Tips */}
-          <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20">
-            <h4 className="font-bold text-indigo-300 mb-2">💡 ทริคการจัดการ</h4>
+          <div className="p-4 rounded-2xl bg-racing-flag-dim border border-racing-flag/25">
+            <h4 className="font-bold text-racing-flag-text mb-2">💡 ทริคการจัดการ</h4>
             <ul className="text-sm text-muted space-y-2 list-disc pl-4">
               <li>ถ้าคิวยาวเกิน 30 นาที ให้แนะนำลูกค้าจองล่วงหน้า</li>
-              <li>{viewModel.machineStats.maintenanceMachines > 0 ? <span className="text-red-300">มีเครื่องซ่อม {viewModel.machineStats.maintenanceMachines} เครื่อง เร่งติดตามช่าง</span> : 'เครื่องพร้อมใช้งานทุกเครื่อง เยี่ยมมาก!'}</li>
+              <li>{viewModel.machineStats.maintenanceMachines > 0 ? <span className="text-racing-led-stop">มีเครื่องซ่อม {viewModel.machineStats.maintenanceMachines} เครื่อง เร่งติดตามช่าง</span> : 'เครื่องพร้อมใช้งานทุกเครื่อง เยี่ยมมาก!'}</li>
             </ul>
           </div>
         </div>
@@ -260,7 +264,7 @@ export function DashboardTab({ viewModel }: DashboardTabProps) {
                       <div className="font-bold">คิว #{q.queueNumber}</div>
                       <div className="text-sm opacity-70">{q.customerName} ({q.partySize} คน)</div>
                     </div>
-                    <div className="text-right text-xs text-purple-300">
+                    <div className="text-right text-xs text-racing-flag-text">
                       รอ {q.waitTimeMinutes} นาที
                     </div>
                  </div>
@@ -273,37 +277,57 @@ export function DashboardTab({ viewModel }: DashboardTabProps) {
 }
 
 // Reusable Stats Card Component
-function StatsCard({ icon, label, value, subLabel, color, alert }: { icon: string; label: string; value: string; subLabel: string; color: string; alert?: boolean }) {
+//
+// `onColor` is not decoration. The fill comes from two different colour sets: a
+// branch flag, which stays dark in both modes, and the LED colours, which turn
+// bright in dark mode. White text over a dark-mode LED measures 2.5-3.8:1 —
+// unreadable — so each card states which text colour its own fill needs.
+function StatsCard({
+  icon,
+  label,
+  value,
+  subLabel,
+  color,
+  onColor,
+  alert,
+}: {
+  icon: string;
+  label: string;
+  value: string;
+  subLabel: string;
+  color: string;
+  onColor: string;
+  alert?: boolean;
+}) {
   return (
     <div
       className={`relative overflow-hidden rounded-2xl p-5 shadow-lg cursor-default transition-all duration-300 hover:translate-y-[-2px] hover:shadow-xl group
-        ${alert ? 'ring-2 ring-red-500/50 animate-pulse-slow' : ''}
+        ${alert ? 'ring-2 ring-racing-led-stop/50 animate-pulse-slow' : ''}
       `}
     >
       {/* Dynamic Background */}
       <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-90`} />
-      <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
       
       {/* Decorative Circles */}
       <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-white/10 blur-xl" />
       <div className="absolute -left-6 -bottom-6 w-20 h-20 rounded-full bg-black/10 blur-xl" />
 
-      <div className="relative z-10 text-white">
+      <div className={`relative z-10 ${onColor}`}>
         <div className="flex justify-between items-start mb-2">
           <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg text-2xl shadow-inner">
             {icon}
           </div>
           {alert && (
-            <span className="px-2 py-0.5 bg-red-500 text-white text-[10px] font-bold rounded-full uppercase tracking-wider shadow-sm">
+            <span className="px-2 py-0.5 bg-black/40 text-current text-[10px] font-bold rounded-full uppercase tracking-wider shadow-sm">
               แจ้งเตือน
             </span>
           )}
         </div>
         
         <div className="mt-3">
-          <div className="text-3xl font-bold tracking-tight shadow-black/20 drop-shadow-sm">{value}</div>
+          <div className="text-3xl font-bold tracking-tight drop-shadow-sm">{value}</div>
           <div className="text-sm font-medium opacity-90 mb-1">{label}</div>
-          <div className="text-xs opacity-70 font-light flex items-center gap-1">
+          <div className="text-xs opacity-80 font-light flex items-center gap-1">
             {subLabel}
           </div>
         </div>

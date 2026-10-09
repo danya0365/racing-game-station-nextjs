@@ -156,7 +156,7 @@ export function CustomerInfoCard({
           <div className="flex gap-3">
             <button
               onClick={handleSave}
-              className="flex-1 py-3 bg-racing-flag hover:brightness-110 text-white font-medium rounded-xl transition-colors"
+              className="flex-1 py-3 bg-racing-flag hover:brightness-110 text-racing-on-flag font-medium rounded-xl transition-colors"
             >
               💾 บันทึก
             </button>
@@ -188,7 +188,7 @@ export function CustomerInfoCard({
         </div>
         <button
           onClick={() => setIsEditing(true)}
-          className="px-3 py-1.5 text-sm text-racing-flag hover:text-racing-flag-soft hover:bg-racing-flag/10 rounded-lg transition-colors"
+          className="px-3 py-1.5 text-sm text-racing-flag-text hover:text-racing-flag-text hover:bg-racing-flag/10 rounded-lg transition-colors"
         >
           ✏️ แก้ไข
         </button>

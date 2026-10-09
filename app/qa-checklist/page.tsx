@@ -159,7 +159,7 @@ export default function QAChecklistPage() {
                             </div>
                             <button
                               onClick={() => setExpandedId(expandedId === tc.id ? null : tc.id)}
-                              className="text-muted hover:text-racing-flag text-sm"
+                              className="text-muted hover:text-racing-flag-text text-sm"
                             >
                               {expandedId === tc.id ? '▲ ซ่อน' : '▼ รายละเอียด'}
                             </button>
@@ -232,10 +232,10 @@ export default function QAChecklistPage() {
         <AnimatedCard className="p-4">
           <h4 className="text-sm font-medium text-foreground mb-2">🚀 Quick Links</h4>
           <div className="space-y-2 text-sm">
-            <a href="/customer" target="_blank" className="block text-racing-flag hover:underline">
+            <a href="/customer" target="_blank" className="block text-racing-flag-text hover:underline">
               → หน้าลูกค้า
             </a>
-            <a href="/backend" target="_blank" className="block text-racing-flag hover:underline">
+            <a href="/backend" target="_blank" className="block text-racing-flag-text hover:underline">
               → หน้า Backend
             </a>
             <a href="/time-booking" target="_blank" className="block text-emerald-400 hover:underline">

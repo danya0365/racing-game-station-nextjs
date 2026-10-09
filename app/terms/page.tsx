@@ -68,15 +68,15 @@ export default function TermsPage() {
             </h3>
             <ul className="space-y-3 text-muted pl-4">
               <li className="flex gap-3">
-                <span className="text-racing-flag mt-1">•</span>
+                <span className="text-racing-flag-text mt-1">•</span>
                 <span>รับชำระผ่านเงินสด, QR Code, และบัตรเครดิต</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-racing-flag mt-1">•</span>
+                <span className="text-racing-flag-text mt-1">•</span>
                 <span>ค่าบริการคิดตามเวลาใช้งานจริงหรือตามโปรโมชั่น</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-racing-flag mt-1">•</span>
+                <span className="text-racing-flag-text mt-1">•</span>
                 <span>ไม่มีการคืนเงินสำหรับเวลาที่เหลือจากการยกเลิกก่อนกำหนด</span>
               </li>
             </ul>
@@ -92,19 +92,19 @@ export default function TermsPage() {
             </h3>
             <ul className="space-y-3 text-muted pl-4">
               <li className="flex gap-3">
-                <span className="text-racing-flag mt-1">•</span>
+                <span className="text-racing-flag-text mt-1">•</span>
                 <span>ห้ามรับประทานอาหารหรือเครื่องดื่มใกล้เครื่องเล่น</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-racing-flag mt-1">•</span>
+                <span className="text-racing-flag-text mt-1">•</span>
                 <span>ห้ามติดตั้งซอฟต์แวร์หรือแก้ไขการตั้งค่าเครื่อง</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-racing-flag mt-1">•</span>
+                <span className="text-racing-flag-text mt-1">•</span>
                 <span>ห้ามใช้เครื่องในเชิงพาณิชย์หรือการแข่งขันที่ไม่ได้รับอนุญาต</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-racing-flag mt-1">•</span>
+                <span className="text-racing-flag-text mt-1">•</span>
                 <span>เครื่องเสียหายจากการใช้งานผิดปกติต้องรับผิดชอบค่าเสียหาย</span>
               </li>
             </ul>
@@ -171,11 +171,11 @@ export default function TermsPage() {
 
         {/* Footer Links */}
         <div className="flex justify-center gap-6 mt-8 text-sm text-muted">
-          <Link href="/privacy" className="hover:text-racing-flag transition-colors">
+          <Link href="/privacy" className="hover:text-racing-flag-text transition-colors">
             นโยบายความเป็นส่วนตัว
           </Link>
           <span>•</span>
-          <Link href="/" className="hover:text-racing-flag transition-colors">
+          <Link href="/" className="hover:text-racing-flag-text transition-colors">
             หน้าหลัก
           </Link>
         </div>

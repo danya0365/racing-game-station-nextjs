@@ -70,10 +70,10 @@ export function CustomersTab() {
   };
 
   const filterButtons = [
-    { key: 'all', label: 'ทั้งหมด', icon: '👥', color: 'from-gray-500 to-gray-600' },
-    { key: 'vip', label: 'VIP', icon: '⭐', color: 'from-amber-500 to-orange-600' },
-    { key: 'new', label: 'ใหม่วันนี้', icon: '🆕', color: 'from-emerald-500 to-green-600' },
-    { key: 'regular', label: 'ลูกค้าประจำ', icon: '🔄', color: 'from-purple-500 to-pink-600' },
+    { key: 'all', label: 'ทั้งหมด', icon: '👥', color: 'from-racing-led-off to-racing-led-off', onColor: 'text-racing-led-on', badgeOn: 'bg-racing-led-on/20' },
+    { key: 'vip', label: 'VIP', icon: '⭐', color: 'from-racing-led-warn to-racing-led-warn', onColor: 'text-racing-led-on', badgeOn: 'bg-racing-led-on/20' },
+    { key: 'new', label: 'ใหม่วันนี้', icon: '🆕', color: 'from-racing-led-go to-racing-led-go', onColor: 'text-racing-led-on', badgeOn: 'bg-racing-led-on/20' },
+    { key: 'regular', label: 'ลูกค้าประจำ', icon: '🔄', color: 'from-racing-flag to-racing-flag-soft', onColor: 'text-racing-on-flag', badgeOn: 'bg-racing-on-flag/20' },
   ];
 
   return (
@@ -81,10 +81,10 @@ export function CustomersTab() {
       {/* Stats */}
       {stats && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <CustomerStatsCard icon="👥" label="ลูกค้าทั้งหมด" value={stats.totalCustomers} color="from-blue-500 to-cyan-500" />
-          <CustomerStatsCard icon="⭐" label="VIP" value={stats.vipCustomers} color="from-amber-500 to-orange-500" />
-          <CustomerStatsCard icon="🆕" label="ใหม่วันนี้" value={stats.newCustomersToday} color="from-emerald-500 to-green-500" />
-          <CustomerStatsCard icon="🔄" label="ลูกค้าประจำ" value={stats.returningCustomers} color="from-purple-500 to-pink-500" />
+          <CustomerStatsCard icon="👥" label="ลูกค้าทั้งหมด" value={stats.totalCustomers} color="from-racing-led-info to-racing-led-info" />
+          <CustomerStatsCard icon="⭐" label="VIP" value={stats.vipCustomers} color="from-racing-led-warn to-racing-led-warn" />
+          <CustomerStatsCard icon="🆕" label="ใหม่วันนี้" value={stats.newCustomersToday} color="from-racing-led-go to-racing-led-go" />
+          <CustomerStatsCard icon="🔄" label="ลูกค้าประจำ" value={stats.returningCustomers} color="from-racing-flag to-racing-flag-soft" />
         </div>
       )}
 
@@ -96,15 +96,15 @@ export function CustomersTab() {
             onClick={() => handleFilterChange(btn.key)}
             className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
               activeFilter === btn.key
-                ? `bg-gradient-to-r ${btn.color} text-white shadow-lg`
-                : 'bg-surface border border-border text-muted hover:text-foreground hover:border-amber-500/50'
+                ? `bg-gradient-to-r ${btn.color} ${btn.onColor} shadow-lg`
+                : 'bg-surface border border-border text-muted hover:text-foreground hover:border-racing-flag/50'
             }`}
           >
             <span>{btn.icon}</span>
             <span>{btn.label}</span>
             <span className={`px-2 py-0.5 rounded-full text-xs ${
               activeFilter === btn.key 
-                ? 'bg-white/20' 
+                ? btn.badgeOn
                 : 'bg-muted-light'
             }`}>
               {filterCounts[btn.key as keyof typeof filterCounts]}
@@ -120,7 +120,7 @@ export function CustomersTab() {
           value={searchQuery}
           onChange={(e) => handleSearch(e.target.value)}
           placeholder="🔍 ค้นหาชื่อหรือเบอร์โทร..."
-          className="flex-1 px-4 py-3 bg-surface border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-foreground placeholder-muted"
+          className="flex-1 px-4 py-3 bg-surface border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-racing-flag text-foreground placeholder-muted"
         />
         <GlowButton color="orange" onClick={actions.openAddModal}>
           ➕ เพิ่ม
@@ -158,8 +158,8 @@ export function CustomersTab() {
                 <div className="flex items-center gap-3">
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl ${
                     customer.isVip 
-                      ? 'bg-gradient-to-br from-amber-400 to-orange-500' 
-                      : 'bg-gradient-to-br from-gray-400 to-gray-600'
+                      ? 'bg-gradient-to-br from-racing-led-warn to-racing-led-warn'
+                      : 'bg-gradient-to-br from-racing-led-off to-racing-led-off'
                   }`}>
                     {customer.isVip ? '⭐' : '👤'}
                   </div>
@@ -167,10 +167,10 @@ export function CustomersTab() {
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-foreground">{customer.name}</span>
                       {customer.isVip && (
-                        <span className="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs font-bold rounded-full">VIP</span>
+                        <span className="px-2 py-0.5 bg-racing-led-warn/15 text-racing-led-warn text-xs font-bold rounded-full">VIP</span>
                       )}
                       {customer.visitCount >= CUSTOMER_CONFIG.REGULAR_CUSTOMER_MIN_VISITS && !customer.isVip && (
-                        <span className="px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs font-bold rounded-full">ประจำ</span>
+                        <span className="px-2 py-0.5 bg-racing-flag-dim text-racing-flag-text text-xs font-bold rounded-full">ประจำ</span>
                       )}
                     </div>
                     <span className="text-sm text-muted">{customer.phone}</span>
@@ -236,8 +236,8 @@ export function CustomersTab() {
                   onClick={() => actions.setPage(pageNum)}
                   className={`w-10 h-10 rounded-lg text-sm font-medium transition-all ${
                     currentPage === pageNum
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg'
-                      : 'bg-surface border border-border text-muted hover:text-foreground hover:border-amber-500/50'
+                      ? 'bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag shadow-lg'
+                      : 'bg-surface border border-border text-muted hover:text-foreground hover:border-racing-flag/50'
                   }`}
                 >
                   {pageNum}
@@ -354,7 +354,7 @@ function EditCustomerModal({ customer, onClose, onSave }: EditCustomerModalProps
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-backdrop-in" onClick={onClose} />
       <div className="relative w-full max-w-lg bg-surface border border-border rounded-2xl shadow-2xl overflow-hidden animate-modal-in">
-        <div className="p-4 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border-b border-border flex justify-between items-center">
+        <div className="p-4 bg-racing-flag-dim border-b border-border flex justify-between items-center">
           <h3 className="font-bold text-lg text-foreground">
             {customer ? '✏️ แก้ไขลูกค้า' : '➕ เพิ่มลูกค้าใหม่'}
           </h3>
@@ -369,7 +369,7 @@ function EditCustomerModal({ customer, onClose, onSave }: EditCustomerModalProps
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-amber-500 text-foreground"
+              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-racing-flag text-foreground"
               placeholder="เช่น นายใจดี มีความสุข"
             />
           </div>
@@ -381,7 +381,7 @@ function EditCustomerModal({ customer, onClose, onSave }: EditCustomerModalProps
               required
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-amber-500 text-foreground"
+              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-racing-flag text-foreground"
               placeholder="เช่น 0812345678"
             />
           </div>
@@ -391,7 +391,7 @@ function EditCustomerModal({ customer, onClose, onSave }: EditCustomerModalProps
              <textarea
                value={formData.notes}
                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-               className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-amber-500 text-foreground resize-none"
+               className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-racing-flag text-foreground resize-none"
                rows={3}
                placeholder="ระบุข้อมูลเพิ่มเติม..."
              />
@@ -406,7 +406,7 @@ function EditCustomerModal({ customer, onClose, onSave }: EditCustomerModalProps
               type="button"
               onClick={() => setFormData({ ...formData, isVip: !formData.isVip })}
               className={`relative w-14 h-8 rounded-full transition-colors ${
-                formData.isVip ? 'bg-amber-500' : 'bg-gray-500'
+                formData.isVip ? 'bg-racing-led-go' : 'bg-racing-led-off'
               }`}
             >
               <span className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow transition-transform ${

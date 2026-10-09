@@ -61,7 +61,7 @@ export function ImageUploadInput({ value, onChange, placeholder = 'https://...',
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={disabled || isUploading}
-          className="px-4 py-3 bg-racing-flag/10 text-racing-flag border border-racing-flag/30 rounded-xl hover:bg-racing-flag/20 transition-colors whitespace-nowrap disabled:opacity-50"
+          className="px-4 py-3 bg-racing-flag/10 text-racing-flag-text border border-racing-flag/30 rounded-xl hover:bg-racing-flag/20 transition-colors whitespace-nowrap disabled:opacity-50"
         >
           {isUploading ? '⏳ กำลังอัปโหลด...' : '📁 อัปโหลด'}
         </button>

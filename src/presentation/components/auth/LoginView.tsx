@@ -231,14 +231,14 @@ export function LoginView() {
                       type="checkbox"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
-                      className="w-4 h-4 rounded border-input-border text-racing-flag focus:ring-racing-flag"
+                      className="w-4 h-4 rounded border-input-border text-racing-flag-text focus:ring-racing-flag"
                     />
                     <span className="text-sm text-muted">จดจำฉัน</span>
                   </label>
                 )}
                 {!config.features.rememberMe && <div />}
                 {config.features.forgotPassword && (
-                  <Link href="/auth/forgot-password" className="text-sm text-racing-flag hover:text-racing-flag-soft transition-colors">
+                  <Link href="/auth/forgot-password" className="text-sm text-racing-flag-text hover:text-racing-flag-text transition-colors">
                     ลืมรหัสผ่าน?
                   </Link>
                 )}
@@ -316,7 +316,7 @@ export function LoginView() {
                   <button
                     type="button"
                     onClick={() => actions.resetOTPState()}
-                    className="w-full mt-2 text-sm text-racing-flag hover:text-racing-flag-soft transition-colors"
+                    className="w-full mt-2 text-sm text-racing-flag-text hover:text-racing-flag-text transition-colors"
                   >
                     เปลี่ยนเบอร์โทรศัพท์
                   </button>
@@ -373,7 +373,7 @@ export function LoginView() {
           {config.email.allowRegistration && (
             <p className="mt-6 text-center text-sm text-muted">
               ยังไม่มีบัญชี?{' '}
-              <Link href="/auth/register" className="text-racing-flag hover:text-racing-flag-soft font-medium transition-colors">
+              <Link href="/auth/register" className="text-racing-flag-text hover:text-racing-flag-text font-medium transition-colors">
                 สมัครสมาชิก
               </Link>
             </p>
@@ -383,9 +383,9 @@ export function LoginView() {
         {/* Footer */}
         <p className="mt-8 text-center text-xs text-muted">
           การเข้าสู่ระบบหมายถึงคุณยอมรับ{' '}
-          <Link href="/terms" className="text-racing-flag hover:text-racing-flag-soft">เงื่อนไขการใช้งาน</Link>
+          <Link href="/terms" className="text-racing-flag-text hover:text-racing-flag-text">เงื่อนไขการใช้งาน</Link>
           {' '}และ{' '}
-          <Link href="/privacy" className="text-racing-flag hover:text-racing-flag-soft">นโยบายความเป็นส่วนตัว</Link>
+          <Link href="/privacy" className="text-racing-flag-text hover:text-racing-flag-text">นโยบายความเป็นส่วนตัว</Link>
         </p>
       </div>
     </div>

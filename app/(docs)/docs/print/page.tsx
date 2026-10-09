@@ -41,11 +41,13 @@ const printStyles = `
     ul, ol {
       break-inside: avoid;
     }
-    /* Force background colors */
+    /* Force the printed document's own light palette. The themed control bar
+       above it must NOT be pinned here — print-color-adjust: exact above
+       already carries it, and forcing it to paper colours would print the bar
+       in the wrong ink. These rules cover only the document body. */
     .bg-gray-50 { background-color: #f9fafb !important; }
     .bg-purple-100 { background-color: #f3e8ff !important; }
     .bg-cyan-100 { background-color: #cffafe !important; }
-    /* ... add other essential print colors if needed or rely on exact-print-adjust */
   }
 `;
 
@@ -80,37 +82,40 @@ export default function PrintDocsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+    // Only the control bar follows the app theme. Everything inside
+    // `printAllRef` below is the printed document itself: it keeps its own fixed
+    // light palette (bg-white text-black) because that is what goes on paper.
+    <div className="min-h-screen bg-background">
       {/* Control Panel - Fixed at top */}
-      <div className="sticky top-0 z-50 bg-white dark:bg-gray-800 shadow-lg print:hidden">
+      <div className="sticky top-0 z-50 bg-surface border-b border-border shadow-lg print:hidden">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">🖨️ เลือกส่วนที่ต้องการพิมพ์</h1>
-              <p className="text-sm text-gray-600 dark:text-gray-400">คลิกปุ่มด้านล่างเพื่อพิมพ์เอกสาร (อัปเดตล่าสุด)</p>
+              <h1 className="text-xl font-bold text-foreground">🖨️ เลือกส่วนที่ต้องการพิมพ์</h1>
+              <p className="text-sm text-muted">คลิกปุ่มด้านล่างเพื่อพิมพ์เอกสาร (อัปเดตล่าสุด)</p>
             </div>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => handlePrintAll()}
-                className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-medium rounded-lg shadow hover:shadow-lg transition-all flex items-center gap-2"
+                className="px-4 py-2 bg-racing-flag text-racing-on-flag font-medium rounded-lg shadow hover:shadow-lg transition-all flex items-center gap-2"
               >
                 📖 พิมพ์ทั้งหมด
               </button>
               <button
                 onClick={() => handlePrintCustomer()}
-                className="px-4 py-2 bg-gradient-to-r from-purple-400 to-pink-500 text-white font-medium rounded-lg shadow hover:shadow-lg transition-all flex items-center gap-2"
+                className="px-4 py-2 bg-surface border border-border text-foreground font-medium rounded-lg shadow hover:shadow-lg transition-all flex items-center gap-2"
               >
                 👤 พิมพ์คู่มือลูกค้า
               </button>
               <button
                 onClick={() => handlePrintAdmin()}
-                className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium rounded-lg shadow hover:shadow-lg transition-all flex items-center gap-2"
+                className="px-4 py-2 bg-surface border border-border text-foreground font-medium rounded-lg shadow hover:shadow-lg transition-all flex items-center gap-2"
               >
                 ⚙️ พิมพ์คู่มือแอดมิน
               </button>
               <button
                 onClick={() => handlePrintGameControl()}
-                className="px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-600 text-white font-medium rounded-lg shadow hover:shadow-lg transition-all flex items-center gap-2"
+                className="px-4 py-2 bg-surface border border-border text-foreground font-medium rounded-lg shadow hover:shadow-lg transition-all flex items-center gap-2"
               >
                 🎛️ พิมพ์คู่มือห้องควบคุม
               </button>

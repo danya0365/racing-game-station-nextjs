@@ -35,7 +35,7 @@ export function BranchPicker() {
             เลือกสาขาที่ต้องการจองเวลาหรือเข้าคิว
           </p>
           {hasChosen && (
-            <p className="text-sm text-racing-flag mt-2">
+            <p className="text-sm text-racing-flag-text mt-2">
               สาขาปัจจุบันของคุณ: {currentBranch.shortName}
             </p>
           )}
@@ -60,14 +60,14 @@ export function BranchPicker() {
                   className="h-14 w-auto max-w-70 object-contain object-left"
                 />
                 {hasChosen && branch.id === currentBranch.id && (
-                  <span className="self-start text-xs px-2 py-1 rounded-lg bg-racing-flag-dim text-racing-flag font-medium">
+                  <span className="self-start text-xs px-2 py-1 rounded-lg bg-racing-flag-dim text-racing-flag-text font-medium">
                     สาขาปัจจุบัน
                   </span>
                 )}
               </div>
 
               <div className="mt-4 flex gap-2">
-                <span className="text-xs px-3 py-1.5 rounded-lg bg-racing-flag-dim text-racing-flag font-medium">
+                <span className="text-xs px-3 py-1.5 rounded-lg bg-racing-flag-dim text-racing-flag-text font-medium">
                   จองเวลา
                 </span>
                 <span className="text-xs px-3 py-1.5 rounded-lg bg-racing-panel-2 border border-racing-line text-racing-fg-2 font-medium">

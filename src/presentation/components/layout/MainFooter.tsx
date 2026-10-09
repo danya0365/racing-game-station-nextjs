@@ -11,7 +11,7 @@ export function MainFooter() {
       {/* Copyright */}
       <div className="flex items-center gap-2 text-xs md:text-sm text-racing-fg-2 overflow-hidden">
         <span className="whitespace-nowrap">© 2025</span>
-        <span className="font-semibold text-racing-flag cursor-default truncate">
+        <span className="font-semibold text-racing-flag-text cursor-default truncate">
           Racing Game Station System
         </span>
         <span className="whitespace-nowrap text-racing-fg-3">
@@ -24,14 +24,14 @@ export function MainFooter() {
         <span className="text-racing-line">|</span>
         <Link
           href="/qr-scan"
-          className="text-xs font-medium text-racing-fg-3 hover:text-racing-flag transition-colors duration-200"
+          className="text-xs font-medium text-racing-fg-3 hover:text-racing-flag-text transition-colors duration-200"
         >
           สแกนคิวอาร์โค้ด
         </Link>
         <span className="text-racing-line">|</span>
         <Link
           href="/docs"
-          className="text-xs font-medium text-racing-fg-3 hover:text-racing-flag transition-colors duration-200"
+          className="text-xs font-medium text-racing-fg-3 hover:text-racing-flag-text transition-colors duration-200"
         >
           คู่มือ
         </Link>

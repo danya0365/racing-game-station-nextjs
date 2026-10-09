@@ -65,7 +65,7 @@ export function TimezoneNotice() {
               {timezoneInfo.userCurrentTime}
             </span>
             <span className="text-muted">→</span>
-            <span className="text-racing-flag font-mono font-bold">
+            <span className="text-racing-flag-text font-mono font-bold">
               {shopTimezoneInfo.flag} {timezoneInfo.shopCurrentTime}
             </span>
           </div>
@@ -116,7 +116,7 @@ export function TimezoneNotice() {
             {/* Shop's timezone */}
             <div className="bg-racing-flag/20 rounded-lg p-3 border border-racing-flag/30">
               <p className="text-muted text-xs mb-1">🏪 เวลาร้าน ({shopTimezoneInfo.cityName})</p>
-              <p className="text-3xl font-bold text-racing-flag font-mono tracking-tight">
+              <p className="text-3xl font-bold text-racing-flag-text font-mono tracking-tight">
                 {timezoneInfo.shopCurrentTime}
               </p>
               <p className="text-xs text-muted mt-1">
@@ -152,7 +152,7 @@ export function TimezoneNoticeCompact() {
         เวลาของคุณ <strong className="font-mono">{timezoneInfo.userCurrentTime}</strong> ({timezoneInfo.userOffset})
       </span>
       <span className="text-muted">•</span>
-      <span className="text-racing-flag">
+      <span className="text-racing-flag-text">
         {shopTimezoneInfo.flag} เวลาร้าน <strong className="font-mono">{timezoneInfo.shopCurrentTime}</strong>
       </span>
     </div>
@@ -181,7 +181,7 @@ export function TimezoneNoticeFloating() {
               {timezoneInfo.userCurrentTime}
             </span>
             <span className="text-muted">→</span>
-            <span className="text-racing-flag font-mono font-bold">
+            <span className="text-racing-flag-text font-mono font-bold">
               {shopTimezoneInfo.flag} {timezoneInfo.shopCurrentTime}
             </span>
           </div>

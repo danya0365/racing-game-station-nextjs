@@ -47,7 +47,7 @@ export default function PrivacyPage() {
             <div className="grid md:grid-cols-2 gap-4">
               <div className="p-4 rounded-xl bg-surface/50 border border-border/50">
                 <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
-                  <span className="text-racing-flag">👤</span>
+                  <span className="text-racing-flag-text">👤</span>
                   ข้อมูลบัญชี
                 </h4>
                 <ul className="text-sm text-muted space-y-1">
@@ -147,7 +147,7 @@ export default function PrivacyPage() {
                   key={i}
                   className="p-4 rounded-xl bg-gradient-to-br from-racing-flag/10 to-rose-500/10 border border-racing-flag/30"
                 >
-                  <h4 className="font-medium text-racing-flag mb-1">{right.title}</h4>
+                  <h4 className="font-medium text-racing-flag-text mb-1">{right.title}</h4>
                   <p className="text-sm text-muted">{right.desc}</p>
                 </div>
               ))}
@@ -206,11 +206,11 @@ export default function PrivacyPage() {
 
         {/* Footer Links */}
         <div className="flex justify-center gap-6 mt-8 text-sm text-muted">
-          <Link href="/terms" className="hover:text-racing-flag transition-colors">
+          <Link href="/terms" className="hover:text-racing-flag-text transition-colors">
             เงื่อนไขการใช้บริการ
           </Link>
           <span>•</span>
-          <Link href="/" className="hover:text-racing-flag transition-colors">
+          <Link href="/" className="hover:text-racing-flag-text transition-colors">
             หน้าหลัก
           </Link>
         </div>
