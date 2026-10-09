@@ -47,7 +47,7 @@ export default function QAChecklistPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold">
-                <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-racing-flag to-racing-flag-soft bg-clip-text text-transparent">
                   🧪 QA Checklist
                 </span>
               </h1>
@@ -73,14 +73,14 @@ export default function QAChecklistPage() {
         <AnimatedCard className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-bold text-lg text-foreground">ความคืบหน้าโดยรวม</h2>
-            <span className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+            <span className="text-2xl font-bold bg-gradient-to-r from-racing-flag to-racing-flag-soft bg-clip-text text-transparent">
               {progress.percentage}%
             </span>
           </div>
           
           <div className="w-full bg-card rounded-full h-4 overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full transition-all duration-500"
+              className="h-full bg-gradient-to-r from-racing-flag to-racing-flag-soft rounded-full transition-all duration-500"
               style={{ width: `${progress.percentage}%` }}
             />
           </div>
@@ -110,7 +110,7 @@ export default function QAChecklistPage() {
               <AnimatedCard key={category} className="overflow-hidden">
                 {/* Category Header */}
                 <div className={`px-6 py-4 border-b border-border ${
-                  isComplete ? 'bg-emerald-500/10' : 'bg-purple-500/10'
+                  isComplete ? 'bg-emerald-500/10' : 'bg-racing-flag/10'
                 }`}>
                   <div className="flex items-center justify-between">
                     <h3 className="font-bold text-foreground flex items-center gap-2">
@@ -140,7 +140,7 @@ export default function QAChecklistPage() {
                           className={`w-6 h-6 rounded-md border-2 flex-shrink-0 flex items-center justify-center transition-all ${
                             tc.completed
                               ? 'bg-emerald-500 border-emerald-500 text-white'
-                              : 'border-muted hover:border-cyan-400'
+                              : 'border-muted hover:border-racing-flag'
                           }`}
                         >
                           {tc.completed && '✓'}
@@ -159,7 +159,7 @@ export default function QAChecklistPage() {
                             </div>
                             <button
                               onClick={() => setExpandedId(expandedId === tc.id ? null : tc.id)}
-                              className="text-muted hover:text-cyan-400 text-sm"
+                              className="text-muted hover:text-racing-flag text-sm"
                             >
                               {expandedId === tc.id ? '▲ ซ่อน' : '▼ รายละเอียด'}
                             </button>
@@ -200,7 +200,7 @@ export default function QAChecklistPage() {
                                     />
                                     <button
                                       onClick={() => handleSaveNote(tc.id)}
-                                      className="px-3 py-2 bg-purple-500/20 text-purple-300 rounded text-sm hover:bg-purple-500/30"
+                                      className="px-3 py-2 bg-racing-flag/20 text-racing-fg rounded text-sm hover:bg-racing-flag/30"
                                     >
                                       บันทึก
                                     </button>
@@ -232,10 +232,10 @@ export default function QAChecklistPage() {
         <AnimatedCard className="p-4">
           <h4 className="text-sm font-medium text-foreground mb-2">🚀 Quick Links</h4>
           <div className="space-y-2 text-sm">
-            <a href="/customer" target="_blank" className="block text-cyan-400 hover:underline">
+            <a href="/customer" target="_blank" className="block text-racing-flag hover:underline">
               → หน้าลูกค้า
             </a>
-            <a href="/backend" target="_blank" className="block text-purple-400 hover:underline">
+            <a href="/backend" target="_blank" className="block text-racing-flag hover:underline">
               → หน้า Backend
             </a>
             <a href="/time-booking" target="_blank" className="block text-emerald-400 hover:underline">

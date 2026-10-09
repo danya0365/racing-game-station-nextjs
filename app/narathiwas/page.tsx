@@ -46,7 +46,7 @@ export default async function NarathiwatHomePage() {
           <p className="text-muted mb-4">ไม่สามารถโหลดข้อมูลได้</p>
           <Link
             href="/narathiwas"
-            className="inline-block bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-3 rounded-xl hover:from-cyan-400 hover:to-blue-500 transition-all"
+            className="inline-block bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag px-6 py-3 rounded-xl hover:from-racing-flag-soft hover:to-racing-flag transition-all"
           >
             ลองใหม่อีกครั้ง
           </Link>

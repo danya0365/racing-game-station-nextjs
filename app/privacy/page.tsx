@@ -27,7 +27,7 @@ export default function PrivacyPage() {
           {/* Introduction */}
           <section>
             <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-              <span className="w-1.5 h-6 rounded-full bg-purple-500" />
+              <span className="w-1.5 h-6 rounded-full bg-racing-flag" />
               คำนำ
             </h2>
             <p className="text-muted leading-relaxed">
@@ -39,7 +39,7 @@ export default function PrivacyPage() {
           {/* Section 1 */}
           <section className="space-y-4">
             <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white text-sm font-bold">
+              <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-racing-on-flag text-sm font-bold">
                 1
               </span>
               ข้อมูลที่เราเก็บรวบรวม
@@ -47,7 +47,7 @@ export default function PrivacyPage() {
             <div className="grid md:grid-cols-2 gap-4">
               <div className="p-4 rounded-xl bg-surface/50 border border-border/50">
                 <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
-                  <span className="text-cyan-500">👤</span>
+                  <span className="text-racing-flag">👤</span>
                   ข้อมูลบัญชี
                 </h4>
                 <ul className="text-sm text-muted space-y-1">
@@ -75,7 +75,7 @@ export default function PrivacyPage() {
           {/* Section 2 */}
           <section className="space-y-4">
             <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white text-sm font-bold">
+              <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-racing-on-flag text-sm font-bold">
                 2
               </span>
               วัตถุประสงค์การใช้ข้อมูล
@@ -131,7 +131,7 @@ export default function PrivacyPage() {
           {/* Section 4 */}
           <section className="space-y-4">
             <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white text-sm font-bold">
+              <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-racing-on-flag text-sm font-bold">
                 4
               </span>
               สิทธิ์ของท่าน
@@ -145,9 +145,9 @@ export default function PrivacyPage() {
               ].map((right, i) => (
                 <div
                   key={i}
-                  className="p-4 rounded-xl bg-gradient-to-br from-pink-500/10 to-rose-500/10 border border-pink-500/30"
+                  className="p-4 rounded-xl bg-gradient-to-br from-racing-flag/10 to-rose-500/10 border border-racing-flag/30"
                 >
-                  <h4 className="font-medium text-pink-400 mb-1">{right.title}</h4>
+                  <h4 className="font-medium text-racing-flag mb-1">{right.title}</h4>
                   <p className="text-sm text-muted">{right.desc}</p>
                 </div>
               ))}
@@ -195,7 +195,7 @@ export default function PrivacyPage() {
               </div>
               <Link
                 href="/customer/booking-history"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 text-white font-medium hover:from-purple-400 hover:to-pink-500 transition-all"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag font-medium hover:from-racing-flag hover:to-racing-flag-soft transition-all"
               >
                 ติดต่อเรื่องข้อมูลส่วนตัว
                 <span>→</span>
@@ -206,11 +206,11 @@ export default function PrivacyPage() {
 
         {/* Footer Links */}
         <div className="flex justify-center gap-6 mt-8 text-sm text-muted">
-          <Link href="/terms" className="hover:text-purple-400 transition-colors">
+          <Link href="/terms" className="hover:text-racing-flag transition-colors">
             เงื่อนไขการใช้บริการ
           </Link>
           <span>•</span>
-          <Link href="/" className="hover:text-purple-400 transition-colors">
+          <Link href="/" className="hover:text-racing-flag transition-colors">
             หน้าหลัก
           </Link>
         </div>
