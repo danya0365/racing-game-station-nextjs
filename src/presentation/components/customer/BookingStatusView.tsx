@@ -127,7 +127,7 @@ export function BookingStatusView() {
       case "completed":
         return {
           label: "เสร็จสิ้น",
-          color: "bg-muted",
+          color: "bg-muted-light",
           textColor: "text-muted",
           icon: "✔️",
         };
@@ -141,7 +141,7 @@ export function BookingStatusView() {
       default:
         return {
           label: status,
-          color: "bg-muted",
+          color: "bg-muted-light",
           textColor: "text-muted",
           icon: "❓",
         };
@@ -313,7 +313,7 @@ export function BookingStatusView() {
         {pastBookings.length > 0 && (
           <div>
             <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-muted/20 flex items-center justify-center text-muted">
+              <span className="w-8 h-8 rounded-lg bg-muted-light/20 flex items-center justify-center text-muted">
                 📋
               </span>
               ประวัติการจอง ({pastBookings.length})
@@ -329,7 +329,7 @@ export function BookingStatusView() {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-muted/20 flex items-center justify-center text-lg">
+                        <div className="w-10 h-10 rounded-lg bg-muted-light/20 flex items-center justify-center text-lg">
                           🎮
                         </div>
                         <div>
@@ -337,7 +337,7 @@ export function BookingStatusView() {
                             {formatDate(booking.localDate)} •{" "}
                             {formatTime(booking.localStartTime)}
                             {booking.machineName && (
-                              <span className="ml-2 px-1.5 py-0.5 bg-muted/20 text-muted text-xs rounded">
+                              <span className="ml-2 px-1.5 py-0.5 bg-muted-light/20 text-muted text-xs rounded">
                                 {booking.machineName}
                               </span>
                             )}

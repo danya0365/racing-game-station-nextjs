@@ -56,7 +56,7 @@ export function QueueDetailModal({
               <p className="text-xs text-muted">ทั้งหมด {queues.length} รายการ (รอ {waitingQueues.length})</p>
             </div>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-surface hover:bg-muted text-muted hover:text-foreground flex items-center justify-center transition-colors">✕</button>
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-surface hover:bg-muted-light text-muted hover:text-foreground flex items-center justify-center transition-colors">✕</button>
         </div>
 
         {/* Content */}

@@ -37,6 +37,12 @@
   --input-bg: #ffffff;
   --input-placeholder: #9ca3af;
 
+  /* Subtle fill for secondary surfaces (tabs, hover rows, modal headers).
+     Defined here because 27 call sites already use bg-muted-light; without the
+     token Tailwind generated no CSS for the class and those backgrounds simply
+     never painted. Points at the racing panel, which is the same value. */
+  --muted-light: #f4f4f2;
+
   /* Accent colors */
   --accent-purple: #a855f7;
   --accent-cyan: #06b6d4;
@@ -69,6 +75,8 @@
   --input: #374151;
   --input-bg: #1f2937;
   --input-placeholder: #6b7280;
+
+  --muted-light: #191920;
 
   /* Accent colors (same in dark mode) */
   --accent-purple: #c084fc;
@@ -106,6 +114,7 @@
   --color-on-surface: var(--on-surface);
   --color-muted: var(--muted);
   --color-border: var(--border);
+  --color-muted-light: var(--muted-light);
 
   /* Status colors */
   --color-success: var(--success);

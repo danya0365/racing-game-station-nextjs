@@ -279,7 +279,7 @@ export function BookingHistoryView() {
                 className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
                   d.date === selectedDate 
                     ? 'w-4 bg-purple-500' 
-                    : 'bg-muted hover:bg-purple-500/50'
+                    : 'bg-muted-light hover:bg-purple-500/50'
                 }`}
               />
             ))}

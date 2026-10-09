@@ -558,7 +558,7 @@ function MachineDetailModal({ machine, onClose }: MachineDetailModalProps) {
       <div className="relative w-full max-w-md bg-surface border border-border rounded-2xl shadow-2xl overflow-hidden animate-modal-in">
         {/* Header (Image if available) */}
         {machine.imageUrl ? (
-          <div className="h-48 w-full relative bg-muted/20">
+          <div className="h-48 w-full relative bg-muted-light/20">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
               src={machine.imageUrl} 

@@ -151,7 +151,7 @@ export function SessionsTab({
                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-xl font-bold shadow-lg shrink-0 ${
                      !session.endTime 
                        ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white animate-pulse-slow' 
-                       : 'bg-surface border border-border text-muted-foreground'
+                       : 'bg-surface border border-border text-muted'
                    }`}>
                      {session.sourceType === 'manual' ? 'M' : 'B'}
                    </div>
@@ -223,7 +223,7 @@ export function SessionsTab({
              <button
                disabled={currentPage === 1}
                onClick={() => onPageChange(currentPage - 1)}
-               className="px-3 py-1.5 rounded-lg text-sm bg-surface border border-border hover:bg-muted/10 disabled:opacity-50 transition-colors"
+               className="px-3 py-1.5 rounded-lg text-sm bg-surface border border-border hover:bg-muted-light/10 disabled:opacity-50 transition-colors"
              >
                ก่อนหน้า
              </button>
@@ -243,7 +243,7 @@ export function SessionsTab({
                        className={`w-8 h-8 rounded-lg text-sm font-medium transition-all ${
                          currentPage === page
                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md' 
-                           : 'bg-surface border border-border hover:bg-muted/10 text-muted-foreground'
+                           : 'bg-surface border border-border hover:bg-muted-light/10 text-muted'
                        }`}
                      >
                        {page}
@@ -261,7 +261,7 @@ export function SessionsTab({
              <button
                disabled={currentPage === totalPages}
                onClick={() => onPageChange(currentPage + 1)}
-               className="px-3 py-1.5 rounded-lg text-sm bg-surface border border-border hover:bg-muted/10 disabled:opacity-50 transition-colors"
+               className="px-3 py-1.5 rounded-lg text-sm bg-surface border border-border hover:bg-muted-light/10 disabled:opacity-50 transition-colors"
              >
                ถัดไป
              </button>
@@ -341,11 +341,11 @@ function FilterButton({
       className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
         active 
           ? activeClass 
-          : 'text-muted-foreground hover:bg-muted/10 hover:text-foreground'
+          : 'text-muted hover:bg-muted-light/10 hover:text-foreground'
       }`}
     >
       {label}
-      <span className={`px-1.5 py-0.5 rounded-md text-[10px] ${active ? 'bg-black/10' : 'bg-muted/10'}`}>
+      <span className={`px-1.5 py-0.5 rounded-md text-[10px] ${active ? 'bg-black/10' : 'bg-muted-light/10'}`}>
         {count}
       </span>
     </button>
