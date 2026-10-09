@@ -5,6 +5,7 @@ import { useActiveBranch } from "@/src/presentation/components/branch/BranchScop
 import { DURATION_OPTIONS } from "@/src/config/booking.config";
 import { BRANCHES } from "@/src/config/branch.config";
 import { HomeViewModel } from "@/src/presentation/presenters/home/HomePresenter";
+import { MachineImage } from "@/src/presentation/components/ui/MachineImage";
 import { useHomePresenter } from "@/src/presentation/presenters/home/useHomePresenter";
 import Image from "next/image";
 import Link from "next/link";
@@ -376,9 +377,17 @@ function MachineCard({ machine }: { machine: Machine }) {
           {meta.label}
         </span>
       </div>
-      <h3 className="font-bold text-[14.5px] tracking-tight mt-2 truncate">
-        {machine.name}
-      </h3>
+      <div className="flex items-center gap-2.5 mt-2">
+        <MachineImage
+          imageUrl={machine.imageUrl}
+          name={machine.name}
+          className="w-10 h-10 rounded-lg"
+          fallbackClassName="bg-racing-panel-2 text-xl"
+        />
+        <h3 className="font-bold text-[14.5px] tracking-tight truncate">
+          {machine.name}
+        </h3>
+      </div>
       {machine.description ? (
         <p className="text-xs text-racing-fg-2 leading-relaxed mt-0.5 line-clamp-2">
           {machine.description}

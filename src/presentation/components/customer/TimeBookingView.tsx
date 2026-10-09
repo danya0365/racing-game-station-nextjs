@@ -7,6 +7,7 @@ import {
 } from "@/src/config/booking.config";
 import { SHOP_TIMEZONE } from "@/src/lib/date";
 import { GlowButton } from "@/src/presentation/components/ui/GlowButton";
+import { MachineImage } from "@/src/presentation/components/ui/MachineImage";
 import { TimezoneNotice } from "@/src/presentation/components/ui/TimezoneNotice";
 import {
   TimeBookingPresenter,
@@ -192,9 +193,7 @@ export function TimeBookingView({
       <div className="fixed inset-0 z-[100] bg-gradient-to-br from-racing-bg via-racing-bg to-racing-bg flex items-center justify-center">
         <div className="text-center">
           <div className="w-20 h-20 border-4 border-racing-flag/30 border-t-racing-flag rounded-full animate-spin mx-auto mb-6" />
-          <p className="text-muted dark:text-white/60 text-lg">
-            กำลังโหลด...
-          </p>
+          <p className="text-muted dark:text-white/60 text-lg">กำลังโหลด...</p>
         </div>
       </div>
     );
@@ -393,9 +392,12 @@ export function TimeBookingView({
                       className="w-full p-4 rounded-2xl border-2 bg-racing-flag-dim border-racing-flag/50 hover:border-racing-flag hover:bg-racing-flag/20 text-left transition-all"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-racing-flag-soft to-racing-flag flex items-center justify-center text-2xl">
-                          🎮
-                        </div>
+                        <MachineImage
+                          imageUrl={machine.imageUrl}
+                          name={machine.name}
+                          className="w-14 h-14 rounded-xl"
+                          fallbackClassName="bg-gradient-to-br from-racing-flag-soft to-racing-flag text-2xl"
+                        />
                         <div className="flex-1">
                           <h3 className="font-bold text-foreground dark:text-white text-lg">
                             {machine.name}
