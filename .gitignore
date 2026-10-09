@@ -43,3 +43,7 @@ next-env.d.ts
 
 # supabase
 supabase/.temp
+
+# design mockups — ของชั่วคราวระหว่างออกแบบ, ไม่ขึ้น repo
+# ของจริงอยู่ที่ public/ และ src/presentation/components/ แล้ว
+.design-preview/
