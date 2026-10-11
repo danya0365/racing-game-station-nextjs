@@ -5,6 +5,7 @@ import {
   DURATION_OPTIONS,
   OPERATING_HOURS,
 } from "@/src/config/booking.config";
+import { BranchBanner } from "@/src/presentation/components/branch/BranchBanner";
 import { SHOP_TIMEZONE } from "@/src/lib/date";
 import { GlowButton } from "@/src/presentation/components/ui/GlowButton";
 import { MachineImage } from "@/src/presentation/components/ui/MachineImage";
@@ -22,8 +23,6 @@ import { useBranchStore } from "@/src/presentation/stores/useBranchStore";
 import { useCustomerStore } from "@/src/presentation/stores/useCustomerStore";
 import { animated } from "@react-spring/web";
 import dayjs from "dayjs";
-import { SHOP_NAME } from "@/src/config/shop.config";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -46,8 +45,6 @@ export function TimeBookingView({
   presenterOverride,
 }: TimeBookingViewProps) {
   const branch = useBranchStore((st) => st.branch);
-  const hasChosenBranch = useBranchStore((st) => st.hasChosen);
-  const openBranchPicker = useBranchStore((st) => st.openPicker);
 
   const { customerInfo, setCustomerInfo } = useCustomerStore();
 
@@ -280,42 +277,29 @@ export function TimeBookingView({
           จองเวลา
         </h1>
 
-        {/* Branch switch — this view renders its own full-screen header above
-            the app header, so the app-level branch button is hidden underneath
-            it. Put the same control here, in the spacer slot.
-
-            The mark carries the branch, not just its name. The two logos differ
-            in colour and flag — silver/red chequered at Narathiwat, gold/black
-            at Pattani — so a customer glancing at the top of the booking flow
-            can tell at a glance which shop they are booking, without reading
-            the text. The wordmark alone is small and easy to skim past. */}
-        {hasChosenBranch && (
-          <button
-            onClick={openBranchPicker}
-            type="button"
-            className="racing-branch-chip max-w-[42vw] p-1! pr-2.5! pl-1.5!"
-            aria-label={`สาขาปัจจุบัน: ${branch.shortName} — คลิกเพื่อเปลี่ยนสาขา`}
-          >
-            {/* Dark plate for the same reason as the confirm screen: both logo
-                files carry white into their pixels, which the chip's tinted
-                background does not guarantee to keep them readable against. */}
-            <span className="flex items-center justify-center rounded-lg bg-neutral-900 px-1.5 py-1 shrink-0">
-              <Image
-                src={branch.logo}
-                alt=""
-                width={branch.logoWidth}
-                height={branch.logoHeight}
-                className="h-6 w-auto max-w-20 object-contain object-left"
-              />
-            </span>
-            <span className="max-w-18 truncate">{branch.shortName}</span>
-          </button>
-        )}
+        {/* Spacer — the header's right slot used to hold the branch chip. The
+            branch now lives in BranchBanner below, at a size that can actually
+            be read before booking, so the chip would only say the same thing
+            twice at a glance. */}
+        <div className="w-16 sm:w-28" aria-hidden />
       </header>
 
+      {/* Branch, big and unmissable — this view covers the app header, so the
+          app-level branch button is hidden underneath it and nothing else on
+          screen says which shop until the confirm step. Booking the wrong
+          branch here costs a real trip across town, so it is stated at the top
+          of the flow rather than left to a corner chip. */}
+      <BranchBanner className="pb-4" />
+
       {/* Progress Steps */}
-      <div className="relative z-10 px-4 py-4">
-        <div className="max-w-md mx-auto">
+      <div className="relative z-10 px-4 pb-4">
+        {/* Wider than the max-w-md content column below, on purpose: four
+            numbered steps plus their labels need about 580px, and in a 448px
+            box the flex row shrank each label until "เลือกเครื่อง" broke over
+            two lines — which left the row lopsided and taller than the rest.
+            The stepper is chrome, not content; it does not have to line up
+            with the width of the card underneath it. */}
+        <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-center gap-2 sm:gap-4">
             {(["machine", "datetime", "info", "confirm"] as BookingStep[]).map(
               (s, i) => {
@@ -335,12 +319,15 @@ export function TimeBookingView({
                 ];
 
                 return (
-                  <div key={s} className="flex items-center gap-2">
+                  /* shrink-0 on every step: without it the row squeezed the
+                     labels (a breakable flex item) instead of the fixed-size
+                     circles, so the labels wrapped and the circles stayed put. */
+                  <div key={s} className="flex items-center gap-2 shrink-0">
                     <div
                       className={`flex items-center gap-1 sm:gap-2 ${isActive ? "text-racing-flag-text" : "text-muted dark:text-white/50"}`}
                     >
                       <div
-                        className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold ${
+                        className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold shrink-0 ${
                           isCompleted
                             ? "bg-emerald-500 text-white"
                             : isActive
@@ -350,12 +337,12 @@ export function TimeBookingView({
                       >
                         {isCompleted ? "✓" : i + 1}
                       </div>
-                      <span className="text-xs sm:text-sm hidden sm:inline">
+                      <span className="text-xs sm:text-sm hidden sm:inline whitespace-nowrap">
                         {labels[i]}
                       </span>
                     </div>
                     {i < 3 && (
-                      <div className="w-4 sm:w-8 h-0.5 bg-racing-led-off/60" />
+                      <div className="w-4 sm:w-8 h-0.5 bg-racing-led-off/60 shrink-0" />
                     )}
                   </div>
                 );
@@ -747,32 +734,6 @@ export function TimeBookingView({
                   ✅ ยืนยันการจอง
                 </h2>
 
-                {/* Branch lockup — the last thing seen before the booking is
-                    committed, so it is where a customer most needs to notice
-                    they picked the wrong shop. Full-width and unmissable rather
-                    than a line of text: the logos differ in colour and flag
-                    (silver/red chequered at Narathiwat, gold/black at Pattani),
-                    which reads at a glance where a short name does not.
-
-                    Dark plate regardless of theme: the Narathiwat mark is a
-                    white-and-silver logo, and on the light theme it vanished
-                    into the panel. Both files are transparent WebP cut for a
-                    dark header, so the plate is what makes the mark readable
-                    on a sunlit phone screen. */}
-                <div className="rounded-2xl p-5 flex flex-col items-center gap-2 text-center bg-neutral-900 border border-racing-line">
-                  <Image
-                    src={branch.logo}
-                    alt={SHOP_NAME + " " + branch.shortName}
-                    width={branch.logoWidth}
-                    height={branch.logoHeight}
-                    priority
-                    className="h-14 sm:h-16 w-auto max-w-64 object-contain"
-                  />
-                  <p className="text-sm font-semibold text-white">
-                    สาขา{branch.shortName}
-                  </p>
-                </div>
-
                 {/* Summary Card */}
                 <div className="bg-white border border-border shadow-lg shadow-gray-200/50 dark:bg-white/10 dark:border-white/10 dark:shadow-none dark:backdrop-blur-sm rounded-2xl p-6 space-y-4">
                   <div className="flex items-center gap-4 pb-4 border-b border-border dark:border-white/20">
@@ -856,6 +817,7 @@ export function TimeBookingView({
                   <button
                     onClick={handleSubmit}
                     disabled={state.isSubmitting}
+                    aria-label={`ยืนยันจองที่สาขา${branch.shortName}`}
                     className="flex-1 px-6 py-4 bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag font-bold rounded-xl shadow-lg shadow-racing-flag/30 disabled:opacity-50 transition-all"
                   >
                     {state.isSubmitting ? "⏳ กำลังจอง..." : "📅 ยืนยันจอง"}
