@@ -1,4 +1,4 @@
-# 🚀 Racing Game Station — Deployment Guide
+# 🚀 Gran Turismo Thailand — Deployment Guide
 
 คู่มือการนำระบบไปขึ้น Production (Vercel + Supabase)
 
@@ -27,7 +27,7 @@ npm run deploy:all
 
 | เครื่องมือ | ใช้ทำอะไร | ติดตั้ง |
 |-----------|-----------|--------|
-| Node.js 18+ | runtime | — |
+| Node.js 20.9+ | runtime | Next.js 16 บังคับ |
 | Docker Desktop | local Supabase | — |
 | Supabase CLI | migrations, types, local DB | `brew install supabase/tap/supabase` |
 | Vercel CLI | deploy แอป | `npm i -g vercel` |
@@ -56,7 +56,7 @@ supabase link --project-ref YOUR_PROJECT_REF
 npm run deploy:supabase      # = supabase db push
 ```
 
-ระบบมี 10 migration files — push ครั้งเดียวได้ทั้งชุด (เรียงตาม timestamp ในชื่อไฟล์):
+ระบบมี 11 migration files — push ครั้งเดียวได้ทั้งชุด (เรียงตาม timestamp ในชื่อไฟล์):
 
 | ไฟล์ | เพิ่มอะไร |
 |------|----------|
@@ -70,12 +70,15 @@ npm run deploy:supabase      # = supabase db push
 | `20260108131501_racing_system_rpc.sql` | RPC 27 ตัว (booking / queue / session / dashboard) + grants |
 | `20260126000000_home_dashboard_stats.sql` | `rpc_get_home_dashboard_stats` |
 | `20260417000000_create_or_update_customer_rpc.sql` | `create_or_update_customer` (ป้องกันแย่งเบอร์สมาชิก) |
+| `20261008000000_multi_branch.sql` | **ตาราง `branches` + `branch_id` บน machines/walk_in_queue** + seed 2 สาขา (pattani / narathiwas) + RPC เวอร์ชันที่รับ branch — ต้อง push ก่อน deploy โค้ดที่มี `/pattani/*` |
 
 ### 1.4 ตรวจสอบผลลัพธ์
 
-ไปที่ Supabase Dashboard → **Database → Tables** ต้องเห็น 7 ตาราง:
+ไปที่ Supabase Dashboard → **Database → Tables** ต้องเห็น 8 ตาราง:
 
-`profiles` · `profile_roles` · `machines` · `customers` · `bookings` · `walk_in_queue` · `sessions`
+`branches` · `profiles` · `profile_roles` · `machines` · `customers` · `bookings` · `walk_in_queue` · `sessions`
+
+> 🔴 `20261008000000_multi_branch.sql` ต้องไปแล้วถึงแอปจะเปิดได้ — ถ้ายังไม่มีตาราง `branches` แต่ push โค้ดใหม่ไปแล้ว หน้าเลือกสาขาจะพังทันที (ดู Known Issues ใน [README](../README.md#-known-issues--สิ่งที่ยังต้องแก้))
 
 ### 1.5 Seed (มีเงื่อนไข)
 
@@ -142,7 +145,9 @@ Project Settings → **Environment Variables** → เพิ่ม 2 ตัว�
 
 > **ไม่ต้องใส่ `SUPABASE_SERVICE_ROLE_KEY`** — โค้ดไม่ได้อ่านค่านี้ที่ไหนเลย ทุกอย่างรันด้วย anon key + RLS
 
-> ⚠️ อย่าใส่เครื่องหมายคำพูดรอบค่าใน Vercel UI — พิมพ์ `Racing Game Station` ตรง ๆ ไม่ใช่ `"Racing Game Station"`
+> ⚠️ อย่าใส่เครื่องหมายคำพูดรอบค่าใน Vercel UI — พิมพ์ค่าตรง ๆ ไม่ใช่ `"ค่าในอัญประยาม"`
+
+> ℹ️ ชื่อร้านไม่ได้มาจาก env — อยู่ที่ `src/config/shop.config.ts` ถ้าจะเปลี่ยนชื่อต้องแก้ไฟล์นั้น ไม่ใช่ตั้งค่าใน Vercel
 
 ### 2.3 Deploy
 
@@ -277,17 +282,19 @@ npm run lint
 - [ ] ถ้าเปิด chat: ใส่ `LINE_CHANNEL_*` + ชี้ webhook URL ที่ LINE Console ไปที่ `/api/chat/webhook`
 - [ ] ทดสอบสมัครสมาชิก + ยืนยันอีเมลทำงาน
 - [ ] ลองจอง 1 รายการ → เข้า `/backend` → เริ่ม session → จบ session → ตรวจว่ายอดเงินถูกต้อง
-- [ ] ทดสอบ walk-in: เข้าคิว → ดูเลขคิว → เรียกคิว
+- [ ] ทดสอบ walk-in: เข้าคิวที่ `/backend` (หรือ `/backend/control`) → ลูกค้าดูเลขคิวที่ `/<สาขา>/walk-in` → เรียกคิว
 
 ---
 
 ## 📊 Post-Deploy Checklist
 
 ### แอปพื้นฐาน
-- [ ] `/` โหลดได้ เห็นสรุปเครื่อง + สถิติวันนี้
-- [ ] `/time-booking` เลือกเครื่อง + วัน + เวลาได้
-- [ ] `/customer/booking-history` เห็นตารางจอง
-- [ ] `/walk-in` เข้าคิวได้
+- [ ] `/` เห็นตัวเลือกสาขา 2 สาขา (pattani / narathiwas)
+- [ ] เลือกสาขา → ถูกพาไป `/<สาขา>` และธีมสีของสาขานั้นขึ้น
+- [ ] `/pattani/time-booking` เลือกเครื่อง + วัน + เวลาได้ และเห็นแต่เครื่องของสาขานั้น
+- [ ] `/narathiwas/customer/booking-history` เห็นตารางจอง
+- [ ] `/<สาขา>/walk-in` เห็นสถานะคิว (ไม่มีฟอร์มเข้าคิว — พนักงานเข้าคิวที่ `/backend`)
+- [ ] `/time-booking` (ไม่มีสาขา) → redirect ไปสาขาที่เคยเลือก
 - [ ] `/qr-scan` สร้าง QR ได้
 
 ### Auth
@@ -380,6 +387,6 @@ npm run type-check
 ---
 
 <p align="center">
-  <strong>🏎️ Racing Game Station — Deployment Guide</strong><br/>
+  <strong>🏎️ Gran Turismo Thailand — Deployment Guide</strong><br/>
   <sub>Built with ❤️ in Thailand</sub>
 </p>
