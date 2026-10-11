@@ -1,32 +1,36 @@
 ---
 name: known-issues-backlog
-description: dead code, dependency ที่ไม่ได้ใช้, ช่องโหว่ที่ยังไม่แก้ — อ่านเมื่อจะเลือกงานถัดไปหรือตอบว่าแก้อะไรแล้ว
+description: "dead code, dependency ที่ไม่ได้ใช้, ช่องโหว่ที่ยังไม่แก้ — อ่านเมื่อจะเลือกงานถัดไปหรือตอบว่าแก้อะไรแล้ว"
 metadata:
+  node_type: memory
   type: module
   status: active
   scope: global
-  updated: 2026-10-08
+  updated: 2026-10-11
+  originSessionId: 60c34a9c-354d-40d9-be16-01e33bef7714
+  modified: 2026-10-11T07:57:41.527Z
 ---
 
 # Known Issues — ยังไม่ได้แก้
 
-ค้นพบจากการอ่านโค้ดทั้งโปรเจค 2026-10-08 · **รายละเอียดเต็มที่ [README.md → Known Issues](../../../README.md#-known-issues--สิ่งที่ยังต้องแก้)**
+ค้นพบจากการอ่านโค้ดทั้งโปรเจค 2026-10-11 · **รายละเอียดเต็มที่ [README.md → Known Issues](../../../README.md#-known-issues--สิ่งที่ยังต้องแก้)**
 
 ## Dead code — grep ยืนยัน = 0 import
 
-| ไฟล์                                                                   | ~บรรทัด |
-| ---------------------------------------------------------------------- | ------- |
-| `src/infrastructure/repositories/mock/MockCustomerRepository.ts`       | 200     |
-| `src/infrastructure/repositories/mock/MockMachineRepository.ts`        | 150     |
-| `src/presentation/presenters/auth/AuthPresenterServerFactory.ts`       | 25      |
-| `src/presentation/presenters/booking/BookingPresenterServerFactory.ts` | 30      |
-| `src/presentation/providers/AuthProvider.tsx` (+ hook 5 ตัว)           | 120     |
-| `src/presentation/components/booking/BookingView.tsx`                  | 250     |
-| `src/presentation/components/backend/QueueDetailModal.tsx`             | 200     |
+| ไฟล์                                                                   | บรรทัด |
+| ---------------------------------------------------------------------- | ----- |
+| `src/infrastructure/repositories/mock/MockCustomerRepository.ts`       | 260    |
+| `src/infrastructure/repositories/mock/MockMachineRepository.ts`        | 239    |
+| `src/presentation/presenters/auth/AuthPresenterServerFactory.ts`       | 22     |
+| `src/presentation/presenters/booking/BookingPresenterServerFactory.ts` | 27     |
+| `src/presentation/providers/AuthProvider.tsx` (+ hook 5 ตัว)           | 95     |
 
-**ผลรวม ~1,175 บรรทัด** — ถอด Mock ออก → `RepositoryFactory` เหลือแค่ `Api*` → ชื่อ "Factory" ที่หลอกตาเลิก
+**ผลรวม ~643 บรรทัด** — ถอด Mock ออก → `RepositoryFactory` เหลือแค่ `Api*` → ชื่อ "Factory" ที่หลอกตาเลิก
 
 > `AuthPresenterServerFactory` / `BookingPresenterServerFactory` อาจตั้งใจ "เตรียมไว้" — ถ้าอยากเก็บ ให้ย้ายไป `docs/` แทนลบ
+
+> ✅ ลบแล้วใน `55d4c0b` — `BookingView.tsx` · `QueueDetailModal.tsx` · `TimezoneNoticeCompact/Floating`
+> (ตัวเลข ~1,175 เดิมนับไฟล์พวกนี้ไว้ — ตัดออกแล้ว)
 
 ## Dependency ที่ไม่ถูก import ที่ไหนเลย
 
@@ -37,12 +41,16 @@ metadata:
 
 ## ช่องโหว่ที่ควรแก้ก่อน
 
-### 🔴 สูง — RPC ไม่ตรวจ ownership
+### 🔴 สูงสุด — RPC ไม่ตรวจ ownership
 
 `rpc_get_my_bookings(p_customer_id)` และ `rpc_get_my_walk_in_queue(p_customer_id)`
 เป็น `SECURITY DEFINER` + grant ให้ `anon` + **ไม่ตรวจว่าผู้เรียกเป็นเจ้าของ**
 → เดา UUID ก็อ่านข้อมูลลูกค้า (ชื่อ + เบอร์โทรไม่ mask + ประวัติจอง) ของรายอื่นได้
 `SECURITY DEFINER` ทำให้ bypass RLS → กฎ RLS ช่วยไม่ได้
+
+ยืนยันแล้วว่าเป็นแบบนี้ใน**ทั้งสอง migration** — `20260108131501_racing_system_rpc.sql` และ
+`20261008000000_multi_branch.sql` ที่ override ทับ (ตรวจ 2026-10-11)
+ชื่อฟังก์ชันขึ้นต้นด้วย `my_` แต่ไม่ได้ทำอะไร — grant ให้ `anon` คือทางเข้าเดียวที่ต้องผ่าน
 
 ### 🟡 ต่ำ — payment allowlist ไม่ตรง enum
 
@@ -67,7 +75,7 @@ metadata:
 
 **`supabase/seeds_mock/000-init_seed.sql` รันไม่ได้** — อ้างตาราง `public.queues` และ
 type `public.queue_status` ที่ไม่มีอยู่จริง (schema ปัจจุบันใช้ `walk_in_queue` + `walk_in_status`)
-และไฟล์นี้ไม่ถูก `config.toml` อ้างอิงอยู่แล้ว
+`config.toml` ชี้ `sql_paths = ["./seeds/*.sql"]` เท่านั้น → ไฟล์นี้ไม่ทำให้ `db reset` พัง แต่ก็ไม่มีใครรัน
 
 ## Component ที่ผิดทิศ (สำหรับ dep-cruiser ในเฟส 1)
 
@@ -79,16 +87,20 @@ type `public.queue_status` ที่ไม่มีอยู่จริง (sch
 | `src/presentation/components/customer/BookingStatusView.tsx`  | `RepositoryFactory` |
 | `src/presentation/components/customer/BookingHistoryView.tsx` | `RepositoryFactory` |
 
+ยืนยันแล้วว่ายังอยู่ครบทั้ง 3 ตัว (2026-10-11) · ยังไม่มี `dep-cruiser` ใน gate
+
 ## อื่นๆ
 
 - `.claude/settings.local.json` มี API key — ถูก ignore แล้ว (`/claude/settings.local.json`) แต่ระวังอย่า commit
-- ไม่มี `error.tsx` / `global-error.tsx` — error ใน Server Component จะไม่มี UI สำรอง
-- `useWalkInPresenter.ts` เรียก `createClientWalkInPresenter()` แต่ไม่มี `'use client'` — hook ตัวเดียวที่ขาด
-- `ImageUploadInput.tsx` มี `useState`/`useRef` แต่ไม่มี `'use client'`
-- `ControlView.tsx` = 1,264 บรรทัด (God component) — ใหญ่แต่ทำงานได้ **ไม่คุ้มเสี่ยงแตะ**
+- ไม่มี `error.tsx` / `global-error.tsx` — error ใน Server Component จะไม่มี UI สำรอง ร้านเห็นจอขาว
+- `ImageUploadInput.tsx` มี `useState`/`useRef` แต่ไม่มี `'use client'` — ยังทำงานได้เพราะผู้เรียก (`MachinesTab`) เป็น client อยู่แล้ว
+- `middleware.ts` ใช้ convention เดิม — Next.js 16 build เตือนทุกครั้ง ให้เปลี่ยนเป็น `proxy.ts`
+- `ControlView.tsx` = 1,527 บรรทัด (God component) — ใหญ่แต่ทำงานได้ **ไม่คุ้มเสี่ยงแตะ**
 - `Customer.phone` ไม่มี `UNIQUE` แม้ RPC ทุกตัวใช้เป็น identity key
-- `getAvailableDates()` ไม่ query DB — generate วันที่ 7 วันใน TS
+- `getAvailableDates()` ไม่ query DB — generate วันที่ 7 วันใน TS (`SupabaseBookingRepository.ts`)
 - `SupabaseCustomerRepository.getStats()` select ลูกค้าทั้งหมดแล้วค่อยกรองใน JS
+- `/api/sessions/[id]/payment` ยอมรับ `refunded` ที่ไม่มีใน enum `payment_status`
+- **ไม่มี unit test และไม่มี CI** — `npm run lint` แดง 103 errors / 24 warnings (ของเก่า วัด 2026-10-11)
 
 ## กติกาอัปเดต
 
