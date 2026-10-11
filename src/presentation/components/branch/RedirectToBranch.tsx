@@ -1,6 +1,5 @@
 "use client";
 
-import { DEFAULT_BRANCH } from "@/src/config/branch.config";
 import {
   hydrateBranch,
   useBranchStore,
@@ -17,8 +16,14 @@ import { useEffect } from "react";
  * branch at all.
  *
  * The redirect has to happen on the client because the chosen branch lives in
- * localStorage. The store is hydrated first, otherwise a first visit would
- * bounce to the default branch and skip the gate's branch prompt.
+ * localStorage, so this waits for the store to be hydrated first.
+ *
+ * It also waits when there is no choice at all, rather than falling back to the
+ * default branch. Falling back won the race against the gate: this page mounted,
+ * redirected to DEFAULT_BRANCH, and unmounted the modal in the same few hundred
+ * milliseconds — so someone opening a QR code on a first visit never got asked
+ * and silently landed on Narathiwat. Waiting costs nothing here (this page is
+ * only a hand-off) and leaves the gate as the one thing that decides.
  */
 export function RedirectToBranch({
   path = "",
@@ -26,23 +31,27 @@ export function RedirectToBranch({
 }: {
   /** Path under the branch prefix, e.g. 'time-booking' */
   path?: string;
-  /** Used when there is no chosen branch yet (default: branch home) */
+  /** Used when the branch has no path to preserve */
   fallbackPath?: string;
 }) {
   const router = useRouter();
   const hasChosen = useBranchStore((s) => s.hasChosen);
 
   useEffect(() => {
-    if (!hasChosen) hydrateBranch();
+    if (!useBranchStore.getState().isHydrated) hydrateBranch();
+  }, []);
 
-    const slug = useBranchStore.getState().hasChosen
-      ? useBranchStore.getState().branch.slug
-      : DEFAULT_BRANCH.slug;
+  useEffect(() => {
+    // Not hydrated yet, or hydrated with no choice — the gate is asking.
+    // Both cases resolve when the customer picks: hasChosen flips and this
+    // runs again, now with a branch to redirect to.
+    if (!hasChosen) return;
+
     const suffix = path ? `/${path.replace(/^\//, "")}` : "";
-    router.replace(`/${slug}${fallbackPath ?? suffix}`);
+    router.replace(`/${useBranchStore.getState().branch.slug}${fallbackPath ?? suffix}`);
   }, [hasChosen, path, fallbackPath, router]);
 
-  // Nothing to show while redirecting — this page exists only to hand off.
+  // Nothing to show while the gate decides — this page exists only to hand off.
   return (
     <div className="min-h-full flex items-center justify-center">
       <p className="text-muted">กำลังพาไปสาขาของคุณ…</p>
