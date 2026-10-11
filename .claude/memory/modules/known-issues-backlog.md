@@ -8,7 +8,7 @@ metadata:
   scope: global
   updated: 2026-10-11
   originSessionId: 60c34a9c-354d-40d9-be16-01e33bef7714
-  modified: 2026-10-11T07:57:41.527Z
+  modified: 2026-10-11T12:07:08.175Z
 ---
 
 # Known Issues — ยังไม่ได้แก้
@@ -100,7 +100,15 @@ type `public.queue_status` ที่ไม่มีอยู่จริง (sch
 - `getAvailableDates()` ไม่ query DB — generate วันที่ 7 วันใน TS (`SupabaseBookingRepository.ts`)
 - `SupabaseCustomerRepository.getStats()` select ลูกค้าทั้งหมดแล้วค่อยกรองใน JS
 - `/api/sessions/[id]/payment` ยอมรับ `refunded` ที่ไม่มีใน enum `payment_status`
+- **กับดัก multi-branch — `rpc_join_walk_in_queue` เดาสาขาเอง** · `20261008000000_multi_branch.sql` บรรทัด `COALESCE(p_branch_id, '00000000-0000-0000-0000-000000000b02')` ฝัง UUID นราธิวาสไว้เป็น fallback · เข้าคิวไม่เลือกเครื่อง + ไม่ส่ง branch → ลงคิวนราธิวาสโดยไม่ถาม · ตอนนี้ยังถูก (นราธิวาสสาขาเดียวที่มีเครื่อง) พัตก็ตอนแตกสาขาที่ 3 · แก้โดยคืน `success: false` + error "ไม่ทราบสาขา" วัด 2026-10-11
+- **ตาราง `branches` ไม่มี GRANT** — migration เดิม `GRANT ALL` ให้ 5 ตารางหลักแต่ `branches` ไม่มีบรรทัด GRANT · ยังไม่พังเพราะอ่านผ่าน `rpc_get_branches()` (SECURITY DEFINER) แต่ `.from('branches')` ตรงจะ permission denied วัด 2026-10-11
 - **ไม่มี unit test และไม่มี CI** — `npm run lint` แดง 103 errors / 24 warnings (ของเก่า วัด 2026-10-11)
+
+## ข้อที่ตรวจแล้ว "ไม่มีปัญหา" (อย่าไปหาซ้ำ)
+
+- **`SupabaseChatRepository` เรียก RPC ไม่ส่ง branch** 6 จุด → `p_branch_id NULL` = ทั้งหมด · **ยังไม่มีผล** เพราะ chat ยังปิดอยู่ (`NEXT_PUBLIC_ENABLE_CHAT_WIDGET=false`) และปัตตานียังไม่มีเครื่อง — เปิด chat ก่อนต้องแก้ วัด 2026-10-11
+- **`machines.branch_id` NOT NULL ไม่มี default** → ปลอดภัยตอนนี้ เพราะ insert มีทางเดียว (`SupabaseMachineRepository.create`) และฟอร์ม `MachinesTab` default ไว้แล้ว แต่ผูกกันแน่น ถ้ามี client เก่า insert ไม่ผ่าน วัด 2026-10-11
+- **`branches.id` เป็น UUID ไม่ใช่ภาษาไทย** — ถูกกฎโปรเจคแล้ว: identifier เป็น latin เสมอ ภาษาไทยแปลงตอนแสดงผลเท่านั้น (`slug` = `narathiwas`/`pattani` ใน URL · `name` = ไทยใน `branch.config.ts`)
 
 ## กติกาอัปเดต
 
