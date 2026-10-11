@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
+import { SHOP_NAME } from "@/src/config/shop.config";
 
 // Print styles for proper page margins
 const printStyles = `
@@ -59,25 +60,25 @@ export default function PrintDocsPage() {
 
   const handlePrintAll = useReactToPrint({
     contentRef: printAllRef,
-    documentTitle: 'คู่มือการใช้งาน Racing Game Station',
+    documentTitle: `คู่มือการใช้งาน ${SHOP_NAME}`,
     pageStyle: printStyles,
   });
 
   const handlePrintCustomer = useReactToPrint({
     contentRef: printCustomerRef,
-    documentTitle: 'คู่มือสำหรับลูกค้า - Racing Game Station',
+    documentTitle: `คู่มือสำหรับลูกค้า - ${SHOP_NAME}`,
     pageStyle: printStyles,
   });
 
   const handlePrintAdmin = useReactToPrint({
     contentRef: printAdminRef,
-    documentTitle: 'คู่มือสำหรับแอดมิน - Racing Game Station',
+    documentTitle: `คู่มือสำหรับแอดมิน - ${SHOP_NAME}`,
     pageStyle: printStyles,
   });
 
   const handlePrintGameControl = useReactToPrint({
     contentRef: printGameControlRef,
-    documentTitle: 'คู่มือห้องควบคุมเกม - Racing Game Station',
+    documentTitle: `คู่มือห้องควบคุมเกม - ${SHOP_NAME}`,
     pageStyle: printStyles,
   });
 
@@ -161,7 +162,7 @@ function CoverPage() {
     <section className="print-section-cover text-center py-20 border-b-4 border-purple-500">
       <div className="text-8xl mb-6">📖</div>
       <h1 className="text-5xl font-bold text-gray-900 mb-4">คู่มือการใช้งาน</h1>
-      <h2 className="text-3xl text-purple-600 font-semibold mb-8">Racing Game Station</h2>
+      <h2 className="text-3xl text-purple-600 font-semibold mb-8">{SHOP_NAME}</h2>
       <p className="text-xl text-gray-600">ระบบจองเวลาเล่นเกม</p>
 
       <div className="mt-16 text-gray-500">
@@ -256,11 +257,11 @@ function BackCover() {
     return (
         <section className="print-section-cover text-center py-40 break-before-page">
             <div className="text-6xl mb-6">🏁</div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Racing Game Station</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{SHOP_NAME}</h2>
             <p className="text-xl text-gray-600">ขอให้สนุกกับการเล่นเกม!</p>
             <div className="mt-16 text-sm text-gray-400">
                 <p>เอกสารภายในสำหรับพนักงานและลูกค้า</p>
-                <p>© 2026 Racing Game Station</p>
+                <p>© 2026 {SHOP_NAME}</p>
             </div>
         </section>
     );

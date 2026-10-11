@@ -18,7 +18,6 @@ import type {
     UpdateProfileData,
     VerifyOTPData,
 } from '@/src/application/repositories/IAuthRepository';
-import { Metadata } from 'next';
 
 export interface AuthViewModel {
   user: AuthUser | null;
@@ -83,40 +82,6 @@ export class AuthPresenter {
         isLoading: false,
       };
     }
-  }
-
-  /**
-   * Generate metadata for auth pages
-   */
-  generateMetadata(page: AuthPage): Metadata {
-    const metadataMap: Record<AuthPage, Metadata> = {
-      login: {
-        title: 'เข้าสู่ระบบ | Racing Game Station',
-        description: 'เข้าสู่ระบบเพื่อจองคิว Racing Game Station',
-      },
-      register: {
-        title: 'สมัครสมาชิก | Racing Game Station',
-        description: 'สมัครสมาชิกเพื่อจองคิว Racing Game Station ได้ง่ายขึ้น',
-      },
-      'forgot-password': {
-        title: 'ลืมรหัสผ่าน | Racing Game Station',
-        description: 'รีเซ็ตรหัสผ่านสำหรับบัญชี Racing Game Station',
-      },
-      'reset-password': {
-        title: 'ตั้งรหัสผ่านใหม่ | Racing Game Station',
-        description: 'ตั้งรหัสผ่านใหม่สำหรับบัญชี Racing Game Station',
-      },
-      'verify-email': {
-        title: 'ยืนยันอีเมล | Racing Game Station',
-        description: 'ยืนยันอีเมลสำหรับบัญชี Racing Game Station',
-      },
-      profile: {
-        title: 'โปรไฟล์ | Racing Game Station',
-        description: 'จัดการข้อมูลโปรไฟล์ของคุณ',
-      },
-    };
-
-    return metadataMap[page];
   }
 
   /**

@@ -6,6 +6,7 @@
 
 'use client';
 
+import { AuthBrandHeader } from '@/src/presentation/components/auth/AuthBrandHeader';
 import { useAuthPresenter } from '@/src/presentation/presenters/auth/useAuthPresenter';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -136,16 +137,9 @@ export function ResetPasswordView() {
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-racing-flag/10 via-background to-racing-flag-soft/10">
       <div className="w-full max-w-md">
         {/* Logo & Title */}
+        <AuthBrandHeader />
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-3">
-            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-3xl shadow-lg">
-              🏎️
-            </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-racing-flag to-racing-flag-soft bg-clip-text text-transparent">
-              Racing Game Station
-            </span>
-          </Link>
-          <h1 className="mt-6 text-3xl font-bold text-foreground">
+          <h1 className="text-3xl font-bold text-foreground">
             ตั้งรหัสผ่านใหม่
           </h1>
           <p className="mt-2 text-muted">

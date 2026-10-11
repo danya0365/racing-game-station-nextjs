@@ -2,6 +2,7 @@
 
 import { BRANCHES } from "@/src/config/branch.config";
 import { getNavLinks } from "@/src/config/navigation.config";
+import { SHOP_NAME } from "@/src/config/shop.config";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -93,7 +94,7 @@ export function MainHeader() {
         >
           <Image
             src={branch.logo}
-            alt={`Racing Game Station ${branch.shortName}`}
+            alt={SHOP_NAME + " " + branch.shortName}
             width={branch.logoWidth}
             height={branch.logoHeight}
             priority

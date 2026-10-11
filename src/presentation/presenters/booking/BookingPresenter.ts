@@ -13,7 +13,6 @@ import {
     IBookingRepository,
 } from '@/src/application/repositories/IBookingRepository';
 import { IMachineRepository, Machine } from '@/src/application/repositories/IMachineRepository';
-import { Metadata } from 'next';
 
 import { SHOP_TIMEZONE } from '@/src/lib/date';
 
@@ -128,15 +127,5 @@ export class BookingPresenter {
     timezone: string = DEFAULT_TIMEZONE
   ): Promise<boolean> {
     return this.bookingRepo.isSlotAvailable(machineId, date, startTime, durationMinutes, timezone);
-  }
-
-  /**
-   * Generate metadata for the page
-   */
-  generateMetadata(): Metadata {
-    return {
-      title: 'จองเวลา | Racing Game Station',
-      description: 'จองคิวเครื่องเล่น Racing Game Station ล่วงหน้า เลือกวันและเวลาที่ต้องการได้ตามสะดวก',
-    };
   }
 }

@@ -1,8 +1,9 @@
 import { AuthCallbackView } from '@/src/presentation/components/auth/AuthCallbackView';
 import type { Metadata } from 'next';
+import { shopPageTitle } from "@/src/config/shop.config";
 
 export const metadata: Metadata = {
-  title: 'กำลังเข้าสู่ระบบ... | Racing Game Station',
+  title: shopPageTitle("กำลังเข้าสู่ระบบ..."),
   description: 'กำลังดำเนินการเข้าสู่ระบบ',
 };
 

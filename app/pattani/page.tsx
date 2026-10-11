@@ -1,4 +1,5 @@
 import { BRANCHES } from "@/src/config/branch.config";
+import { SHOP_NAME } from "@/src/config/shop.config";
 import { BranchScope } from "@/src/presentation/components/branch/BranchScope";
 import { HomeView } from "@/src/presentation/components/home/HomeView";
 import { createServerHomePresenter } from "@/src/presentation/presenters/home/HomePresenterServerFactory";
@@ -13,8 +14,11 @@ export const fetchCache = "force-no-store";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Racing Game Station ปัตตานี — ระบบจองคิว Racing Game Station",
-    description: "ระบบจองคิวสำหรับ Racing Game Station สาขาปัตตานี",
+    // Composed from BRANCH, not retyped — the old title spelled "ปัตตานี" out
+    // here while the branch's own shortName sat two lines up, so renaming the
+    // branch could leave the tab title showing the old one.
+    title: `${SHOP_NAME} ${BRANCH.shortName} — ระบบจองคิว`,
+    description: `ระบบจองคิวสำหรับ ${SHOP_NAME} สาขา${BRANCH.shortName}`,
   };
 }
 
@@ -41,7 +45,9 @@ export default async function PattniHomePage() {
     return (
       <div className="h-full flex items-center justify-center bg-racing-gradient">
         <div className="text-center">
-          <div className="text-6xl mb-4">🏎️</div>
+          {/* ⚠️, not the shop mark: this is the screen that says the page
+              failed to load, and a logo there reads as "we are open". */}
+          <div className="text-5xl mb-4">⚠️</div>
           <h1 className="text-2xl font-bold text-foreground mb-2">เกิดข้อผิดพลาด</h1>
           <p className="text-muted mb-4">ไม่สามารถโหลดข้อมูลได้</p>
           <Link

@@ -2,6 +2,7 @@ import { BranchScope } from "@/src/presentation/components/branch/BranchScope";
 import { BackendView } from "@/src/presentation/components/backend/BackendView";
 import { createServerBackendPresenter } from "@/src/presentation/presenters/backend/BackendPresenterServerFactory";
 import type { Metadata } from "next";
+import { SHOP_NAME, shopPageTitle } from "@/src/config/shop.config";
 
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
@@ -15,8 +16,8 @@ export async function generateMetadata(): Promise<Metadata> {
     console.error("Error generating metadata:", error);
 
     return {
-      title: "แอดมิน | Racing Game Station",
-      description: "ระบบจัดการคิวและเครื่องเล่น Racing Game Station",
+      title: shopPageTitle("แอดมิน"),
+      description: `ระบบจัดการคิวและเครื่องเล่น ${SHOP_NAME}`,
     };
   }
 }

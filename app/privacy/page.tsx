@@ -1,10 +1,11 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { PageHeader } from "@/src/presentation/components/ui/PageHeader";
+import { SHOP_NAME, shopPageTitle } from "@/src/config/shop.config";
 
 export const metadata: Metadata = {
-  title: "นโยบายความเป็นส่วนตัว | Racing Game Station",
-  description: "นโยบายการเก็บรวบรวมและใช้ข้อมูลส่วนบุคคลของ Racing Game Station",
+  title: shopPageTitle("นโยบายความเป็นส่วนตัว"),
+  description: `นโยบายการเก็บรวบรวมและใช้ข้อมูลส่วนบุคคลของ ${SHOP_NAME}`,
 };
 
 export default function PrivacyPage() {
@@ -31,7 +32,7 @@ export default function PrivacyPage() {
               คำนำ
             </h2>
             <p className="text-muted leading-relaxed">
-              Racing Game Station ให้ความสำคัญกับความเป็นส่วนตัวของผู้ใช้บริการ
+              {SHOP_NAME} ให้ความสำคัญกับความเป็นส่วนตัวของผู้ใช้บริการ
               นโยบายนี้อธิบายวิธีการเก็บรวบรวม ใช้ และปกป้องข้อมูลส่วนบุคคลของท่าน
             </p>
           </section>

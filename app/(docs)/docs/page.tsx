@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { SHOP_NAME } from "@/src/config/shop.config";
 
 export default function DocsPage() {
   return (
@@ -7,7 +8,7 @@ export default function DocsPage() {
       <div className="hidden print:block print:mb-8 print:pb-8 print:border-b-2 print:border-racing-flag print:text-center">
         <div className="text-6xl mb-4">📖</div>
         <h1 className="text-4xl font-bold text-foreground mb-2">คู่มือการใช้งาน</h1>
-        <p className="text-xl text-muted">Racing Game Station - ระบบจองเวลาเล่นเกม</p>
+        <p className="text-xl text-muted">{SHOP_NAME} - ระบบจองเวลาเล่นเกม</p>
         <p className="text-sm text-muted mt-4">พิมพ์เมื่อ: มกราคม 2026</p>
       </div>
 
@@ -22,7 +23,7 @@ export default function DocsPage() {
           </span>
         </h1>
         <p className="text-muted text-lg">
-          Racing Game Station - ระบบจองเวลาเล่นเกม
+          {SHOP_NAME} - ระบบจองเวลาเล่นเกม
         </p>
         <div className="mt-8 flex flex-col items-center gap-4">
           <div className="flex items-center gap-3">
@@ -197,7 +198,7 @@ export default function DocsPage() {
         </div>
         
         <p className="mt-8 text-sm text-muted border-t border-border pt-4">
-          Racing Game Station - คู่มือการใช้งาน | หน้า 1
+          {SHOP_NAME} - คู่มือการใช้งาน | หน้า 1
         </p>
       </div>
     </div>

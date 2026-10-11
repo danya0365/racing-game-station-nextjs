@@ -1,9 +1,10 @@
 import { ForgotPasswordView } from '@/src/presentation/components/auth/ForgotPasswordView';
 import type { Metadata } from 'next';
+import { SHOP_NAME, shopPageTitle } from "@/src/config/shop.config";
 
 export const metadata: Metadata = {
-  title: 'ลืมรหัสผ่าน | Racing Game Station',
-  description: 'รีเซ็ตรหัสผ่านสำหรับบัญชี Racing Game Station',
+  title: shopPageTitle("ลืมรหัสผ่าน"),
+  description: `รีเซ็ตรหัสผ่านสำหรับบัญชี ${SHOP_NAME}`,
 };
 
 /**

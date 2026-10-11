@@ -1,3 +1,4 @@
+import { SHOP_NAME } from '@/src/config/shop.config';
 import { QRCodeSVG } from 'qrcode.react';
 import React from 'react';
 
@@ -25,7 +26,7 @@ export const QuickBookingQRCode = React.forwardRef<HTMLDivElement, QuickBookingQ
           <p className="mt-8 text-2xl text-black font-semibold">{url}</p>
         </div>
         <div className="mt-16 text-center">
-          <p className="text-3xl text-gray-600 font-bold">Racing Game Station</p>
+          <p className="text-3xl text-gray-600 font-bold">{SHOP_NAME}</p>
           <p className="text-xl text-gray-400 mt-2">Queue System</p>
         </div>
       </div>

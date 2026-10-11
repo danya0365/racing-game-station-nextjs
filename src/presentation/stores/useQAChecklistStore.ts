@@ -28,7 +28,7 @@ export interface QAChecklistState {
   getCategoryProgress: (category: string) => { completed: number; total: number };
 }
 
-// Default test cases for the racing game station system
+// Default test cases for the gran turismo thailand system
 const defaultTestCases: TestCase[] = [
   // ============================================================
   // WALK-IN QUEUE - CUSTOMER FLOW

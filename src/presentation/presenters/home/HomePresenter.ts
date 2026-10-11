@@ -11,7 +11,6 @@ import { IBookingRepository } from '@/src/application/repositories/IBookingRepos
 import { IDashboardRepository } from '@/src/application/repositories/IDashboardRepository';
 import { IMachineRepository, Machine, MachineStats } from '@/src/application/repositories/IMachineRepository';
 import { IWalkInQueueRepository, WalkInQueue, WalkInQueueStats } from '@/src/application/repositories/IWalkInQueueRepository';
-import { Metadata } from 'next';
 
 export interface HomeViewModel {
   machines: Machine[];
@@ -91,17 +90,6 @@ export class HomePresenter {
       console.error('Error getting home view model:', error);
       throw error;
     }
-  }
-
-  /**
-   * Generate metadata for the page
-   */
-  generateMetadata(): Metadata {
-    /** ... same ... */
-    return {
-      title: 'Racing Game Station - หน้าแรก',
-      description: 'ระบบจองคิวสำหรับ Racing Game Station - ดูสถานะเครื่องและจองคิวได้ง่ายๆ',
-    };
   }
 
   /**

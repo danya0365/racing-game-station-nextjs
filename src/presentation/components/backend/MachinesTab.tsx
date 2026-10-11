@@ -352,7 +352,7 @@ function AddMachineModal({
               }
               className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-racing-flag text-foreground resize-none"
               rows={3}
-              placeholder="เช่น เครื่อง Formula Racing Game Station พร้อมพวงมาลัย..."
+              placeholder="เช่น เครื่อง Formula 1 พร้อมพวงมาลัย..."
             />
           </div>
 
@@ -554,7 +554,7 @@ function EditMachineModal({
               }
               className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-racing-flag text-foreground resize-none"
               rows={3}
-              placeholder="เช่น เครื่อง Formula Racing Game Station พร้อมพวงมาลัย..."
+              placeholder="เช่น เครื่อง Formula 1 พร้อมพวงมาลัย..."
             />
           </div>
 

@@ -85,21 +85,24 @@ export function HomeView({
           />
         </section>
 
-        {/* ---------- ปุ่มหลักสองปุ่ม ---------- */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <ActionButton
-            href={branchHref("/walk-in")}
-            icon="🏁"
-            title="เข้าคิวเล่นเลย"
-            description="ไม่ต้องจอง เข้าคิวหน้าร้านได้เลย"
-            primary
-          />
-          <ActionButton
-            href={branchHref("/time-booking")}
-            icon="📅"
-            title="จองล่วงหน้า"
-            description="ล็อกเวลาที่ต้องการ ราคาเหมือนกัน"
-          />
+        {/* ---------- ปุ่มหลัก ----------
+            One way in, on purpose: walk-in is entered by staff at the counter,
+            so offering "เข้าคิวเล่นเลย" beside "จองล่วงหน้า" told customers
+            there were two ways to start a session when there is one.
+
+            Capped rather than full-bleed: this sat in a two-column grid, and a
+            single button stretched across max-w-6xl reads as a broken layout
+            rather than a deliberate choice. */}
+        <section>
+          <div className="max-w-md">
+            <ActionButton
+              href={branchHref("/time-booking")}
+              icon="📅"
+              title="จองล่วงหน้า"
+              description="ล็อกเวลาที่ต้องการ ราคาเหมือนกัน"
+              primary
+            />
+          </div>
         </section>
 
         {/* ---------- สถานะเครื่อง ---------- */}

@@ -50,7 +50,7 @@ export function BranchPicker() {
               className="group relative overflow-hidden rounded-2xl border border-racing-line bg-racing-panel p-6 text-left transition-all duration-200 hover:border-racing-flag hover:shadow-lg hover:-translate-y-0.5"
             >
               <div className="flex flex-col gap-4">
-                {/* The logo already says "Racing Game Station <branch>", so the
+                {/* The logo already says "Gran Turismo Thailand <branch>", so the
                     branch name is not repeated beside it. */}
                 <Image
                   src={branch.logo}

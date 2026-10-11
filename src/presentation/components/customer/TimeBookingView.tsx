@@ -22,6 +22,7 @@ import { useBranchStore } from "@/src/presentation/stores/useBranchStore";
 import { useCustomerStore } from "@/src/presentation/stores/useCustomerStore";
 import { animated } from "@react-spring/web";
 import dayjs from "dayjs";
+import { SHOP_NAME } from "@/src/config/shop.config";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -178,7 +179,7 @@ export function TimeBookingView({
             <br />
             กรุณาลองใหม่ในภายหลัง
           </p>
-          <Link href="/">
+          <Link href={`/${branch.slug}`}>
             <GlowButton color="purple" size="lg" className="w-full">
               🏠 กลับหน้าแรก
             </GlowButton>
@@ -237,7 +238,7 @@ export function TimeBookingView({
 
           {/* Actions */}
           <div className="flex flex-col gap-3">
-            <Link href="/">
+            <Link href={`/${branch.slug}`}>
               <GlowButton color="green" size="lg" className="w-full">
                 🏠 กลับหน้าแรก
               </GlowButton>
@@ -267,7 +268,7 @@ export function TimeBookingView({
       {/* Header */}
       <header className="relative z-10 p-4 flex items-center justify-between">
         <Link
-          href="/"
+          href={`/${branch.slug}`}
           className="flex items-center gap-2 px-4 py-2 bg-white border border-border hover:bg-muted-light dark:bg-white/10 dark:border-transparent dark:hover:bg-white/20 rounded-full text-foreground dark:text-white font-medium transition-all"
         >
           <span>←</span>
@@ -383,7 +384,7 @@ export function TimeBookingView({
                   <p className="text-muted dark:text-white/60">
                     ไม่พบเครื่องที่พร้อมใช้งาน
                   </p>
-                  <Link href="/" className="mt-4 inline-block">
+                  <Link href={`/${branch.slug}`} className="mt-4 inline-block">
                     <GlowButton color="pink">กลับหน้าแรก</GlowButton>
                   </Link>
                 </div>
@@ -761,7 +762,7 @@ export function TimeBookingView({
                 <div className="rounded-2xl p-5 flex flex-col items-center gap-2 text-center bg-neutral-900 border border-racing-line">
                   <Image
                     src={branch.logo}
-                    alt={`Racing Game Station ${branch.shortName}`}
+                    alt={SHOP_NAME + " " + branch.shortName}
                     width={branch.logoWidth}
                     height={branch.logoHeight}
                     priority

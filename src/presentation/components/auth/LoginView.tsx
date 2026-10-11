@@ -7,6 +7,8 @@
 'use client';
 
 import { authConfig, getEnabledOAuthProviders, hasAnyOAuthProvider } from '@/src/config/auth.config';
+import { AuthBrandHeader } from '@/src/presentation/components/auth/AuthBrandHeader';
+import { SHOP_NAME } from '@/src/config/shop.config';
 import { useAuthPresenter } from '@/src/presentation/presenters/auth/useAuthPresenter';
 import Link from 'next/link';
 import { FormEvent, useState } from 'react';
@@ -97,20 +99,13 @@ export function LoginView() {
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-racing-flag/10 via-background to-racing-flag-soft/10">
       <div className="w-full max-w-md">
         {/* Logo & Title */}
+        <AuthBrandHeader />
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-3">
-            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-3xl shadow-lg">
-              🏎️
-            </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-racing-flag to-racing-flag-soft bg-clip-text text-transparent">
-              Racing Game Station
-            </span>
-          </Link>
-          <h1 className="mt-6 text-3xl font-bold text-foreground">
+          <h1 className="text-3xl font-bold text-foreground">
             เข้าสู่ระบบ
           </h1>
           <p className="mt-2 text-muted">
-            เข้าสู่ระบบเพื่อจองคิว Racing Game Station
+            เข้าสู่ระบบเพื่อจองคิว {SHOP_NAME}
           </p>
         </div>
 

@@ -2,12 +2,13 @@
 
 /**
  * QA Checklist Page
- * Manual testing checklist for the racing game station system
+ * Manual testing checklist for the gran turismo thailand system
  * Helps track testing progress with persistent checkboxes
  */
 
 import { AnimatedCard } from '@/src/presentation/components/ui/AnimatedCard';
 import { GlowButton } from '@/src/presentation/components/ui/GlowButton';
+import { SHOP_NAME } from '@/src/config/shop.config';
 import { useQAChecklistStore } from '@/src/presentation/stores/useQAChecklistStore';
 import { useEffect, useState } from 'react';
 
@@ -51,7 +52,7 @@ export default function QAChecklistPage() {
                   🧪 QA Checklist
                 </span>
               </h1>
-              <p className="text-muted text-sm mt-1">รายการทดสอบสำหรับระบบ Racing Game Station</p>
+              <p className="text-muted text-sm mt-1">รายการทดสอบสำหรับระบบ {SHOP_NAME}</p>
             </div>
             <GlowButton
               color="red"
