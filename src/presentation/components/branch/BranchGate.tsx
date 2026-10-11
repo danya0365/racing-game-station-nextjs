@@ -66,12 +66,25 @@ export function BranchGate({ children }: { children: ReactNode }) {
   // only the genuinely branch-agnostic ones are exempt.
   const isExempt = EXEMPT_PREFIXES.some((p) => pathname.startsWith(p));
 
+  // Exempt means "no forced choice", NOT "no dialog". Rendering nothing at all
+  // on these routes left the header's branch button inert: it sets isPickerOpen
+  // and nothing was listening. /auth/login is where staff land first, so the
+  // one branch button on screen did nothing when pressed.
+  //
+  // `hasChosen` keeps this from becoming a gate in disguise. The store opens the
+  // picker on a first visit precisely when nothing is stored — without it, /auth
+  // would pop the modal at someone who had not chosen yet, which is the one
+  // thing EXEMPT_PREFIXES exists to prevent. With it, an exempt route mounts the
+  // dialog only for the header button, which is itself hidden until hasChosen.
+  const showPicker =
+    hydrated && (!isExempt || (isPickerOpen && hasChosen));
+
   return (
     <>
       {children}
 
       {/* Non-dismissible until a branch is chosen — it is a required step */}
-      {hydrated && !isExempt && (
+      {showPicker && (
         <BranchModal
           open={isPickerOpen}
           dismissible={hasChosen}
