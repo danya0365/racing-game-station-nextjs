@@ -1,10 +1,11 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { PageHeader } from "@/src/presentation/components/ui/PageHeader";
+import { SHOP_NAME, shopPageTitle } from "@/src/config/shop.config";
 
 export const metadata: Metadata = {
-  title: "เงื่อนไขการใช้บริการ | Racing Game Station",
-  description: "เงื่อนไขและข้อกำหนดในการใช้บริการ Racing Game Station",
+  title: shopPageTitle("เงื่อนไขการใช้บริการ"),
+  description: `เงื่อนไขและข้อกำหนดในการใช้บริการ ${SHOP_NAME}`,
 };
 
 export default function TermsPage() {
@@ -25,7 +26,7 @@ export default function TermsPage() {
               ข้อตกลงทั่วไป
             </h2>
             <p className="text-muted leading-relaxed">
-              ยินดีต้อนรับสู่ Racing Game Station การใช้บริการของท่านถือว่ายอมรับเงื่อนไขต่อไปนี้
+              ยินดีต้อนรับสู่ {SHOP_NAME} การใช้บริการของท่านถือว่ายอมรับเงื่อนไขต่อไปนี้
               กรุณาอ่านอย่างละเอียดก่อนใช้บริการ
             </p>
           </section>
@@ -120,7 +121,7 @@ export default function TermsPage() {
             </h3>
             <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
               <p className="text-amber-500 text-sm leading-relaxed">
-                Racing Game Station ไม่รับผิดชอบต่อทรัพย์สินสูญหาย
+                {SHOP_NAME} ไม่รับผิดชอบต่อทรัพย์สินสูญหาย
                 กรุณาดูแลทรัพย์สินส่วนตัวของท่านให้ดี
                 เรามีกล้องวงจรปิดเพื่อความปลอดภัย แต่ไม่รับประกันความเสียหายใดๆ
               </p>

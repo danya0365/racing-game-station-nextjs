@@ -8,6 +8,7 @@
 
 import { ChatService } from '@/src/application/services/ChatService';
 import { SupabaseChatRepository } from '@/src/infrastructure/repositories/supabase/SupabaseChatRepository';
+import { SHOP_NAME } from '@/src/config/shop.config';
 import { createClient } from '@/src/infrastructure/supabase/server';
 import { NextResponse } from 'next/server';
 
@@ -28,7 +29,7 @@ export async function GET() {
 
     const repo = new SupabaseChatRepository(supabase);
     const chatService = new ChatService(repo);
-    const response = chatService.getMainMenu('🎉 ยินดีต้อนรับสู่ Racing Game Station!\n\nผมพร้อมช่วยเหลือคุณเรื่องข้อมูลร้านเกม กรุณาเลือกเมนูด้านล่าง:');
+    const response = chatService.getMainMenu(`🎉 ยินดีต้อนรับสู่ ${SHOP_NAME}!\n\nผมพร้อมช่วยเหลือคุณเรื่องข้อมูลร้านเกม กรุณาเลือกเมนูด้านล่าง:`);
 
     return NextResponse.json({ success: true, data: response });
   } catch (error) {

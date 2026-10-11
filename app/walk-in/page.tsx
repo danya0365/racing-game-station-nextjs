@@ -1,9 +1,10 @@
 import { RedirectToBranch } from "@/src/presentation/components/branch/RedirectToBranch";
 import { Metadata } from "next";
+import { SHOP_NAME, shopPageTitle } from "@/src/config/shop.config";
 
 export const metadata: Metadata = {
-  title: "เข้าคิวเล่นเกม | Racing Game Station",
-  description: "ระบบรับบำดับคิวสำหรับลูกค้า Walk-in ที่ Racing Game Station",
+  title: shopPageTitle("เข้าคิวเล่นเกม"),
+  description: `ระบบรับบำดับคิวสำหรับลูกค้า Walk-in ที่ ${SHOP_NAME}`,
 };
 
 /**

@@ -1,10 +1,11 @@
 import { ResetPasswordView } from '@/src/presentation/components/auth/ResetPasswordView';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
+import { SHOP_NAME, shopPageTitle } from "@/src/config/shop.config";
 
 export const metadata: Metadata = {
-  title: 'ตั้งรหัสผ่านใหม่ | Racing Game Station',
-  description: 'ตั้งรหัสผ่านใหม่สำหรับบัญชี Racing Game Station',
+  title: shopPageTitle("ตั้งรหัสผ่านใหม่"),
+  description: `ตั้งรหัสผ่านใหม่สำหรับบัญชี ${SHOP_NAME}`,
 };
 
 /**

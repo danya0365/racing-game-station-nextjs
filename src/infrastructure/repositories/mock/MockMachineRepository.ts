@@ -15,13 +15,13 @@ import {
 } from "@/src/application/repositories/IMachineRepository";
 import dayjs from "dayjs";
 
-// Mock data for Racing Game Station machines
+// Mock data for Gran Turismo Thailand machines
 const MOCK_BRANCH_ID = "00000000-0000-0000-0000-000000000b02";
 const MOCK_MACHINES: Machine[] = [
   {
     id: "machine-001",
     name: "Game Station 1",
-    description: "Formula Racing Game Station with Fanatec GT DD Pro",
+    description: "Formula 1 with Fanatec GT DD Pro",
     position: 1,
     imageUrl: "/images/machines/station-1.jpg",
     isActive: true,
@@ -33,7 +33,7 @@ const MOCK_MACHINES: Machine[] = [
   {
     id: "machine-002",
     name: "Game Station 2",
-    description: "GT Racing Game Station with Thrustmaster T300RS",
+    description: "GT with Thrustmaster T300RS",
     position: 2,
     imageUrl: "/images/machines/station-2.jpg",
     isActive: true,
@@ -47,7 +47,7 @@ const MOCK_MACHINES: Machine[] = [
   {
     id: "machine-003",
     name: "Game Station 3",
-    description: "Rally Racing Game Station with Logitech G923",
+    description: "Rally with Logitech G923",
     position: 3,
     imageUrl: "/images/machines/station-3.jpg",
     isActive: true,

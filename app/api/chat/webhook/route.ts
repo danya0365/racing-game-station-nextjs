@@ -13,6 +13,7 @@
 import { ChatService } from '@/src/application/services/ChatService';
 import { LineMessagingService } from '@/src/infrastructure/line/LineMessagingService';
 import { SupabaseChatRepository } from '@/src/infrastructure/repositories/supabase/SupabaseChatRepository';
+import { SHOP_NAME } from '@/src/config/shop.config';
 import { createClient } from '@/src/infrastructure/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -120,7 +121,7 @@ async function handleEvent(
 
     case 'follow': {
       // User added bot as friend
-      const response = chatService.getMainMenu('🎉 ยินดีต้อนรับสู่ Racing Game Station!\n\nผมพร้อมช่วยเหลือคุณเรื่องข้อมูลร้านเกม กรุณาเลือกเมนูด้านล่าง:');
+      const response = chatService.getMainMenu(`🎉 ยินดีต้อนรับสู่ ${SHOP_NAME}!\n\nผมพร้อมช่วยเหลือคุณเรื่องข้อมูลร้านเกม กรุณาเลือกเมนูด้านล่าง:`);
       const messages = lineService.convertChatResponseToLineMessages(response);
       await lineService.replyMessage(replyToken, messages);
       break;

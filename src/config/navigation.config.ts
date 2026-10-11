@@ -8,12 +8,22 @@ import { Branch, BRANCHES, DEFAULT_BRANCH } from "@/src/config/branch.config";
  * header link. /backend is staff-only and stays unprefixed — staff see all
  * branches from there.
  */
+/**
+ * Build nav links scoped to a branch.
+ *
+ * Customer links carry the branch prefix (/narathiwas/time-booking) so someone who
+ * switched branches can't wander into the other branch's screens by clicking a
+ * header link. /backend is staff-only and stays unprefixed — staff see all
+ * branches from there.
+ *
+ * No walk-in link: the queue is entered by staff at the counter, so there is
+ * nothing for a customer to open from here.
+ */
 function buildLinks(branch: Branch) {
   const base = `/${branch.slug}`;
   return [
     { href: base, label: "หน้าแรก", icon: "🏠" },
     { href: `${base}/time-booking`, label: "จองเวลา", icon: "🎮" },
-    { href: `${base}/walk-in`, label: "เข้าคิว", icon: "🚶" },
     {
       href: `${base}/customer/booking-status`,
       label: "สถานะการจอง",

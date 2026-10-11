@@ -1,8 +1,9 @@
 import { RedirectToBranch } from "@/src/presentation/components/branch/RedirectToBranch";
 import { Metadata } from "next";
+import { shopPageTitle } from "@/src/config/shop.config";
 
 export const metadata: Metadata = {
-  title: "ตารางการจอง | Racing Game Station",
+  title: shopPageTitle("ตารางการจอง"),
   description: "ดูตารางและประวัติการจองเวลาทั้งหมด",
 };
 

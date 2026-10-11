@@ -2,15 +2,26 @@
 
 import { AnimatedCard } from '@/src/presentation/components/ui/AnimatedCard';
 import { GlowButton } from '@/src/presentation/components/ui/GlowButton';
+import { SHOP_NAME, SHOP_TAGLINE } from '@/src/config/shop.config';
+import Image from 'next/image';
 import Link from 'next/link';
 import { QRCodeSVG } from 'qrcode.react';
 import React, { useEffect, useRef, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
-// Shop configuration
+// Poster details
+//
+// `name` and `tagline` come from shop.config; the rest is still local.
+//
+// TODO: this is a branch-less page that still names one branch. /qr-scan is in
+// BranchGate's EXEMPT_PREFIXES and has no BranchScope, so there is nothing to
+// read a branch from — `address` is Narathiwat's and `phone` is still a
+// placeholder. The poster printed from this goes on the wall of whichever shop
+// staff happen to be at. Same shape of problem as AuthBrandHeader: the fix is
+// one shared mark plus a branch picker on this page, not another hardcoded logo.
 const SHOP_CONFIG = {
-  name: 'Racing Game Station',
-  tagline: 'ประสบการณ์แข่งรถเสมือนจริงระดับพรีเมียม',
+  name: SHOP_NAME,
+  tagline: SHOP_TAGLINE,
   address: 'อ.เมือง จ.นราธิวาส 96000',
   phone: '02-XXX-XXXX',
   openHours: 'เปิดบริการ 24 ชั่วโมง',
@@ -55,23 +66,34 @@ const PrintableQRCode = React.forwardRef<HTMLDivElement, { url: string }>(
         </style>
 
         {/* Header - Logo & Brand */}
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
           gap: '16px',
           marginBottom: '12px'
         }}>
+          {/* Plain <img>, not next/image: this block is rendered inside a
+              forwardRef sheet that react-to-print copies straight into the
+              print document, where Next's image component cannot run. The
+              gradient tile it replaced was also the only spot left on the old
+              cyan/blue palette. */}
           <div style={{
-            width: '60px',
-            height: '60px',
-            background: 'linear-gradient(135deg, #06b6d4, #2563eb)',
-            borderRadius: '12px',
+            width: '76px',
+            height: '44px',
+            backgroundColor: '#0a0a0d',
+            border: '1px solid #26262f',
+            borderRadius: '8px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '32px',
+            overflow: 'hidden',
           }}>
-            🏎️
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/assets/logo/narathiwat.webp"
+              alt={SHOP_NAME}
+              style={{ height: '34px', width: 'auto', objectFit: 'contain' }}
+            />
           </div>
           <div>
             <h1 style={{ 
@@ -248,8 +270,16 @@ export function QRScanView() {
           >
             {/* Shop Logo & Name */}
             <div className="flex items-center justify-center gap-4 mb-8">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-4xl shadow-lg">
-                🏎️
+              {/* Wide plate, not a square tile: the mark is a ~2.4:1 lockup,
+                  so a 64×64 box scaled it to a smudge. */}
+              <div className="h-14 px-3 rounded-xl bg-neutral-900 border border-racing-line flex items-center justify-center shadow-lg">
+                <Image
+                  src="/assets/logo/narathiwat.webp"
+                  alt={SHOP_NAME}
+                  width={760}
+                  height={322}
+                  className="h-10 w-auto object-contain"
+                />
               </div>
               <div className="text-left">
                 <h2 className="text-2xl md:text-3xl font-bold text-foreground">

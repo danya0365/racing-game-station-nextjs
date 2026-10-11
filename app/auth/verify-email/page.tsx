@@ -1,10 +1,11 @@
 import { VerifyEmailView } from '@/src/presentation/components/auth/VerifyEmailView';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
+import { SHOP_NAME, shopPageTitle } from "@/src/config/shop.config";
 
 export const metadata: Metadata = {
-  title: 'ยืนยันอีเมล | Racing Game Station',
-  description: 'ยืนยันอีเมลสำหรับบัญชี Racing Game Station',
+  title: shopPageTitle("ยืนยันอีเมล"),
+  description: `ยืนยันอีเมลสำหรับบัญชี ${SHOP_NAME}`,
 };
 
 /**

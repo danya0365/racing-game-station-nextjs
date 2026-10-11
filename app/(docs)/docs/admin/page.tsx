@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { SHOP_NAME } from "@/src/config/shop.config";
 
 export default function AdminDocsPage() {
   return (
@@ -7,7 +8,7 @@ export default function AdminDocsPage() {
       <div className="hidden print:block print:mb-8 print:pb-8 print:border-b-2 print:border-racing-flag print:text-center">
         <div className="text-6xl mb-4">⚙️</div>
         <h1 className="text-4xl font-bold text-foreground mb-2">คู่มือสำหรับแอดมิน</h1>
-        <p className="text-xl text-muted">Racing Game Station - ระบบจองเวลาเล่นเกม</p>
+        <p className="text-xl text-muted">{SHOP_NAME} - ระบบจองเวลาเล่นเกม</p>
         <p className="text-sm text-muted mt-4">พิมพ์เมื่อ: มกราคม 2026</p>
       </div>
 
@@ -223,7 +224,7 @@ export default function AdminDocsPage() {
 
       {/* Print Footer */}
       <div className="hidden print:block print:mt-8 print:pt-4 print:border-t print:border-border print:text-center print:text-sm print:text-muted">
-        <p>Racing Game Station - คู่มือสำหรับแอดมิน | หน้า _____</p>
+        <p>{SHOP_NAME} - คู่มือสำหรับแอดมิน | หน้า _____</p>
       </div>
     </div>
   );

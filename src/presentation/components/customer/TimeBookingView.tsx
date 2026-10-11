@@ -5,6 +5,7 @@ import {
   DURATION_OPTIONS,
   OPERATING_HOURS,
 } from "@/src/config/booking.config";
+import { BranchBanner } from "@/src/presentation/components/branch/BranchBanner";
 import { SHOP_TIMEZONE } from "@/src/lib/date";
 import { GlowButton } from "@/src/presentation/components/ui/GlowButton";
 import { MachineImage } from "@/src/presentation/components/ui/MachineImage";
@@ -44,8 +45,6 @@ export function TimeBookingView({
   presenterOverride,
 }: TimeBookingViewProps) {
   const branch = useBranchStore((st) => st.branch);
-  const hasChosenBranch = useBranchStore((st) => st.hasChosen);
-  const openBranchPicker = useBranchStore((st) => st.openPicker);
 
   const { customerInfo, setCustomerInfo } = useCustomerStore();
 
@@ -177,7 +176,7 @@ export function TimeBookingView({
             <br />
             กรุณาลองใหม่ในภายหลัง
           </p>
-          <Link href="/">
+          <Link href={`/${branch.slug}`}>
             <GlowButton color="purple" size="lg" className="w-full">
               🏠 กลับหน้าแรก
             </GlowButton>
@@ -236,7 +235,7 @@ export function TimeBookingView({
 
           {/* Actions */}
           <div className="flex flex-col gap-3">
-            <Link href="/">
+            <Link href={`/${branch.slug}`}>
               <GlowButton color="green" size="lg" className="w-full">
                 🏠 กลับหน้าแรก
               </GlowButton>
@@ -266,7 +265,7 @@ export function TimeBookingView({
       {/* Header */}
       <header className="relative z-10 p-4 flex items-center justify-between">
         <Link
-          href="/"
+          href={`/${branch.slug}`}
           className="flex items-center gap-2 px-4 py-2 bg-white border border-border hover:bg-muted-light dark:bg-white/10 dark:border-transparent dark:hover:bg-white/20 rounded-full text-foreground dark:text-white font-medium transition-all"
         >
           <span>←</span>
@@ -278,39 +277,29 @@ export function TimeBookingView({
           จองเวลา
         </h1>
 
-        {/* Branch switch — this view renders its own full-screen header above
-            the app header, so the app-level branch button is hidden underneath
-            it. Put the same control here, in the spacer slot. */}
-        {hasChosenBranch && (
-          <button
-            onClick={openBranchPicker}
-            type="button"
-            className="racing-branch-chip"
-            aria-label={`สาขาปัจจุบัน: ${branch.shortName} — คลิกเพื่อเปลี่ยนสาขา`}
-          >
-            <svg
-              className="w-3.5 h-3.5 shrink-0"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-              aria-hidden
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 21s-7-5.6-7-11a7 7 0 1114 0c0 5.4-7 11-7 11z"
-              />
-              <circle cx="12" cy="10" r="2.5" />
-            </svg>
-            <span className="max-w-[90px] truncate">{branch.shortName}</span>
-          </button>
-        )}
+        {/* Spacer — the header's right slot used to hold the branch chip. The
+            branch now lives in BranchBanner below, at a size that can actually
+            be read before booking, so the chip would only say the same thing
+            twice at a glance. */}
+        <div className="w-16 sm:w-28" aria-hidden />
       </header>
 
+      {/* Branch, big and unmissable — this view covers the app header, so the
+          app-level branch button is hidden underneath it and nothing else on
+          screen says which shop until the confirm step. Booking the wrong
+          branch here costs a real trip across town, so it is stated at the top
+          of the flow rather than left to a corner chip. */}
+      <BranchBanner className="pb-4" />
+
       {/* Progress Steps */}
-      <div className="relative z-10 px-4 py-4">
-        <div className="max-w-md mx-auto">
+      <div className="relative z-10 px-4 pb-4">
+        {/* Wider than the max-w-md content column below, on purpose: four
+            numbered steps plus their labels need about 580px, and in a 448px
+            box the flex row shrank each label until "เลือกเครื่อง" broke over
+            two lines — which left the row lopsided and taller than the rest.
+            The stepper is chrome, not content; it does not have to line up
+            with the width of the card underneath it. */}
+        <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-center gap-2 sm:gap-4">
             {(["machine", "datetime", "info", "confirm"] as BookingStep[]).map(
               (s, i) => {
@@ -330,12 +319,15 @@ export function TimeBookingView({
                 ];
 
                 return (
-                  <div key={s} className="flex items-center gap-2">
+                  /* shrink-0 on every step: without it the row squeezed the
+                     labels (a breakable flex item) instead of the fixed-size
+                     circles, so the labels wrapped and the circles stayed put. */
+                  <div key={s} className="flex items-center gap-2 shrink-0">
                     <div
                       className={`flex items-center gap-1 sm:gap-2 ${isActive ? "text-racing-flag-text" : "text-muted dark:text-white/50"}`}
                     >
                       <div
-                        className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold ${
+                        className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold shrink-0 ${
                           isCompleted
                             ? "bg-emerald-500 text-white"
                             : isActive
@@ -345,12 +337,12 @@ export function TimeBookingView({
                       >
                         {isCompleted ? "✓" : i + 1}
                       </div>
-                      <span className="text-xs sm:text-sm hidden sm:inline">
+                      <span className="text-xs sm:text-sm hidden sm:inline whitespace-nowrap">
                         {labels[i]}
                       </span>
                     </div>
                     {i < 3 && (
-                      <div className="w-4 sm:w-8 h-0.5 bg-racing-led-off/60" />
+                      <div className="w-4 sm:w-8 h-0.5 bg-racing-led-off/60 shrink-0" />
                     )}
                   </div>
                 );
@@ -379,7 +371,7 @@ export function TimeBookingView({
                   <p className="text-muted dark:text-white/60">
                     ไม่พบเครื่องที่พร้อมใช้งาน
                   </p>
-                  <Link href="/" className="mt-4 inline-block">
+                  <Link href={`/${branch.slug}`} className="mt-4 inline-block">
                     <GlowButton color="pink">กลับหน้าแรก</GlowButton>
                   </Link>
                 </div>
@@ -759,40 +751,40 @@ export function TimeBookingView({
                   </div>
 
                   <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-muted dark:text-white/60">
+                    <div className="flex justify-between items-center gap-4">
+                      <span className="text-muted dark:text-white/60 shrink-0">
                         📅 วันที่
                       </span>
-                      <span className="text-foreground dark:text-white font-medium">
+                      <span className="text-foreground dark:text-white font-medium text-right">
                         {formatDateDisplay(state.selectedDate)}
                       </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted dark:text-white/60">
+                    <div className="flex justify-between items-center gap-4">
+                      <span className="text-muted dark:text-white/60 shrink-0">
                         🕐 เวลา
                       </span>
                       <span className="text-racing-flag-text font-bold text-lg">
                         {state.selectedSlot.startTime}
                       </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted dark:text-white/60">
+                    <div className="flex justify-between items-center gap-4">
+                      <span className="text-muted dark:text-white/60 shrink-0">
                         👤 ชื่อ
                       </span>
-                      <span className="text-foreground dark:text-white font-medium">
+                      <span className="text-foreground dark:text-white font-medium text-right truncate">
                         {name}
                       </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted dark:text-white/60">
+                    <div className="flex justify-between items-center gap-4">
+                      <span className="text-muted dark:text-white/60 shrink-0">
                         📱 เบอร์โทร
                       </span>
-                      <span className="text-foreground dark:text-white font-medium">
+                      <span className="text-foreground dark:text-white font-medium text-right">
                         {phone}
                       </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted dark:text-white/60">
+                    <div className="flex justify-between items-center gap-4">
+                      <span className="text-muted dark:text-white/60 shrink-0">
                         ⏱️ ระยะเวลา
                       </span>
                       <span className="text-racing-flag-text font-bold">
@@ -818,10 +810,15 @@ export function TimeBookingView({
                   >
                     ← แก้ไข
                   </button>
+                  {/* Branch accent, not a stock green: this is the last thing
+                      on screen before the booking is committed, and it should
+                      sit in the same gold/black identity as the logo directly
+                      above it. Emerald was left over from the older theme. */}
                   <button
                     onClick={handleSubmit}
                     disabled={state.isSubmitting}
-                    className="flex-1 px-6 py-4 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/30 disabled:opacity-50 transition-all"
+                    aria-label={`ยืนยันจองที่สาขา${branch.shortName}`}
+                    className="flex-1 px-6 py-4 bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag font-bold rounded-xl shadow-lg shadow-racing-flag/30 disabled:opacity-50 transition-all"
                   >
                     {state.isSubmitting ? "⏳ กำลังจอง..." : "📅 ยืนยันจอง"}
                   </button>

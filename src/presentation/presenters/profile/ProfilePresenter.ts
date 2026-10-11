@@ -11,6 +11,7 @@ import {
     IAuthRepository,
     UpdateProfileData,
 } from '@/src/application/repositories/IAuthRepository';
+import { shopPageTitle } from '@/src/config/shop.config';
 import { Metadata } from 'next';
 
 export interface ProfileViewModel {
@@ -73,12 +74,15 @@ export class ProfilePresenter {
   }
 
   /**
-   * Generate metadata for the page
+   * Metadata for the profile page.
+   *
+   * Read from shop.config rather than written out: this used to carry the shop
+   * name in a literal, which is one more place to forget when the name changes.
    */
   generateMetadata(): Metadata {
     return {
-      title: 'โปรไฟล์ | Racing Game Station',
-      description: 'จัดการข้อมูลส่วนตัวและการตั้งค่าบัญชีของคุณ',
+      title: shopPageTitle("โปรไฟล์"),
+      description: "จัดการข้อมูลส่วนตัวและการตั้งค่าบัญชีของคุณ",
     };
   }
 

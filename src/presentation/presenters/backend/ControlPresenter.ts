@@ -11,7 +11,6 @@ import { IMachineRepository, Machine } from '@/src/application/repositories/IMac
 import { ISessionRepository, Session } from '@/src/application/repositories/ISessionRepository';
 import { IWalkInQueueRepository, WalkInQueue } from '@/src/application/repositories/IWalkInQueueRepository';
 import { getShopTodayString, SHOP_TIMEZONE } from '@/src/lib/date';
-import { Metadata } from 'next';
 
 // ============================================================
 // VIEW MODEL TYPES
@@ -137,16 +136,6 @@ export class ControlPresenter {
         waitingQueueCount: waitingQueue.length,
       },
       currentTime: new Date().toISOString(),
-    };
-  }
-
-  /**
-   * Generate metadata for the page
-   */
-  generateMetadata(): Metadata {
-    return {
-      title: 'ควบคุมห้องเกม | Racing Game Station',
-      description: 'หน้าควบคุมห้องเครื่องเล่นเกม - Session Control Panel',
     };
   }
 

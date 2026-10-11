@@ -13,6 +13,8 @@
  * `/time-booking` and lose the branch.
  */
 
+import { SHOP_NAME } from "@/src/config/shop.config";
+
 export interface Branch {
   /** UUID from public.branches */
   id: string;
@@ -59,7 +61,7 @@ export const BRANCHES: Branch[] = [
   {
     id: BRANCH_IDS.NARATHIWAS,
     slug: "narathiwas",
-    name: "Racing Game Station นราธิวาส",
+    name: `${SHOP_NAME} นราธิวาส`,
     shortName: "นราธิวาส",
     logo: "/assets/logo/narathiwat.webp",
     logoWidth: 760,
@@ -68,7 +70,7 @@ export const BRANCHES: Branch[] = [
   {
     id: BRANCH_IDS.PATTANI,
     slug: "pattani",
-    name: "Racing Game Station ปัตตานี",
+    name: `${SHOP_NAME} ปัตตานี`,
     shortName: "ปัตตานี",
     logo: "/assets/logo/pattani.webp",
     logoWidth: 760,

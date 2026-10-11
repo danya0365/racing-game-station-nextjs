@@ -34,6 +34,15 @@ interface BranchStore {
   isPickerOpen: boolean;
   openPicker: () => void;
   closePicker: () => void;
+  /**
+   * Whether localStorage has been read yet.
+   *
+   * `hasChosen: false` means two different things before and after hydration —
+   * "never chose" and "chose nothing stored". Anything that has to decide what
+   * to do with an unanswered branch (the redirect pages) must wait for this,
+   * or it acts on the default branch during the same tick the gate opens.
+   */
+  isHydrated: boolean;
 }
 
 const BY_SLUG: Record<string, Branch> = {};
@@ -57,6 +66,7 @@ export const useBranchStore = create<BranchStore>((set, get) => ({
   branch: DEFAULT_BRANCH,
   hasChosen: false,
   isPickerOpen: false,
+  isHydrated: false,
 
   setBranchBySlug: (slug) => {
     const found = BY_SLUG[slug];
@@ -99,12 +109,16 @@ export function hydrateBranch(): boolean {
   if (typeof window === "undefined") return false;
   const saved = readStoredBranchSlug();
   if (saved && BY_SLUG[saved]) {
-    useBranchStore.setState({ branch: BY_SLUG[saved], hasChosen: true });
+    useBranchStore.setState({
+      branch: BY_SLUG[saved],
+      hasChosen: true,
+      isHydrated: true,
+    });
     return true;
   }
   // First visit on this device — the gate must ask before anything else.
   // Set here rather than in the component's effect so BranchGate stays free of
   // a setState-during-effect (which cascades an extra render on every mount).
-  useBranchStore.setState({ isPickerOpen: true });
+  useBranchStore.setState({ isPickerOpen: true, isHydrated: true });
   return false;
 }

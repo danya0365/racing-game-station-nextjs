@@ -27,6 +27,10 @@ interface BranchModalProps {
 export function BranchModal({ open, dismissible, onClose }: BranchModalProps) {
   const router = useRouter();
   const currentBranch = useBranchStore((s) => s.branch);
+  // "สาขาปัจจุบัน" is a claim about a choice that was made. On a first visit
+  // there is no choice yet — the badge would be claiming one, and looking like
+  // an inert option rather than the branch the store happens to start on.
+  const hasChosen = useBranchStore((s) => s.hasChosen);
   const selectBranch = useBranchStore((s) => s.selectBranch);
 
   // Escape closes only when dismissible — a forced choice can't be escaped.
@@ -42,7 +46,10 @@ export function BranchModal({ open, dismissible, onClose }: BranchModalProps) {
   if (!open) return null;
 
   const handleSelect = (branch: Branch) => {
-    if (branch.id === currentBranch.id) {
+    // Picking the branch that is already active is a valid choice on a first
+    // visit — the store just starts on DEFAULT_BRANCH, so refusing it there
+    // forced the customer to press the other branch just to get past the gate.
+    if (branch.id === currentBranch.id && hasChosen) {
       if (dismissible) onClose();
       return;
     }
@@ -94,12 +101,17 @@ export function BranchModal({ open, dismissible, onClose }: BranchModalProps) {
 
           <div className="p-4 space-y-3">
             {BRANCHES.map((branch) => {
-              const isCurrent = branch.id === currentBranch.id;
+              // Badge and highlight follow a real choice. Before one exists the
+              // store is just sitting on DEFAULT_BRANCH, and marking it as
+              // "current" made the row read as already-settled — so it looked
+              // inert on the one visit where it still had to be pressable.
+              const isCurrent = hasChosen && branch.id === currentBranch.id;
               return (
                 <button
                   key={branch.id}
                   onClick={() => handleSelect(branch)}
                   type="button"
+                  aria-pressed={isCurrent}
                   className={`w-full text-left p-4 rounded-xl border transition-all duration-200 ${
                     isCurrent
                       ? "border-racing-flag bg-racing-flag-dim"
@@ -154,8 +166,12 @@ export function BranchModal({ open, dismissible, onClose }: BranchModalProps) {
 
 /**
  * Replace the branch segment in the current path: /pattani/time-booking
- * + narathiwas → /narathiwas/time-booking. Paths without a known branch prefix
- * (e.g. /backend) go to the branch home.
+ * + narathiwas → /narathiwas/time-booking.
+ *
+ * Returns null when there is nowhere sensible to go, and the caller stays put.
+ * That is right for staff panels (/backend/control — keep the panel open, let it
+ * re-read the store) and for the bare redirect pages (/time-booking, which are
+ * themselves waiting to send the customer on to their branch).
  */
 function swapBranchInPath(slug: string): string | null {
   if (typeof window === "undefined") return null;
@@ -164,6 +180,11 @@ function swapBranchInPath(slug: string): string | null {
   if (segments.length > 0 && known.includes(segments[0])) {
     return `/${[slug, ...segments.slice(1)].join("/")}`;
   }
+  // The root is the landing screen: it is BranchPicker plus this gate, and it
+  // has no branch to rewrite. Without this the first choice closed the gate
+  // but left the customer looking at the same two branches again underneath it,
+  // needing a second click to actually get into the shop.
+  if (segments.length === 0) return `/${slug}`;
   // No branch prefix in the path (e.g. /backend/control) — don't navigate.
   return null;
 }

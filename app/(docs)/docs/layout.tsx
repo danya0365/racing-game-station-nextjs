@@ -1,8 +1,9 @@
 import { Metadata } from 'next';
+import { SHOP_NAME, shopPageTitle } from "@/src/config/shop.config";
 
 export const metadata: Metadata = {
-  title: 'คู่มือการใช้งาน | Racing Game Station',
-  description: 'คู่มือการใช้งานระบบจองคิว Racing Game Station สำหรับลูกค้าและแอดมิน',
+  title: shopPageTitle("คู่มือการใช้งาน"),
+  description: `คู่มือการใช้งานระบบจองคิว ${SHOP_NAME} สำหรับลูกค้าและแอดมิน`,
 };
 
 export default function DocsLayout({

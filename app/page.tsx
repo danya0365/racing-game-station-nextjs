@@ -1,21 +1,21 @@
 import { BranchPicker } from "@/src/presentation/components/branch/BranchPicker";
+import {
+  SHOP_KEYWORDS,
+  SHOP_NAME,
+  SHOP_TEAM_NAME,
+} from "@/src/config/shop.config";
 import type { Metadata } from "next";
 
+const SITE_TITLE = `${SHOP_NAME} — ระบบจองคิว`;
+
 export const metadata: Metadata = {
-  title: "Racing Game Station — ระบบจองคิว Racing Game Station",
-  description:
-    "ระบบจองคิวสำหรับ Racing Game Station — จองเวลาหรือเข้าคิวได้ที่สาขาปัตตานีและนราธิวาส",
-  keywords: [
-    "racing game station",
-    "จองคิว",
-    "racing game",
-    "esports",
-    "driving",
-  ],
-  authors: [{ name: "Racing Game Station Team" }],
+  title: SITE_TITLE,
+  description: `ระบบจองคิวสำหรับ ${SHOP_NAME} — จองเวลาหรือเข้าคิวได้ที่สาขาปัตตานีและนราธิวาส`,
+  keywords: SHOP_KEYWORDS,
+  authors: [{ name: SHOP_TEAM_NAME }],
   openGraph: {
-    title: "Racing Game Station — ระบบจองคิว Racing Game Station",
-    description: "ระบบจองคิวสำหรับ Racing Game Station",
+    title: SITE_TITLE,
+    description: `ระบบจองคิวสำหรับ ${SHOP_NAME}`,
     type: "website",
   },
 };

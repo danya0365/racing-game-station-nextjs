@@ -12,6 +12,7 @@ import { IMachineRepository, Machine, MachineStats, MachineStatus } from '@/src/
 import { ISessionRepository, Session, SessionStats } from '@/src/application/repositories/ISessionRepository';
 import { IStorageRepository } from '@/src/application/repositories/IStorageRepository';
 import { IWalkInQueueRepository, WalkInQueue, WalkInQueueStats } from '@/src/application/repositories/IWalkInQueueRepository';
+import { SHOP_NAME, shopPageTitle } from '@/src/config/shop.config';
 import { Metadata } from 'next';
 
 export interface BackendViewModel {
@@ -279,12 +280,15 @@ export class BackendPresenter {
   }
 
   /**
-   * Generate metadata for the page
+   * Metadata for the admin page.
+   *
+   * Read from shop.config rather than written out: this used to carry the shop
+   * name in a literal, which is one more place to forget when the name changes.
    */
   generateMetadata(): Metadata {
     return {
-      title: 'แอดมิน | Racing Game Station',
-      description: 'ระบบจัดการคิวและเครื่องเล่น Racing Game Station',
+      title: shopPageTitle("แอดมิน"),
+      description: `ระบบจัดการคิวและเครื่องเล่น ${SHOP_NAME}`,
     };
   }
 

@@ -15,6 +15,7 @@
 
 'use client';
 
+import { SHOP_NAME } from '@/src/config/shop.config';
 import { useAuthStore } from '@/src/presentation/stores/auth-store';
 import { useChatStore } from '@/src/presentation/stores/useChatStore';
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
@@ -94,7 +95,7 @@ export function ChatWidget() {
                 🎮
               </div>
               <div>
-                <div className="text-white font-semibold text-sm">Racing Game Station</div>
+                <div className="text-white font-semibold text-sm">{SHOP_NAME}</div>
                 <div className="text-white/60 text-xs flex items-center gap-1">
                   <span className="w-1.5 h-1.5 bg-green-400 rounded-full inline-block animate-pulse" />
                   ออนไลน์

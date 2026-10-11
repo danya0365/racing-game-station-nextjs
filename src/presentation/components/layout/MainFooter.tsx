@@ -1,5 +1,6 @@
 "use client";
 
+import { SHOP_SYSTEM_NAME } from "@/src/config/shop.config";
 import Link from "next/link";
 
 export function MainFooter() {
@@ -12,7 +13,7 @@ export function MainFooter() {
       <div className="flex items-center gap-2 text-xs md:text-sm text-racing-fg-2 overflow-hidden">
         <span className="whitespace-nowrap">© 2025</span>
         <span className="font-semibold text-racing-flag-text cursor-default truncate">
-          Racing Game Station System
+          {SHOP_SYSTEM_NAME}
         </span>
         <span className="whitespace-nowrap text-racing-fg-3">
           v{version} {shortSha && `(${shortSha})`}
