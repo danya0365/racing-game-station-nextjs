@@ -1,6 +1,7 @@
 'use client';
 
 import { WalkInQueue } from '@/src/application/repositories/IWalkInQueueRepository';
+import { useActiveBranch } from '@/src/presentation/components/branch/BranchScope';
 import { AnimatedCard } from '@/src/presentation/components/ui/AnimatedCard';
 import { GlowButton } from '@/src/presentation/components/ui/GlowButton';
 import dayjs from 'dayjs';
@@ -18,6 +19,7 @@ interface WalkInStatusViewProps {
  * Real-time queue tracking UI for customers
  */
 export function WalkInStatusView({ queue, onCancel, onRefresh }: WalkInStatusViewProps) {
+  const branch = useActiveBranch();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [currentTime, setCurrentTime] = useState(dayjs());
 
@@ -64,8 +66,8 @@ export function WalkInStatusView({ queue, onCancel, onRefresh }: WalkInStatusVie
 
       {/* Header */}
       <header className="relative z-10 p-4 flex items-center justify-between">
-        <Link 
-          href="/"
+        <Link
+          href={`/${branch.slug}`}
           className="flex items-center gap-2 px-4 py-2 bg-white border border-border hover:bg-muted-light dark:bg-white/10 dark:border-transparent dark:hover:bg-white/20 rounded-full text-foreground dark:text-white font-medium transition-all"
         >
           <span>←</span>
@@ -178,7 +180,7 @@ export function WalkInStatusView({ queue, onCancel, onRefresh }: WalkInStatusVie
           {/* Help Notice */}
           <div className="mt-8 p-4 bg-white/50 dark:bg-white/5 border border-dashed border-border dark:border-white/20 rounded-2xl text-center">
               <p className="text-muted dark:text-white/60 text-sm italic">
-                "กรุณาอยู่ใกล้ๆ บริเวณร้านเพื่อไม่ให้พลาดการเรียกคิว"
+                &quot;กรุณาอยู่ใกล้ๆ บริเวณร้านเพื่อไม่ให้พลาดการเรียกคิว&quot;
               </p>
           </div>
 
