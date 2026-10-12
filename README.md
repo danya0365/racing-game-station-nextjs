@@ -726,6 +726,8 @@ TEST_URL=https://your-app.vercel.app npm run test:api
 - `useAuthStore` **ไม่ persist** และเติมค่าฝั่ง client เท่านั้น → server อ่าน `isAuthenticated` ได้แค่ `false` เสมอ
 - `config.toml` ตั้ง `site_url = "http://127.0.0.1:3000"` แต่ `additional_redirect_urls = ["https://127.0.0.1:3000"]` — scheme ไม่ตรงกัน
 - `/api/sessions/[id]/payment` ยอมรับ `['unpaid','paid','refunded']` แต่ enum `payment_status` มีแค่ `unpaid|paid|partial` → ส่ง `refunded` แล้ว DB รับไม่ได้
+- **`rpc_join_walk_in_queue` เดาสาขาเอง** — [20261008000000_multi_branch.sql](supabase/migrations/20261008000000_multi_branch.sql) บรรทัดที่ `COALESCE(p_branch_id, '00000000-0000-0000-0000-000000000b02')` ฝัง UUID สาขานราธิวาสไว้เป็น fallback: ถ้าเข้าคิวโดยไม่ได้เลือกเครื่อง และ request ไม่ได้ส่ง branch มา → ลงคิวของนราธิวาสโดยไม่ถาม ตอนนี้ยังถูก (นราธิวาสคือสาขาเดียวที่มีเครื่อง) แต่พอแตกสาขาที่ 3 จะพังเงียบ ๆ — ทางแก้คือคืน `success: false` + error "ไม่ทราบสาขา" แทนการเดา
+- ตาราง `branches` ไม่มี `GRANT` ให้ `anon`/`authenticated` (migration เดิมให้ `GRANT ALL` 5 ตารางหลัก) — ตอนนี้ยังไม่พังเพราะโค้ดอ่านผ่าน `rpc_get_branches()` ที่เป็น `SECURITY DEFINER` แต่ถ้ามีใครเรียก `.from('branches')` ตรงจะเจอ permission denied
 - ไม่มีไฟล์ `LICENSE`
 - ไม่มี unit test และไม่มี CI — gate ที่ใช้ได้จริงมีแค่ `npm run type-check` (ผ่าน) กับ `npm run build` (ผ่าน) ส่วน `npm run lint` **แดงอยู่ 103 errors / 24 warnings** ทั้งหมดเป็นของเก่าที่ยังไม่ได้แก้
 
