@@ -3,9 +3,7 @@
 import { Booking } from '@/src/application/repositories/IBookingRepository';
 import { Session } from '@/src/application/repositories/ISessionRepository';
 import { WalkInQueue } from '@/src/application/repositories/IWalkInQueueRepository';
-import { calculateSessionPrice } from '@/src/config/booking.config';
 import { useActiveBranch } from '@/src/presentation/components/branch/BranchScope';
-import dayjs from 'dayjs';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ControlPresenter, ControlViewModel } from './ControlPresenter';
 import { createClientControlPresenter } from './ControlPresenterClientFactory';
@@ -36,7 +34,14 @@ export interface ControlPresenterActions {
   startManualSession: (machineId: string, customerName: string, notes?: string, estimatedDurationMinutes?: number) => Promise<void>;
   startFromQueue: (machineId: string, queue: WalkInQueue, estimatedDurationMinutes?: number) => Promise<void>;
   startFromBooking: (machineId: string, booking: Booking) => Promise<void>;
-  endSession: (sessionId: string, totalAmount?: number) => Promise<void>;
+  /**
+ * End a session at an amount the staff member confirmed.
+ *
+ * `totalAmount` is required, not optional: the figure the system computed is a
+ * suggestion shown in the modal, and the amount stored is always the one a
+ * person confirmed. There is no path that stores a machine-chosen number.
+ */
+endSession: (sessionId: string, totalAmount: number) => Promise<void>;
   updateSessionPayment: (sessionId: string, status: 'paid' | 'unpaid' | 'partial') => Promise<void>;
   updateSessionAmount: (sessionId: string, amount: number) => Promise<void>;
   
@@ -232,29 +237,15 @@ export function useControlPresenter(
     }
   }, [loadData, presenter]);
 
-  const endSession = useCallback(async (sessionId: string, totalAmount?: number) => {
+  const endSession = useCallback(async (sessionId: string, totalAmount: number) => {
     setIsUpdating(true);
     setError(null);
 
     try {
-      let finalAmount = totalAmount;
-
-      // Auto-calculate price if not provided
-      if (finalAmount === undefined && viewModel) {
-        // Find session in stations
-        const station = viewModel.stations.find(s => s.activeSession?.id === sessionId);
-        const session = station?.activeSession;
-        
-        if (session && session.startTime) {
-          const start = dayjs(session.startTime);
-          const now = dayjs();
-          const durationMinutes = now.diff(start, 'minute');
-          finalAmount = calculateSessionPrice(durationMinutes);
-          // console.log(`Auto-calculated price for ${durationMinutes} mins: ${finalAmount}`);
-        }
-      }
-
-      await presenter.endSession(sessionId, finalAmount);
+      // ยอดสุดท้ายคือที่พนักงานยืนยันใน modal เท่านั้น — ไม่มีเส้นทางที่ระบบ
+      // คำนวณแล้วเก็บเองได้อีก ตัวเลขที่ระบบคำนวณเป็นแค่ "ราคาแนะนำ"
+      // ที่แสดงให้เทียบ ถ้าคำนวณผิดพนักงานแก้ได้ทันที
+      await presenter.endSession(sessionId, totalAmount);
       if (isMountedRef.current) {
         setEndSessionModal({ isOpen: false, sessionId: null });
       }
@@ -271,7 +262,7 @@ export function useControlPresenter(
         setIsUpdating(false);
       }
     }
-  }, [loadData, presenter, viewModel]);
+  }, [loadData, presenter]);
 
   const updateSessionPayment = useCallback(async (sessionId: string, status: 'paid' | 'unpaid' | 'partial') => {
     setIsUpdating(true);

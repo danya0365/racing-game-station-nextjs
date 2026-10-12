@@ -19,6 +19,8 @@ import {
   ThemeConfig,
   useControlThemeStore,
 } from "@/src/presentation/stores/useControlThemeStore";
+import { calculateSessionPrice } from "@/src/config/booking.config";
+import { DEFAULT_BRANCH, getBranchById } from "@/src/config/branch.config";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import Link from "next/link";
@@ -33,6 +35,40 @@ dayjs.extend(duration);
 
 interface ControlViewProps {
   initialViewModel?: ControlViewModel;
+}
+
+/**
+ * ราคาแนะนำ ณ ตอนนั้น + เวลาเล่นจริงที่คิดจากมัน
+ *
+ * นี่คือ **คำแนะนำ ไม่ใช่ยอดที่จะถูกเก็บ** — ยอดสุดท้ายคือที่พนักงานยืนยัน
+ * ใน modal และแก้ได้ตามส่วนลดหรือราคาพิเศษ ระบบช่วยคำนวณให้เพื่อไม่ต้อง
+ * คิดเองในหัวทุกครั้ง ไม่ได้ตัดสินใจแทน
+ *
+ * ค่านี้คำนวณด้วยสูตรเดียวกับที่ RPC ใช้ (calculateSessionPrice) ต่างกันแค่
+ * เวลา ซึ่ง UI กับ RPC คิดคนละที่ — ถ้าตรงกันดี ผิดก็ยังแก้ได้ทีหลัง
+ */
+function suggestedEndAmount(
+  viewModel: ControlViewModel | null,
+  sessionId: string,
+  now: dayjs.Dayjs,
+): { suggestedAmount: number | null; durationNote: string | null } {
+  if (!viewModel) return { suggestedAmount: null, durationNote: null };
+  const station = viewModel.stations.find((s) => s.activeSession?.id === sessionId);
+  if (!station) return { suggestedAmount: null, durationNote: null };
+  const session = station.activeSession;
+  if (!session?.startTime) return { suggestedAmount: null, durationNote: null };
+
+  const minutes = Math.max(0, now.diff(dayjs(session.startTime), "minute"));
+  const slug = getBranchById(station.machine.branchId)?.slug ?? DEFAULT_BRANCH.slug;
+
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  const durationNote =
+    hours > 0
+      ? `เล่นมา ${hours} ชม${rest ? ` ${rest} นาที` : ""}`
+      : `เล่นมา ${rest} นาที`;
+
+  return { suggestedAmount: calculateSessionPrice(minutes, slug), durationNote };
 }
 
 // ============================================================
@@ -460,9 +496,16 @@ export function ControlView({ initialViewModel }: ControlViewProps) {
       {/* End Session Modal */}
       {state.endSessionModal.isOpen && state.endSessionModal.sessionId && (
         <EndSessionModal
-          sessionId={state.endSessionModal.sessionId}
+          {...suggestedEndAmount(
+            state.viewModel,
+            state.endSessionModal.sessionId,
+            currentTime,
+          )}
           onClose={actions.closeEndSessionModal}
           onConfirm={(amount) => {
+            // ไม่มี amount = พนักงานยังไม่ยืนยันยอด ปุ่มจบถูก disable
+            // ไว้อยู่แล้ว เผื่อกรณีกดผ่านทางคีย์บอร์ด
+            if (amount === undefined) return;
             if (state.endSessionModal.sessionId) {
               actions.endSession(state.endSessionModal.sessionId, amount);
             }
@@ -1306,17 +1349,27 @@ function QueueSelectItem({
 }
 
 function EndSessionModal({
-  sessionId,
+  suggestedAmount,
+  durationNote,
   onClose,
   onConfirm,
   isLoading,
 }: {
-  sessionId: string;
+  /** ราคาแนะนำจากระบบ — null เมื่อยังหา session/สาขาไม่เจอ */
+  suggestedAmount: number | null;
+  /** เวลาเล่นจริง เช่น "เล่นมา 1 ชม 12 นาที" — บอกเหตุผลของตัวเลข */
+  durationNote: string | null;
   onClose: () => void;
   onConfirm: (amount?: number) => void;
   isLoading: boolean;
 }) {
   const [amount, setAmount] = useState<string>("");
+
+  // ยอดสุดท้ายคือที่พนักงานยืนยัน ไม่ใช่ที่ระบบคำนวณ — ช่องเลยเริ่มว่าง
+  // พนักงานต้องกด "ใช้ราคานี้" หรือกรอกเองเสมอ การกดจบไปเลยโดยไม่เห็น
+  // ยอดเงินเป็นการเผลอที่ราคาจะถูกเก็บโดยไม่ได้ตั้งใจ
+  const isBlank = amount.trim() === "";
+  const effectiveAmount = isBlank ? suggestedAmount : Number(amount);
 
   return (
     <Portal>
@@ -1324,25 +1377,56 @@ function EndSessionModal({
         <div className="bg-slate-800 rounded-2xl border border-white/20 w-full max-w-sm p-6 relative">
           <h3 className="text-xl font-bold text-white mb-2">⏹️ จบการเล่น?</h3>
           <p className="text-white/60 mb-6">
-            ยืนยันการจบการทำงาน? ระบบจะคำนวณเงินให้อัตโนมัติ
-            หรือคุณสามารถระบุยอดเงินเองได้
+            ยอดเงินที่เก็บคือยอดที่คุณยืนยันตรงนี้ — ระบบคำนวณให้เป็นตัวช่วย
+            คุณแก้ได้ตามส่วนลดหรือราคาพิเศษของลูกค้า
           </p>
+
+          {suggestedAmount !== null && (
+            <div className="mb-4 bg-purple-500/10 border border-purple-400/20 rounded-xl p-3">
+              <div className="flex items-baseline justify-between">
+                <span className="text-xs text-white/50">ราคาแนะนำ</span>
+                <span className="text-2xl font-bold text-white">
+                  ฿{suggestedAmount}
+                </span>
+              </div>
+              {durationNote && (
+                <p className="text-xs text-white/40 mt-1">
+                  {durationNote} · ตามราคาสาขา
+                </p>
+              )}
+            </div>
+          )}
 
           <div className="mb-6 bg-white/5 p-4 rounded-xl border border-white/10">
             <label className="text-xs text-white/40 block mb-2">
-              ระบุยอดเงิน (บาท) *เว้นว่างเพื่อคำนวณอัตโนมัติ
+              ยอดเงินที่จะเก็บ (บาท) *
             </label>
             <div className="flex items-center gap-2">
               <span className="text-white/40 font-bold">฿</span>
               <input
                 type="number"
-                placeholder="Auto"
+                inputMode="decimal"
+                placeholder="กรอกยอดเงิน"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 className="bg-transparent text-xl font-bold text-white placeholder-white/20 focus:outline-none w-full border-b border-white/10 focus:border-purple-500 transition-colors pb-1"
                 autoFocus
               />
             </div>
+            {isBlank && suggestedAmount !== null && (
+              <button
+                type="button"
+                onClick={() => setAmount(String(suggestedAmount))}
+                className="mt-2 text-xs text-purple-300 hover:text-purple-200 underline underline-offset-2 transition-colors"
+              >
+                ใช้ราคาแนะนำ ฿{suggestedAmount}
+              </button>
+            )}
+            {!isBlank && suggestedAmount !== null && effectiveAmount !== suggestedAmount && (
+              <p className="mt-2 text-xs text-amber-400">
+                ต่างจากราคาแนะนำ ฿{suggestedAmount}
+              </p>
+            )}
           </div>
 
           <div className="flex gap-3">
@@ -1358,10 +1442,13 @@ function EndSessionModal({
               color="red"
               className="flex-1"
               onClick={() => {
-                const parsedAmount = amount ? parseFloat(amount) : undefined;
+                // ช่องว่าง = ยังไม่ได้ยืนยันยอด ไม่ส่ง undefined ให้ RPC
+                // (undefined แปลว่า "คิดให้อัตโนมัติ" ซึ่งไม่ใช่สิ่งที่พนักงานตั้งใจ)
+                const parsedAmount = isBlank ? null : Number(amount);
+                if (parsedAmount === null || !Number.isFinite(parsedAmount)) return;
                 onConfirm(parsedAmount);
               }}
-              disabled={isLoading}
+              disabled={isLoading || isBlank}
             >
               จบการทำงาน
             </GlowButton>

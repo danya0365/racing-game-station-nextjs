@@ -25,10 +25,16 @@
 
 ## Working Log
 
+- **ราคาแยกสาขา** — branch `feature/branch-pricing` (ยังไม่ commit รอที่รักสั่ง)
+  ปัตตานี 30น. 79 / 1ชม. 119 / 2ชม. 200 / 3ชม. 280 · นราธิวาสเดิม 60/100/200/280
+  พบบั๊กเดิม: หน้าเว็บกับที่คิดเงินจริงใช้คนละสูตร (เห็น 100 แต่เก็บ 200) — แก้แล้ว
+  ตาราง `branch_rate_tiers` + `calculate_session_price()` ฝั่ง DB · `BRANCH_RATES` ฝั่ง JS
+  **มี `npm test` แล้ว** — `node --test` ตรง + `scripts/test/loader.mjs` จัดการ `@/` alias (26 เคส)
+
 - **racing theme เสร็จ flow ลูกค้าแล้ว** — commit 11 ก้อน (`d7f7e02` → `55d4c0b`)
   สีแบรนด์เก่า 2,341 → 5 จุด (5 ที่เหลือคือ rose=danger, blue=Facebook ต้องเก็บ)
   เหลือ: `app/(docs)` 746 · backend 708 (มีธีม 5 ชุดของตัวเอง แยกไว้)
-  ยังไม่ทำ: lint 106 errors ของเก่า · build เตือน `middleware` → `proxy`
+  ยังไม่ทำ: lint 103 errors ของเก่า · build เตือน `middleware` → `proxy`
 
 ## Reference
 

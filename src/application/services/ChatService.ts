@@ -13,6 +13,16 @@ import { IChatRepository } from '@/src/application/repositories/IChatRepository'
 import { SHOP_NAME } from '@/src/config/shop.config';
 import { ChatResponse } from '@/src/domain/types/chatTypes';
 
+/**
+ * ราคา 1 ชั่วโมงของเครื่อง ในรูปแบบที่แสดงในแชท
+ *
+ * null = สาขานั้นยังไม่ได้ตั้งราคา → พิมพ์ว่ายังไม่มีข้อมูล ไม่ใช่ "0฿"
+ * ลูกค้าที่เห็น 0 จะเข้าใจว่าเล่นฟรี ซึ่งไม่ใช่ความหมายที่ถูกต้อง
+ */
+function formatRate(rate1h: number | null): string {
+  return rate1h === null ? 'ยังไม่มีข้อมูลราคา' : `${rate1h}฿/ชม.`;
+}
+
 export class ChatService {
   private repo: IChatRepository;
 
@@ -175,7 +185,7 @@ export class ChatService {
       { type: 'separator' as const },
       ...machines.map(m => ({
         label: `${statusIcon(m.status)} ${m.name}`,
-        value: `${m.hourlyRate}฿/ชม.`,
+        value: formatRate(m.rate1h),
         valueColor: statusColor(m.status),
       })),
     ];
@@ -213,7 +223,7 @@ export class ChatService {
       headerColor: '#8B5CF6',
       rows: filtered.map(m => ({
         label: `${statusIcon(m.status)} ${m.name}`,
-        value: `${m.hourlyRate}฿/ชม.`,
+        value: formatRate(m.rate1h),
       })),
     };
   }

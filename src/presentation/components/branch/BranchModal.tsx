@@ -1,6 +1,7 @@
 "use client";
 
-import { BRANCHES, Branch } from "@/src/config/branch.config";
+import type { BranchSlug } from "@/src/config/booking.config";
+import { BRANCHES, Branch, isBranchSlug } from "@/src/config/branch.config";
 import { useBranchStore } from "@/src/presentation/stores/useBranchStore";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -173,11 +174,10 @@ export function BranchModal({ open, dismissible, onClose }: BranchModalProps) {
  * re-read the store) and for the bare redirect pages (/time-booking, which are
  * themselves waiting to send the customer on to their branch).
  */
-function swapBranchInPath(slug: string): string | null {
+function swapBranchInPath(slug: BranchSlug): string | null {
   if (typeof window === "undefined") return null;
   const segments = window.location.pathname.split("/").filter(Boolean);
-  const known = BRANCHES.map((b) => b.slug);
-  if (segments.length > 0 && known.includes(segments[0])) {
+  if (segments.length > 0 && isBranchSlug(segments[0])) {
     return `/${[slug, ...segments.slice(1)].join("/")}`;
   }
   // The root is the landing screen: it is BranchPicker plus this gate, and it

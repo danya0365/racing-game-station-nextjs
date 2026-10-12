@@ -1,13 +1,27 @@
 /**
  * Booking Configuration
- * 
+ *
  * Single source of truth for booking-related settings.
  * Update this file to change pricing, durations, and other booking options.
- * 
+ *
  * ⚠️ Changes here will affect all booking components:
- * - BookingWizard
- * - QuickBookingView
- * - CustomerView (BookingModal)
+ * - HomeView (การ์ดราคา)
+ * - TimeBookingView (ปุ่มเลือกระยะเวลา)
+ * - useControlPresenter (คิดเงินตอนจบเซสชัน)
+ *
+ * ⚠️ PRICING IS PER BRANCH — every function that reads a rate takes a branch
+ * slug, and there is no default. That is deliberate.
+ *
+ * ราคาเดิมมีอยู่สองที่ที่ไม่เคยตรงกัน: `DURATION_OPTIONS` ตรงนี้ (ที่ลูกค้าเห็น)
+ * กับ `machines.hourly_rate` + `rpc_end_session` (ที่คิดเงินจริงตอนจบเซสชัน)
+ * ซึ่งใช้สูตร `ceil(ชั่วโมง) × hourly_rate` — ลูกค้าเห็น 1 ชม = 100 บาท แต่ถูก
+ * คิด 200 เมื่อ hourly_rate = 200 ทำให้ "ส่งต่อ rate เดียวไม่ต้องส่งสาขา" เป็น
+ * กับดักที่เงียบสิบ ๆ ตอนนี้ rate อยู่ในตารางต่อสาขา และ migration
+ * `branch_rate_tiers` เก็บชุดเดียวกันฝั่ง DB — `npm run check:pricing-sync`
+ * เทียบสองฝั่งให้ ถ้าค่าหลุดจากกันต้องเห็นก่อนขายของจริง
+ *
+ * ฝั่ง DB เป็นเจ้าของตัวเลขเงินจริง (RPC คิดเงินเอง) ไฟล์นี้เป็นเจ้าของตัวเลขที่
+ * *แสดงผล* และเป็นที่ที่ `useControlPresenter` ใช้คิดยอดก่อนส่งไปบันทึก
  */
 
 /**
@@ -33,52 +47,118 @@ export interface DurationOption {
 }
 
 /**
- * Pro Racer Rates - Gran Turismo Narathiwat
- * 
- * 30 นาที (WARM UP) - 60 บาท
- * 1 ชั่วโมง (PRO RACE) - 100 บาท
- * 3 ชั่วโมง (GRAND PRIX) - 280 บาท - คุ้มสุด! ลดเหลือ 1.5 บาท/นาที
+ * Rate tiers per branch.
+ *
+ * The shape (time / label / labelEn / icon / popular) is identical for every
+ * branch — only the money differs. Splitting them would mean a new branch has
+ * to re-decide what a "WARM UP" card looks like, and one of the two would
+ * quietly drift. So the labels live once here, and each branch declares prices.
+ *
+ * `pricePerMinute` is DERIVED, not stored (see buildDurationOptions): the home
+ * page prints it as `toFixed(2)`, and a hand-maintained copy is exactly the kind
+ * of number that goes stale the moment a price changes.
  */
-export const DURATION_OPTIONS: DurationOption[] = [
-  { 
-    time: 30, 
-    label: '30 นาที', 
-    labelEn: 'WARM UP',
-    price: 60, 
-    priceDisplay: '฿60', 
-    icon: '⏱️',
-    pricePerMinute: 2,
-  },
-  { 
-    time: 60, 
-    label: '1 ชั่วโมง', 
-    labelEn: 'PRO RACE',
-    price: 100, 
-    priceDisplay: '฿100', 
-    icon: '🏁', 
-    popular: true,
-    pricePerMinute: 1.67,
-  },
-  { 
-    time: 120, 
-    label: '2 ชั่วโมง', 
-    labelEn: 'PRO RACE',
-    price: 200, 
-    priceDisplay: '฿200', 
-    icon: '🏁', 
-    pricePerMinute: 1.67,
-  },
-  { 
-    time: 180, 
-    label: '3 ชั่วโมง', 
-    labelEn: 'GRAND PRIX',
-    price: 280, 
-    priceDisplay: '฿280', 
-    icon: '🏆',
-    popular: true,
-    pricePerMinute: 1.56,
-  },
+export type BranchSlug = "narathiwas" | "pattani";
+
+/** Prices in THB for one branch, keyed by duration in minutes. */
+export type BranchRateTable = Record<number, number>;
+
+/** Everything about a tier except its price — shared by all branches. */
+type DurationTier = Omit<DurationOption, "price" | "pricePerMinute" | "priceDisplay">;
+
+const DURATION_TIERS: readonly DurationTier[] = [
+  { time: 30, label: "30 นาที", labelEn: "WARM UP", icon: "⏱️" },
+  { time: 60, label: "1 ชั่วโมง", labelEn: "PRO RACE", icon: "🏁", popular: true },
+  { time: 120, label: "2 ชั่วโมง", labelEn: "PRO RACE", icon: "🏁" },
+  { time: 180, label: "3 ชั่วโมง", labelEn: "GRAND PRIX", icon: "🏆", popular: true },
 ];
+
+/**
+ * Narathiwat — the original shop. The rates it has always charged.
+ */
+const NARATHIWAS_RATES: BranchRateTable = {
+  30: 60,
+  60: 100,
+  120: 200,
+  180: 280,
+};
+
+/**
+ * Pattani — set by the owner on 2026-10-12.
+ *   30 นาที 79 · 1 ชม 119 · 2 ชม 200 · 3 ชม 280
+ *
+ * Pattani charges more for the two short tiers and the same for 2 and 3 hours,
+ * so its best-value tier is GRAND PRIX by the widest margin — the same tier
+ * Narathiwat leans on.
+ */
+const PATTANI_RATES: BranchRateTable = {
+  30: 79,
+  60: 119,
+  120: 200,
+  180: 280,
+};
+
+/**
+ * Prices per branch, keyed by branch slug.
+ *
+ * The keys must cover `BRANCH_SLUGS` in branch.config.ts. TypeScript enforces
+ * that on the type side (BranchSlug), and `npm run check:pricing-sync` enforces
+ * the other direction — a branch added to one file and forgotten in the other,
+ * which no type system can see.
+ */
+export const BRANCH_RATES: Record<BranchSlug, BranchRateTable> = {
+  narathiwas: NARATHIWAS_RATES,
+  pattani: PATTANI_RATES,
+};
+
+/**
+ * Join the shared tier labels with one branch's prices.
+ *
+ * `pricePerMinute` is rounded to 2dp here rather than stored, because the home
+ * page prints it as `toFixed(2)` and a stored float drifts from what is shown.
+ */
+function buildDurationOptions(slug: BranchSlug): DurationOption[] {
+  const rates = BRANCH_RATES[slug];
+  return DURATION_TIERS.map((tier) => {
+    const price = rates[tier.time];
+    if (price === undefined) {
+      // A missing tier would render as ฿0 and charge the customer nothing —
+      // fail at module load instead, where the stack names this file.
+      throw new Error(
+        `Branch "${slug}" has no price for the ${tier.time}-minute tier (src/config/booking.config.ts)`,
+      );
+    }
+    return {
+      ...tier,
+      price,
+      priceDisplay: `฿${price}`,
+      pricePerMinute: Number((price / tier.time).toFixed(2)),
+    };
+  });
+}
+
+/**
+ * Duration options for one branch — what the home page and the booking form
+ * render.
+ *
+ * Narathiwat is the default argument because a customer screen that has a
+ * branch in scope should pass its own; only the handful of staff-side readers
+ * with no branch (and the tests) rely on this, and those are documented below.
+ * A pricing read that forgets its branch is the exact bug this module exists to
+ * make visible — hence every customer-facing call site passes one explicitly.
+ */
+export function getDurationOptions(slug: BranchSlug = "narathiwas"): DurationOption[] {
+  return buildDurationOptions(slug);
+}
+
+/**
+ * Narathiwat's tiers, for the few places that genuinely have no branch in
+ * scope (staff-side docs, tests).
+ *
+ * Prefer `getDurationOptions(slug)`. Reaching for this in customer-facing code
+ * means the price will not follow the branch the customer picked.
+ */
+export const DURATION_OPTIONS: DurationOption[] = buildDurationOptions("narathiwas");
 
 /**
  * Default duration (in minutes) when user hasn't selected one
@@ -88,24 +168,27 @@ export const DEFAULT_DURATION = 30;
 /**
  * Get duration option by time (minutes)
  */
-export function getDurationOption(time: number): DurationOption | undefined {
-  return DURATION_OPTIONS.find(d => d.time === time);
+export function getDurationOption(
+  time: number,
+  slug: BranchSlug = "narathiwas",
+): DurationOption | undefined {
+  return buildDurationOptions(slug).find((d) => d.time === time);
 }
 
 /**
  * Get price for a duration (in THB)
  */
-export function getPrice(durationMinutes: number): number {
-  const option = getDurationOption(durationMinutes);
+export function getPrice(durationMinutes: number, slug: BranchSlug = "narathiwas"): number {
+  const option = getDurationOption(durationMinutes, slug);
   return option?.price ?? 0;
 }
 
 /**
  * Format price display string
  */
-export function formatPrice(durationMinutes: number): string {
-  const option = getDurationOption(durationMinutes);
-  return option?.priceDisplay ?? `฿${durationMinutes * 2}`;
+export function formatPrice(durationMinutes: number, slug: BranchSlug = "narathiwas"): string {
+  const option = getDurationOption(durationMinutes, slug);
+  return option?.priceDisplay ?? `฿${getPrice(durationMinutes, slug)}`;
 }
 
 /**
@@ -113,25 +196,27 @@ export function formatPrice(durationMinutes: number): string {
  * - Step pricing: Rounds up to the nearest configured tier
  * - If exceeds max tier: Adds excess minutes * best rate
  */
-export function calculateSessionPrice(durationMinutes: number): number {
+export function calculateSessionPrice(
+  durationMinutes: number,
+  slug: BranchSlug = "narathiwas",
+): number {
   if (durationMinutes <= 0) return 0;
 
-  // Sort options by time asc
-  const sorted = [...DURATION_OPTIONS].sort((a, b) => a.time - b.time);
-  
+  const sorted = buildDurationOptions(slug);
+
   // 1. If exact match or lower than first tier
   if (durationMinutes <= sorted[0].time) return sorted[0].price;
 
   // 2. Find tier that covers this duration
-  const tier = sorted.find(opt => opt.time >= durationMinutes);
+  const tier = sorted.find((opt) => opt.time >= durationMinutes);
   if (tier) return tier.price;
 
   // 3. If exceeds max tier, use max tier + per minute logic
   const maxTier = sorted[sorted.length - 1];
   const extraMinutes = durationMinutes - maxTier.time;
   // Use best rate (lowest pricePerMinute) for calculation
-  const bestRate = Math.min(...sorted.map(s => s.pricePerMinute));
-  
+  const bestRate = Math.min(...sorted.map((s) => s.pricePerMinute));
+
   return maxTier.price + Math.ceil(extraMinutes * bestRate);
 }
 
@@ -139,7 +224,7 @@ export function calculateSessionPrice(durationMinutes: number): number {
  * Simple duration values for quick selection (in minutes)
  * Used in components that just need a list of numbers
  */
-export const QUICK_DURATIONS = DURATION_OPTIONS.map(d => d.time);
+export const QUICK_DURATIONS = DURATION_TIERS.map((d) => d.time);
 
 /**
  * Booking form validation rules

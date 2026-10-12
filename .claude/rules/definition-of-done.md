@@ -19,13 +19,22 @@ paths:
 npm run type-check
 npm run lint
 npm run build
+npm test
 ```
 
 **ต้องเขียวทุกตัว** · ถ้าแตะ data flow → `npm run test:api` ด้วย (ต้องเปิด dev server ก่อน)
 
-> ⚠️ **โปรเจคนี้ยังไม่มี unit test และไม่มี CI** (ยืนยันแล้ว 2026-10-08) —
-> การยึดกฎข้อนี้จึงอาศัยวินัย ไม่มี gate บังคับ · อย่าเพิ่งไว้ใจว่า test จะตามทัน
+> ⚠️ **`npm run lint` ยังแดงอยู่ 103 errors ทั้งหมดเป็นของเก่า** — ตอนเพิ่มโค้ดใหม่ต้อง
+> เทียบกับ HEAD ก่อนว่าไม่มี error ใหม่หลุดเข้ามา ไม่ใช่ดูแค่ตัวเลขรวม
+> (`git worktree add /tmp/<ชื่อ> HEAD --detach` แล้วรัน eslint ทั้งสองฝั่งแล้ว diff)
+>
+> **ยังไม่มี CI** — gate ทุกตัวรันมือ การยึดกฎนี้อาศัยวินัย
 > (เฟส 1 ของ [[0002-strangler-fig-not-full-hexagonal]] จะเพิ่ม dep-cruiser + CI)
+
+> ✅ **`npm test` มีแล้ว** (เพิ่ม 2026-10-12) — รันด้วย `node --test` ตรง ไม่ต้องลง
+> test runner ใหม่ ใช้ loader ที่ [`scripts/test/loader.mjs`](../../scripts/test/loader.mjs)
+> จัดการ `@/` alias + extensionless import · ครอบ **ฝั่งราคาเท่านั้น** ที่เหลือยังไม่มี
+> · เทสฝั่ง DB (`pricing-sync`) ข้ามถ้า local Supabase ไม่ได้ขึ้น — ข้าม ≠ ผ่าน
 
 ### 2. Test ครอบของใหม่ — **บังคับเมื่อเพิ่ม/แก้ logic**
 

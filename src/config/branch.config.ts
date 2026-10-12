@@ -13,13 +13,20 @@
  * `/time-booking` and lose the branch.
  */
 
+import type { BranchSlug } from "@/src/config/booking.config";
 import { SHOP_NAME } from "@/src/config/shop.config";
 
 export interface Branch {
   /** UUID from public.branches */
   id: string;
-  /** URL segment — must match branches.slug */
-  slug: string;
+  /**
+   * URL segment — must match branches.slug.
+   *
+   * Typed as BranchSlug rather than `string` so that adding a branch here
+   * without a price table in BRANCH_RATES fails type-check. A new branch that
+   * renders ฿0 to customers is a billing bug, not a UI bug.
+   */
+  slug: BranchSlug;
   /** Display name (Thai) */
   name: string;
   /** Short label for header/footer */
@@ -84,8 +91,19 @@ export const BRANCHES: Branch[] = [
  */
 export const DEFAULT_BRANCH = BRANCHES[0];
 
-/** All known slugs — used by middleware to detect the branch prefix */
-export const BRANCH_SLUGS = BRANCHES.map((b) => b.slug);
+/**
+ * All known slugs — used to detect the branch prefix.
+ *
+ * `as const` would be wrong here: the array is built at runtime from BRANCHES,
+ * and what callers actually need is that a slug read from a URL or localStorage
+ * can be checked against it and then narrowed to BranchSlug.
+ */
+export const BRANCH_SLUGS: readonly BranchSlug[] = BRANCHES.map((b) => b.slug);
+
+/** Narrow an arbitrary string (URL segment, localStorage value) to a BranchSlug */
+export function isBranchSlug(value: string): value is BranchSlug {
+  return (BRANCH_SLUGS as readonly string[]).includes(value);
+}
 
 /**
  * Look up branch by slug
@@ -104,7 +122,7 @@ export function getBranchById(id: string): Branch | undefined {
 /**
  * Build a branch-scoped URL: /pattani/time-booking
  */
-export function branchPath(slug: string, path = ""): string {
+export function branchPath(slug: BranchSlug, path = ""): string {
   const clean = path.replace(/^\//, "");
   return clean ? `/${slug}/${clean}` : `/${slug}`;
 }

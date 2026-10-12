@@ -2,7 +2,7 @@
 
 import { Machine } from "@/src/application/repositories/IMachineRepository";
 import { useActiveBranch } from "@/src/presentation/components/branch/BranchScope";
-import { DURATION_OPTIONS } from "@/src/config/booking.config";
+import { DurationOption, getDurationOptions } from "@/src/config/booking.config";
 import { BRANCHES } from "@/src/config/branch.config";
 import { HomeViewModel } from "@/src/presentation/presenters/home/HomePresenter";
 import { MachineImage } from "@/src/presentation/components/ui/MachineImage";
@@ -13,9 +13,9 @@ import Link from "next/link";
 /**
  * HomeView — หน้าแรกลูกค้า
  *
- * โครงแบบ "pit wall": เลขสถานะสามค่าเท่ากันเป็นอันดับแรก (คิวรอ / เครื่องว่าง /
- * เข้าเล่นวันนี้) เพราะคำถามแรกของคนที่มาร้านคือ "ต้องรอนานไหม" แล้วค่อยเป็น
- * ปุ่มหลักสองปุ่มที่ครอบคลุมการใช้งานเกือบทั้งหมด
+ * โครงแบบ "pit wall": สถานะเครื่องที่ใช้ได้ตอนนี้เป็นอันดับแรก เพราะคำถามแรก
+ * ของคนที่มาร้านคือ "เล่นได้เลยไหม" แล้วค่อยเป็นปุ่มหลักที่ครอบคลุม
+ * การใช้งานเกือบทั้งหมด
  *
  * สีมาจากธีม racing (public/styles/racing-theme.css) ซึ่งสลับ accent
  * ตาม data-racing — ค่าใน component นี้ไม่ผูกสีแบรนด์ไว้เลย
@@ -36,77 +36,59 @@ export function HomeView({
     branch.id,
   );
 
+  // ราคาเปลี่ยนตามสาขา — อ่านจาก branch ที่ลูกค้าเลือก ไม่ใช่ค่าคงที่
+  const rateCards = getDurationOptions(branchSlug);
+
   const machines = viewModel?.machines || [];
+  // เหลือเฉพาะที่การ์ดสถานะใช้ — ตัวเลขคิว/ยอดรวมวันนี้ถูกเอาออกจากหน้านี้
   const stats = {
     totalMachines: machines.length,
     availableMachines: machines.filter((m) => m.status === "available").length,
-    todayBookings: viewModel?.todayBookings || 0,
-    walkInQueueCount: viewModel?.walkInQueueCount || 0,
-    generalCustomers: viewModel?.generalCustomers || 0,
-    totalPlayers: viewModel?.totalPlayers || 0,
-    waitingInQueue: viewModel?.queueStats.waitingCount || 0,
-    averageWaitTime: viewModel?.queueStats.averageWaitMinutes || 0,
+    busyMachines: machines.filter((m) => m.status !== "available").length,
   };
 
   const loading = isLoading && !viewModel;
 
   return (
     <div className="bg-racing-bg text-racing-fg overflow-auto scrollbar-thin">
-      {/* Mobile ถูกบีบให้จบในจอเดียว: padding และระยะห่างลดลง แต่จำนวน
-          column เท่ากับ desktop — จุดนี้คือของแลกเปลี่ยน ถ้า stack เป็น
-          column เดียวสิ่งที่ต้องเห็นก่อนเล่น (รอนานไหม / ว่างไหม) จะถูก
-          ดันไปนอกจอทั้งที่มันคือคำถามแรกของคนที่ยืนหน้าร้าน */}
+      {/* Mobile ถูกบีบให้จบในจอเดียว: padding และระยะห่างลดลง — จุดนี้คือ
+          ของแลกเปลี่ยน ถ้าเนื้อหาไหลลงจอถัดไป สิ่งที่ต้องเห็นก่อนเล่น
+          (ว่างไหม) จะถูกดันไปนอกจอทั้งที่มันคือคำถามแรกของคนที่ยืนหน้าร้าน */}
       <div className="max-w-6xl mx-auto px-3 py-2 md:px-4 md:py-8 space-y-2 md:space-y-8">
-        {/* ---------- Pit board: สามค่าที่ตอบคำถามแรก ---------- */}
-        <section className="grid grid-cols-3 gap-px bg-racing-line border border-racing-line rounded-xl overflow-hidden">
+        {/* ---------- แถวเดียว: เครื่องว่าง + ปุ่มจอง ----------
+            สองอย่างนี้ตอบคำถามเดียวกันคือ "เล่นได้เลยไหม" การวางคนละแถว
+            ทำให้ตรงกลางจอเหลือโล่งเปล่า ๆ และลูกค้าต้องเลื่อนสายตาสลับไปมา
+            ระหว่างตัวเลขกับปุ่ม — จึงรวมเป็นแถวเดียว ปุ่มชิดขวา
+
+            StatCell เดิมเป็นช่องเต็มความกว้างตอนสามช่องในแถว แต่ตอนนี้มีเพียง
+            ช่องเดียวจึงถูกจำกัดความกว้างแล้ว ไม่ต้องแก้ตัว StatCell เอง */}
+        <section className="flex items-stretch gap-2 md:gap-3">
           <StatCell
-            label="คิวรอตอนนี้"
-            value={loading ? null : stats.waitingInQueue}
-            unit="คน"
-            sub={
-              stats.waitingInQueue > 0 && stats.averageWaitTime > 0
-                ? `รอประมาณ ${stats.averageWaitTime} นาที`
-                : "ยังไม่มีคิวรอ"
-            }
-            emphasis
-          />
-          <StatCell
-            label="เครื่องว่าง"
+            label="เครื่องว่างตอนนี้"
             value={loading ? null : stats.availableMachines}
             total={stats.totalMachines}
             tone="go"
             sub={
-              stats.totalMachines - stats.availableMachines > 0
-                ? `กำลังเล่น/ปิด ${stats.totalMachines - stats.availableMachines} เครื่อง`
+              stats.busyMachines > 0
+                ? `กำลังเล่น/ปิด ${stats.busyMachines} เครื่อง`
                 : "เครื่องว่างทั้งหมด"
             }
+            className="racing-card flex-1 min-w-0 overflow-hidden"
           />
-          <StatCell
-            label="เข้าเล่นวันนี้"
-            value={loading ? null : stats.totalPlayers}
-            unit="คน"
-            sub={`จองล่วงหน้า ${stats.todayBookings} รายการ`}
+          {/* One way in, on purpose: walk-in is entered by staff at the counter,
+              so offering "เข้าคิวเล่นเลย" beside "จองล่วงหน้า" told customers
+              there were two ways to start a session when there is one.
+
+              Capped rather than full-bleed: it stays readable at half width on
+              mobile and does not stretch across max-w-6xl on desktop. */}
+          <ActionButton
+            href={branchHref("/time-booking")}
+            icon="📅"
+            title="จองล่วงหน้า"
+            description="ล็อกเวลาที่ต้องการ ราคาเหมือนกัน"
+            primary
+            className="w-1/2 md:w-[22rem] shrink-0"
           />
-        </section>
-
-        {/* ---------- ปุ่มหลัก ----------
-            One way in, on purpose: walk-in is entered by staff at the counter,
-            so offering "เข้าคิวเล่นเลย" beside "จองล่วงหน้า" told customers
-            there were two ways to start a session when there is one.
-
-            Capped rather than full-bleed: this sat in a two-column grid, and a
-            single button stretched across max-w-6xl reads as a broken layout
-            rather than a deliberate choice. */}
-        <section>
-          <div className="max-w-md">
-            <ActionButton
-              href={branchHref("/time-booking")}
-              icon="📅"
-              title="จองล่วงหน้า"
-              description="ล็อกเวลาที่ต้องการ ราคาเหมือนกัน"
-              primary
-            />
-          </div>
         </section>
 
         {/* ---------- สถานะเครื่อง ----------
@@ -161,7 +143,7 @@ export function HomeView({
             </Link>
           </div>
           <div className="grid grid-cols-4 gap-1.5 md:gap-2.5">
-            {DURATION_OPTIONS.map((d) => (
+            {rateCards.map((d) => (
               <RateCard key={d.time} rate={d} />
             ))}
           </div>
@@ -209,10 +191,10 @@ interface StatCellProps {
   unit?: string;
   total?: number;
   sub?: string;
-  /** ใหญ่กว่าอีกสองช่อง — คือคำตอบของคำถามแรก */
-  emphasis?: boolean;
   /** สี LED ตามสถานะ ไม่ใช่สีแบรนด์ */
   tone?: "go";
+  /** กว้างตามตำแหน่งที่วาง — การ์ดต้องสูงเท่าปุ่มข้างๆ */
+  className?: string;
 }
 
 function StatCell({
@@ -221,20 +203,25 @@ function StatCell({
   unit,
   total,
   sub,
-  emphasis,
   tone,
+  className = "",
 }: StatCellProps) {
   return (
-    /* px-4 py-3.5 เต็มเลยไม่พอดีมือถือ — สามช่องเหลือราว 110px ต่อช่อง ต้องลด
-       padding ลงมาก ไม่งั้นตัวเลขจะตัดทางขวา */
-    <div className="bg-racing-panel px-2 py-2 md:px-4 md:py-3.5">
-      <div className="racing-label !text-[9px] md:!text-[10px] truncate">
+    /* flex child ของแถว — ยืดสูงเต็มแถวด้วย items-stretch จึงไม่ต้องใส่ h-full
+       ถ้าห่อด้วย div อีกชั้น ความสูงจะหยุดที่เนื้อหาแล้วสูงไม่เท่าปุ่ม */
+    <div
+      className={`bg-racing-panel px-3 py-2.5 md:px-4 md:py-3.5 flex flex-col justify-center ${className}`}
+    >
+      {/* tracking แคบลงบนมือถือ — racing-label มี letter-spacing 0.16em ซึ่งกิน
+          ความกว้างไปเกือบ 13px เมื่ออยู่ในการ์ดครึ่งแถว ข้อความยาว ๆ อย่าง
+          "เครื่องว่างตอนนี้" จะถูกตัดกลางคัน คืนค่าเดิมตั้งแต่ md ขึ้นไป */}
+      <div className="racing-label !text-[10px] !tracking-[0.06em] md:!text-[11px] md:!tracking-[0.16em] leading-tight">
         {label}
       </div>
       <div
-        className={`racing-figure mt-1 !text-[26px] md:mt-1.5 md:!text-[34px] ${
-          emphasis ? "md:text-[38px]" : "md:text-[32px]"
-        } ${tone === "go" ? "text-racing-led-go" : ""}`}
+        className={`racing-figure mt-1 !text-[32px] md:mt-1.5 md:!text-[38px] ${
+          tone === "go" ? "text-racing-led-go" : ""
+        }`}
       >
         {value === null ? (
           "–"
@@ -255,11 +242,7 @@ function StatCell({
         )}
       </div>
       {sub ? (
-        <div
-          className={`text-[10px] md:text-xs mt-0.5 md:mt-1.5 leading-tight line-clamp-2 ${
-            emphasis ? "text-racing-fg font-medium" : "text-racing-fg-2"
-          }`}
-        >
+        <div className="text-[11px] md:text-xs mt-0.5 md:mt-1.5 leading-tight text-racing-fg-2">
           {sub}
         </div>
       ) : null}
@@ -273,6 +256,8 @@ interface ActionButtonProps {
   title: string;
   description: string;
   primary?: boolean;
+  /** กว้าง/ยืดสูงตามตำแหน่งที่วาง — ปุ่มต้องสูงเท่าการ์ดข้างๆ */
+  className?: string;
 }
 
 function ActionButton({
@@ -281,15 +266,18 @@ function ActionButton({
   title,
   description,
   primary,
+  className = "",
 }: ActionButtonProps) {
   return (
+    /* ยืดสูงเต็มแถวด้วย items-stretch ของพ่อ flex ต้องเป็นลูกตรงๆ ถ้ามี div
+       ครอบอีกชั้น h-full จะหา reference ที่สูงแน่นอนไม่ได้และล้ม */
     <Link
       href={href}
       className={`group flex items-center gap-3 px-3 py-2.5 md:px-4 md:py-4 rounded-xl border transition-all duration-200 ${
         primary
           ? "bg-linear-to-b from-racing-flag-soft to-racing-flag border-transparent shadow-[0_10px_26px_-12px_var(--racing-flag)] hover:brightness-110"
           : "bg-racing-panel border-racing-line hover:border-racing-fg-3"
-      }`}
+      } ${className}`}
     >
       <span
         className={`w-9 h-9 md:w-10 md:h-10 shrink-0 grid place-items-center rounded-[10px] text-[16px] md:text-[17px] border ${
@@ -424,7 +412,7 @@ function MachineCard({ machine }: { machine: Machine }) {
   );
 }
 
-function RateCard({ rate }: { rate: (typeof DURATION_OPTIONS)[number] }) {
+function RateCard({ rate }: { rate: DurationOption }) {
   return (
     <div
       className={`px-2 py-2 md:px-3.5 md:py-3 rounded-xl border ${

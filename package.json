@@ -7,6 +7,8 @@
     "dev-c": "rm -rf .next && yarn dev 2>&1 &",
     "build": "next build --turbopack",
     "start": "next start",
+    "test": "node --experimental-strip-types --import ./scripts/test/register.mjs --test \"scripts/test/*.test.ts\"",
+    "test:db": "npm test",
     "test:api": "npx tsx scripts/test-api.ts",
     "supabase-start": "supabase start",
     "supabase-stop": "supabase stop",
