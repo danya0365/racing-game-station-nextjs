@@ -1,5 +1,11 @@
 # แก้ปัญหา Booking Slot ไม่คำนวณ Active Sessions
 
+> ✅ **แผนนี้เสร็จสมบูรณ์แล้ว** — `sessions.estimated_end_time` และ `rpc_start_session(p_estimated_duration_minutes)` ถูก implement ใน migration ปัจจุบัน และ `rpc_is_booking_slot_available` / `rpc_get_bookings_schedule` ตรวจ open sessions อยู่แล้ว
+>
+> รายการ "Staff UI" ด้านล่างยังต้องทำ (staff ยังไม่มีช่องกรอก `estimated_end_time` ตอนเริ่มเซสชันแบบ manual — ปัจจุบันใช้ค่า default 60 นาที)
+>
+> ⚠️ ชื่อไฟล์ migration ในแผนเดิมไม่เคยมีอยู่จริง — แก้เป็นไฟล์จริงแล้ว
+
 ## 🔍 ปัญหาที่พบ
 
 ระบบปัจจุบันมีช่องโหว่ในการคำนวณ slot availability:
@@ -66,7 +72,9 @@ sessions (
 
 ### Database - Sessions Table
 
-#### [MODIFY] [20260119000002_sessions.sql](file:///Users/marosdeeuma/racing-game-station-nextjs/supabase/migrations/20260119000002_sessions.sql)
+#### [MODIFY] [20260108131500_racing_system.sql](../../../supabase/migrations/20260108131500_racing_system.sql)
+
+> ✅ **เสร็จแล้ว** — ชื่อไฟล์เดิมในแผนคือ `20260119000002_sessions.sql` ซึ่งไม่เคยมีอยู่จริง; ตอนนี้อยู่ในไฟล์นี้
 
 เพิ่ม column `estimated_end_time` ใน sessions table:
 
@@ -83,7 +91,9 @@ IS 'Estimated end time for walk-in/manual sessions. Used for slot availability c
 
 ### Database - Slot Availability Function
 
-#### [MODIFY] [20260115000000_bookings.sql](file:///Users/marosdeeuma/racing-game-station-nextjs/supabase/migrations/20260115000000_bookings.sql)
+#### [MODIFY] [20260108131501_racing_system_rpc.sql](../../../supabase/migrations/20260108131501_racing_system_rpc.sql)
+
+> ✅ **เสร็จแล้ว** — ชื่อไฟล์เดิมในแผนคือ `20260115000000_bookings.sql` ซึ่งไม่เคยมีอยู่จริง
 
 แก้ไข `rpc_is_booking_slot_available` ให้ตรวจสอบ active sessions ด้วย:
 
@@ -144,7 +154,9 @@ $$;
 
 ### Database - Start Session Function
 
-#### [MODIFY] [20260119000002_sessions.sql](file:///Users/marosdeeuma/racing-game-station-nextjs/supabase/migrations/20260119000002_sessions.sql)
+#### [MODIFY] [20260108131501_racing_system_rpc.sql](../../../supabase/migrations/20260108131501_racing_system_rpc.sql)
+
+> ✅ **เสร็จแล้ว** — ชื่อไฟล์เดิมในแผนคือ `20260119000002_sessions.sql` ซึ่งไม่เคยมีอยู่จริง
 
 แก้ไข `rpc_start_session` ให้รับ `p_estimated_duration_minutes`:
 
@@ -187,7 +199,7 @@ RETURNS JSON
 
 ### Frontend - Backend Presenter
 
-#### [MODIFY] [BackendPresenter.ts](file:///Users/marosdeeuma/racing-game-station-nextjs/src/presentation/presenters/backend/BackendPresenter.ts)
+#### [MODIFY] [BackendPresenter.ts](../../../src/presentation/presenters/backend/BackendPresenter.ts)
 
 เพิ่ม parameter `estimatedDurationMinutes` เมื่อ start session:
 

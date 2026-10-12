@@ -6,6 +6,16 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
+// Branch route prefixes — customer-facing URLs carry the branch as a
+// real segment (/pattani/...), NOT a route group, so the branch survives
+// the URL. Strip the prefix before the auth checks below.
+//
+// Read from the config rather than repeated here: a slug typo in two places
+// silently breaks the branch. Edge middleware can import from src/config.
+import { BRANCH_SLUGS } from '@/src/config/branch.config';
+
+const BRANCH_PREFIXES = BRANCH_SLUGS.map((slug) => `/${slug}`);
+
 // Routes that require authentication
 const protectedRoutes = [
   '/backend',
@@ -56,20 +66,27 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
+  // Strip the branch prefix so /pattani/customer/booking-status is checked
+  // against /customer/booking-status — branch pages reuse the existing
+  // auth rules instead of duplicating them per branch.
+  const branchPrefix = BRANCH_PREFIXES.find((p) => pathname === p || pathname.startsWith(`${p}/`));
+  const routePath = branchPrefix ? pathname.slice(branchPrefix.length) || '/' : pathname;
+
   // Check if the route is protected
   const isProtectedRoute = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
+    routePath.startsWith(route)
   );
 
   // Check if the route is an auth route
   const isAuthRoute = authRoutes.some((route) =>
-    pathname.startsWith(route)
+    routePath.startsWith(route)
   );
 
   // Redirect to login if accessing protected route without auth
   if (isProtectedRoute && !user) {
     const url = request.nextUrl.clone();
     url.pathname = '/auth/login';
+    // Keep the branch prefix so login returns the customer to the same branch
     url.searchParams.set('redirectTo', pathname);
     return NextResponse.redirect(url);
   }

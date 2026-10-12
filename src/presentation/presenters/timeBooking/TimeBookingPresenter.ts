@@ -35,10 +35,11 @@ export class TimeBookingPresenter {
 
   /**
    * Get initial view model with machines
+   * @param branchId - Restrict machines to one branch
    */
-  async getViewModel(): Promise<TimeBookingViewModel> {
+  async getViewModel(branchId?: string): Promise<TimeBookingViewModel> {
     try {
-      const allMachines = await this.machineRepository.getAll();
+      const allMachines = await this.machineRepository.getAll(branchId);
       const activeMachines = allMachines.filter(m => m.isActive);
 
       return {
@@ -56,9 +57,9 @@ export class TimeBookingPresenter {
   /**
    * Get all active machines
    */
-  async getMachines(): Promise<Machine[]> {
+  async getMachines(branchId?: string): Promise<Machine[]> {
     try {
-      const allMachines = await this.machineRepository.getAll();
+      const allMachines = await this.machineRepository.getAll(branchId);
       return allMachines.filter(m => m.isActive);
     } catch (error) {
       console.error('Error getting machines:', error);

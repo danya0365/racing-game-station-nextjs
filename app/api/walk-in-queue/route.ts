@@ -18,15 +18,17 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
     const customerId = searchParams.get('customerId');
-    
+    // Optional ?branch=<uuid> — restrict the waiting queue to one branch
+    const branchId = searchParams.get('branch') || undefined;
+
     let queues;
-    
+
     if (status === 'waiting') {
-      queues = await repository.getWaiting();
+      queues = await repository.getWaiting(branchId);
     } else if (customerId) {
       queues = await repository.getByCustomerId(customerId);
     } else {
-      queues = await repository.getAll();
+      queues = await repository.getAll(undefined, undefined, branchId);
     }
     
     return NextResponse.json(queues);
@@ -55,6 +57,9 @@ export async function POST(request: NextRequest) {
       preferredMachineId: body.preferredMachineId,
       notes: body.notes,
       customerId: body.customerId || '',
+      // Used only when no machine is picked — the RPC derives the branch from
+      // the chosen machine otherwise
+      branchId: body.branchId,
     });
     
     return NextResponse.json(queue, { status: 201 });

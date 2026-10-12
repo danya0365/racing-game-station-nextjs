@@ -6,6 +6,7 @@
 
 import { Machine } from '@/src/application/repositories/IMachineRepository';
 import { JoinWalkInQueueData, WalkInQueue } from '@/src/application/repositories/IWalkInQueueRepository';
+import { useActiveBranch } from '@/src/presentation/components/branch/BranchScope';
 import { useCustomerStore } from '@/src/presentation/stores/useCustomerStore';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { WalkInPresenter } from './WalkInPresenter';
@@ -20,7 +21,11 @@ export interface WalkInPresenterState {
 
 export interface WalkInPresenterActions {
   loadData: () => Promise<void>;
-  joinQueue: (data: JoinWalkInQueueData) => Promise<WalkInQueue>;
+  /**
+   * @param branchId - Used only when no machine is picked; otherwise the RPC
+   *   derives the branch from the chosen machine
+   */
+  joinQueue: (data: JoinWalkInQueueData, branchId?: string) => Promise<WalkInQueue>;
   cancelQueue: (queueId: string) => Promise<void>;
   clearError: () => void;
 }
@@ -32,6 +37,11 @@ export function useWalkInPresenter(
     () => presenterOverride ?? createClientWalkInPresenter(),
     [presenterOverride]
   );
+
+  // Resolved during render from BranchScope's context, so it is already the
+  // right branch on the first render — a child's effect runs before the
+  // parent's, so reading it from the store inside a callback would be stale.
+  const branchId = useActiveBranch().id;
   
   const isMountedRef = useRef(true);
   const [currentQueue, setCurrentQueue] = useState<WalkInQueue | null>(null);
@@ -52,7 +62,7 @@ export function useWalkInPresenter(
       const customerId = currentActive?.customerId;
 
       const [machines, status] = await Promise.all([
-        presenter.getActiveMachines(),
+        presenter.getActiveMachines(branchId),
         customerId ? presenter.getMyQueueStatus(customerId) : Promise.resolve(null)
       ]);
 
@@ -95,17 +105,22 @@ export function useWalkInPresenter(
         setLoading(false);
       }
     }
-  }, [presenter, updateWalkIn, leaveWalkIn]);
+  }, [presenter, branchId, updateWalkIn, leaveWalkIn]);
 
   const joinQueue = useCallback(async (data: JoinWalkInQueueData) => {
     setLoading(true);
     setError(null);
     try {
       const existingCustomerId = useCustomerStore.getState().customerInfo.id;
-      const queue = await presenter.joinQueue({
-        ...data,
-        customerId: existingCustomerId || '',
-      });
+      const queue = await presenter.joinQueue(
+        {
+          ...data,
+          customerId: existingCustomerId || '',
+        },
+        // Only used when the customer didn't pick a machine — the RPC derives
+        // the branch from the machine otherwise
+        branchId
+      );
       
       // Update customer info with latest data from queue response
       useCustomerStore.getState().setCustomerInfo({
@@ -141,7 +156,7 @@ export function useWalkInPresenter(
     } finally {
       if (isMountedRef.current) setLoading(false);
     }
-  }, [presenter, joinWalkIn]);
+  }, [presenter, branchId, joinWalkIn]);
 
   const cancelQueue = useCallback(async (queueId: string) => {
     setLoading(true);

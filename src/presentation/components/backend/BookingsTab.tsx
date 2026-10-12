@@ -159,15 +159,15 @@ export function BookingsTab() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'confirmed':
-        return 'bg-emerald-500 text-white';
+        return 'bg-racing-led-go text-racing-led-on';
       case 'pending':
-        return 'bg-amber-500 text-white';
+        return 'bg-racing-led-warn text-racing-led-on';
       case 'cancelled':
-        return 'bg-red-500 text-white';
+        return 'bg-racing-led-stop text-racing-led-on';
       case 'completed':
-        return 'bg-gray-500 text-white';
+        return 'bg-racing-led-off text-racing-led-on';
       default:
-        return 'bg-gray-500 text-white';
+        return 'bg-racing-led-off text-racing-led-on';
     }
   };
 
@@ -190,7 +190,7 @@ export function BookingsTab() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-purple-500/20 flex items-center justify-center animate-pulse">
+          <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-racing-flag/20 flex items-center justify-center animate-pulse">
             📅
           </div>
           <p className="text-muted">กำลังโหลด...</p>
@@ -220,7 +220,7 @@ export function BookingsTab() {
           <select
             value={selectedMachineId}
             onChange={(e) => setSelectedMachineId(e.target.value)}
-            className="w-full px-4 py-3 bg-surface border border-border rounded-xl focus:border-purple-500 focus:outline-none transition-colors"
+            className="w-full px-4 py-3 bg-surface border border-border rounded-xl focus:border-racing-flag focus:outline-none transition-colors"
           >
             <option value="all">📋 ทุกเครื่อง</option>
             {machines.map((machine) => (
@@ -241,8 +241,8 @@ export function BookingsTab() {
                 onClick={() => setSelectedDate(date)}
                 className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                   selectedDate === date
-                    ? 'bg-purple-500 text-white'
-                    : 'bg-surface border border-border text-muted hover:border-purple-500'
+                    ? 'bg-racing-flag text-racing-on-flag'
+                    : 'bg-surface border border-border text-muted hover:border-racing-flag'
                 }`}
               >
                 {index === 0 ? 'วันนี้' : formatDate(date)}
@@ -254,24 +254,24 @@ export function BookingsTab() {
 
       {/* Stats Overview */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 text-center">
-          <div className="text-2xl font-bold text-emerald-400">
+        <div className="bg-racing-led-go/10 border border-racing-led-go/30 rounded-xl p-4 text-center">
+          <div className="text-2xl font-bold text-racing-led-go">
             {selectedMachineId === 'all' 
               ? Array.from(allSchedules.values()).reduce((sum, s) => sum + s.availableSlots, 0)
               : daySchedule?.availableSlots || 0}
           </div>
           <div className="text-sm text-muted">สล็อตว่าง {selectedMachineId === 'all' ? '(รวม)' : ''}</div>
         </div>
-        <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center">
-          <div className="text-2xl font-bold text-red-400">
+        <div className="bg-racing-led-stop/10 border border-racing-led-stop/30 rounded-xl p-4 text-center">
+          <div className="text-2xl font-bold text-racing-led-stop">
             {selectedMachineId === 'all'
               ? Array.from(allSchedules.values()).reduce((sum, s) => sum + s.bookedSlots, 0)
               : daySchedule?.bookedSlots || 0}
           </div>
           <div className="text-sm text-muted">สล็อตจองแล้ว {selectedMachineId === 'all' ? '(รวม)' : ''}</div>
         </div>
-        <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 text-center">
-          <div className="text-2xl font-bold text-purple-400">{bookings.length}</div>
+        <div className="bg-racing-flag-dim border border-racing-flag/30 rounded-xl p-4 text-center">
+          <div className="text-2xl font-bold text-racing-flag-text">{bookings.length}</div>
           <div className="text-sm text-muted">คนจองวันนี้</div>
         </div>
       </div>
@@ -284,11 +284,11 @@ export function BookingsTab() {
             {daySchedule.timeSlots.map((slot) => {
               let slotClass = '';
               if (slot.status === 'available') {
-                slotClass = 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400';
+                slotClass = 'bg-racing-led-go/15 border-racing-led-go/30 text-racing-led-go';
               } else if (slot.status === 'booked') {
-                slotClass = 'bg-red-500/20 border-red-500/30 text-red-400';
+                slotClass = 'bg-racing-led-stop/15 border-racing-led-stop/30 text-racing-led-stop';
               } else {
-                slotClass = 'bg-gray-500/20 border-gray-500/30 text-gray-500';
+                slotClass = 'bg-racing-led-off/15 border-racing-led-off/30 text-racing-led-off';
               }
               
               return (
@@ -304,15 +304,15 @@ export function BookingsTab() {
           </div>
           <div className="flex gap-4 mt-4 text-sm">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-emerald-500/30 border border-emerald-500/50" />
+              <div className="w-4 h-4 rounded bg-racing-led-go/30 border border-racing-led-go/50" />
               <span className="text-muted">ว่าง</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-red-500/30 border border-red-500/50" />
+              <div className="w-4 h-4 rounded bg-racing-led-stop/30 border border-racing-led-stop/50" />
               <span className="text-muted">จองแล้ว</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-gray-500/30 border border-gray-500/50" />
+              <div className="w-4 h-4 rounded bg-racing-led-off/30 border border-racing-led-off/50" />
               <span className="text-muted">ผ่านไปแล้ว</span>
             </div>
           </div>
@@ -338,21 +338,21 @@ export function BookingsTab() {
                       <span className="font-bold text-foreground">{machine.name}</span>
                     </div>
                     <div className="flex gap-2 text-xs">
-                      <span className="px-2 py-1 bg-emerald-500/20 text-emerald-400 rounded-full">
+                      <span className="px-2 py-1 bg-racing-led-go/15 text-racing-led-go rounded-full">
                         ว่าง {schedule.availableSlots}
                       </span>
-                      <span className="px-2 py-1 bg-red-500/20 text-red-400 rounded-full">
+                      <span className="px-2 py-1 bg-racing-led-stop/15 text-racing-led-stop rounded-full">
                         จอง {schedule.bookedSlots}
                       </span>
                     </div>
                   </div>
                   <div className="grid grid-cols-8 sm:grid-cols-12 md:grid-cols-16 lg:grid-cols-24 gap-1">
                     {schedule.timeSlots.map((slot) => {
-                      let slotColor = 'bg-gray-500/30';
+                      let slotColor = 'bg-racing-led-off/40';
                       if (slot.status === 'available') {
-                        slotColor = 'bg-emerald-500/50';
+                        slotColor = 'bg-racing-led-go/50';
                       } else if (slot.status === 'booked') {
-                        slotColor = 'bg-red-500/50';
+                        slotColor = 'bg-racing-led-stop/50';
                       }
                       
                       return (
@@ -372,15 +372,15 @@ export function BookingsTab() {
           {/* Legend */}
           <div className="flex gap-4 mt-4 text-sm">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-emerald-500/50" />
+              <div className="w-4 h-4 rounded bg-racing-led-go/50" />
               <span className="text-muted">ว่าง</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-red-500/50" />
+              <div className="w-4 h-4 rounded bg-racing-led-stop/50" />
               <span className="text-muted">จองแล้ว</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-gray-500/30" />
+              <div className="w-4 h-4 rounded bg-racing-led-off/40" />
               <span className="text-muted">ผ่านไปแล้ว</span>
             </div>
           </div>
@@ -392,7 +392,7 @@ export function BookingsTab() {
         <h3 className="text-lg font-bold text-foreground mb-4">📋 รายการจอง ({bookings.length})</h3>
         
         {error && (
-          <div className="mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400">
+          <div className="mb-4 p-4 bg-racing-led-stop/10 border border-racing-led-stop/30 rounded-xl text-racing-led-stop">
             {error}
           </div>
         )}
@@ -410,14 +410,14 @@ export function BookingsTab() {
                 className="flex items-center justify-between flex-wrap gap-4 p-4 bg-surface border border-border rounded-xl"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-xl">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-xl">
                     🕐
                   </div>
                   <div>
                     <p className="font-bold text-foreground">
                       {booking.localStartTime} - {booking.localEndTime}
                       {selectedMachineId === 'all' && (
-                        <span className="ml-2 px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs rounded-full">
+                        <span className="ml-2 px-2 py-0.5 bg-racing-flag-dim text-racing-flag-text text-xs rounded-full">
                           {machines.find(m => m.id === booking.machineId)?.name || 'Unknown'}
                         </span>
                       )}
@@ -519,14 +519,14 @@ function EditBookingModal({
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-backdrop-in" onClick={onClose} />
       <div className="relative w-full max-w-md bg-surface border border-border rounded-2xl shadow-2xl overflow-hidden animate-modal-in">
-        <div className="p-4 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-b border-border flex justify-between items-center">
+        <div className="p-4 bg-racing-flag-dim border-b border-border flex justify-between items-center">
           <h3 className="font-bold text-lg text-foreground">✏️ แก้ไขการจองเวลา</h3>
           <button onClick={onClose} className="text-muted hover:text-foreground">✕</button>
         </div>
         
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           {/* Customer Info (Read-only) */}
-          <div className="bg-muted-light/30 p-3 rounded-xl border border-border/50">
+          <div className="bg-muted-light p-3 rounded-xl border border-border/50">
             <div className="text-xs text-muted mb-2">ข้อมูลลูกค้า</div>
             <p className="font-medium text-foreground">{booking.customerName}</p>
             <p className="text-sm text-muted">{booking.customerPhone}</p>
@@ -538,7 +538,7 @@ function EditBookingModal({
             <select
               value={formData.status}
               onChange={(e) => setFormData({ ...formData, status: e.target.value as Booking['status'] })}
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-purple-500 text-foreground outline-none"
+              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-racing-flag text-foreground outline-none"
             >
               <option value="pending">⏳ รอยืนยัน</option>
               <option value="confirmed">✅ ยืนยันแล้ว</option>
@@ -553,14 +553,14 @@ function EditBookingModal({
             <textarea
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-purple-500 text-foreground resize-none"
+              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:ring-2 focus:ring-racing-flag text-foreground resize-none"
               rows={3}
               placeholder="หมายเหตุเพิ่มเติม..."
             />
           </div>
 
           {/* Booking Info (Read-only) */}
-          <div className="bg-muted-light/30 p-3 rounded-xl border border-border/50">
+          <div className="bg-muted-light p-3 rounded-xl border border-border/50">
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div className="flex justify-between">
                 <span className="text-muted">วันที่:</span>

@@ -11,7 +11,6 @@ import { IBookingRepository } from '@/src/application/repositories/IBookingRepos
 import { IDashboardRepository } from '@/src/application/repositories/IDashboardRepository';
 import { IMachineRepository, Machine, MachineStats } from '@/src/application/repositories/IMachineRepository';
 import { IWalkInQueueRepository, WalkInQueue, WalkInQueueStats } from '@/src/application/repositories/IWalkInQueueRepository';
-import { Metadata } from 'next';
 
 export interface HomeViewModel {
   machines: Machine[];
@@ -52,16 +51,19 @@ export class HomePresenter {
 
   /**
    * Get view model for the home page
+   *
+   * @param branchId - Restrict every query to one branch.
+   *   Omit for the staff dashboard, which shows all branches.
    */
-  async getViewModel(todayStr: string, now: string): Promise<HomeViewModel> {
+  async getViewModel(todayStr: string, now: string, branchId?: string): Promise<HomeViewModel> {
     try {
       // Get data in parallel for better performance
       const [allMachines, machineStats, queueStats, bookings, dashboardStats] = await this.withTimeout(Promise.all([
-        this.machineRepository.getAll(),
-        this.machineRepository.getStats(),
-        this.walkInQueueRepository.getStats(),
-        this.bookingRepository.getByDate(todayStr),
-        this.dashboardRepository.getHomeDashboardStats(), // New RPC call
+        this.machineRepository.getAll(branchId),
+        this.machineRepository.getStats(branchId),
+        this.walkInQueueRepository.getStats(branchId),
+        this.bookingRepository.getByDate(todayStr, undefined, branchId),
+        this.dashboardRepository.getHomeDashboardStats(branchId), // New RPC call
       ]));
 
       // Filter only active machines for client display
@@ -88,17 +90,6 @@ export class HomePresenter {
       console.error('Error getting home view model:', error);
       throw error;
     }
-  }
-
-  /**
-   * Generate metadata for the page
-   */
-  generateMetadata(): Metadata {
-    /** ... same ... */
-    return {
-      title: 'Racing Game Station - หน้าแรก',
-      description: 'ระบบจองคิวสำหรับ Racing Game Station - ดูสถานะเครื่องและจองคิวได้ง่ายๆ',
-    };
   }
 
   /**

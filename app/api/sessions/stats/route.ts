@@ -17,13 +17,18 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
-    
+    // Optional ?branch=<uuid> — restrict stats to one branch
+    const branchId = searchParams.get('branch') || undefined;
+
     let stats;
-    
+
     if (startDate && endDate) {
-      stats = await repository.getStats({ start: startDate, end: endDate });
+      stats = await repository.getStats(
+        { start: startDate, end: endDate },
+        branchId
+      );
     } else {
-      stats = await repository.getStats();
+      stats = await repository.getStats(undefined, branchId);
     }
     
     return NextResponse.json(stats);

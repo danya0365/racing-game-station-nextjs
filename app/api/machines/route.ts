@@ -17,13 +17,17 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const action = searchParams.get('action');
 
+    // Optional ?branch=<uuid> — restrict results to one branch.
+    // Omit for staff/admin views that need every branch.
+    const branchId = searchParams.get('branch') || undefined;
+
     if (action === 'available') {
-      const machines = await repo.getAvailable();
+      const machines = await repo.getAvailable(branchId);
       return NextResponse.json(machines);
     }
 
     if (action === 'stats') {
-      const stats = await repo.getStats();
+      const stats = await repo.getStats(branchId);
       return NextResponse.json(stats);
     }
 
@@ -33,7 +37,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Default: get all machines
-    const machines = await repo.getAll();
+    const machines = await repo.getAll(branchId);
     return NextResponse.json(machines);
   } catch (error) {
     console.error('Error fetching machines:', error);

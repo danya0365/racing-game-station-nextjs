@@ -1,7 +1,8 @@
 # 🚶‍♂️ Database Audit: Walk-in Queue System
 
 **Target Table**: `public.walk_in_queue`
-**Migration Source**: `20260119000001_walk_in_queue.sql`
+**Migration Source**: `20260108131500_racing_system.sql` (ตาราง + RLS) และ `20260108131501_racing_system_rpc.sql` (RPC)
+> ⚠️ ชื่อไฟล์เดิมในรายงานนี้ (`20260119000001_walk_in_queue.sql`) ไม่มีอยู่จริง — schema เหมือนเดิม แต่ถูกรวมเข้าไฟล์ migration ก้อนเดียว
 
 ## 1. Schema Analysis
 

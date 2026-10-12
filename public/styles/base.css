@@ -3,8 +3,11 @@
    ============================================ */
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  /* racing-* not --background/--foreground: those two still hold the old
+     palette, so the page behind the app painted white in dark mode while every
+     surface inside it went near-black. These follow the branch and the mode. */
+  background: var(--racing-bg);
+  color: var(--racing-fg);
   font-family: var(--font-sans), sans-serif;
 }
 

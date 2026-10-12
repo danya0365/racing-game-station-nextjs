@@ -53,7 +53,7 @@ export function ConfirmationModal({
     switch (variant) {
       case 'danger': return 'from-red-500/20 to-orange-500/20 border-red-500/30';
       case 'warning': return 'from-amber-500/20 to-yellow-500/20 border-amber-500/30';
-      case 'info': return 'from-blue-500/20 to-cyan-500/20 border-blue-500/30';
+      case 'info': return 'from-racing-flag-soft/20 to-racing-flag/20 border-racing-flag-soft/30';
       default: return 'from-gray-500/20 to-gray-500/20 border-gray-500/30';
     }
   };

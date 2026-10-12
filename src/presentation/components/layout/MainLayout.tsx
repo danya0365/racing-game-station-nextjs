@@ -1,9 +1,11 @@
-'use client';
+"use client";
 
-import { ReactNode } from 'react';
-import { ChatWidget } from '../chat/ChatWidget';
-import { MainFooter } from './MainFooter';
-import { MainHeader } from './MainHeader';
+import { ReactNode } from "react";
+import { BranchGate } from "../branch/BranchGate";
+import { BranchThemeSync } from "../branch/BranchThemeSync";
+import { ChatWidget } from "../chat/ChatWidget";
+import { MainFooter } from "./MainFooter";
+import { MainHeader } from "./MainHeader";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -15,21 +17,25 @@ interface MainLayoutProps {
  */
 export function MainLayout({ children }: MainLayoutProps) {
   return (
-    <div className="h-screen w-screen overflow-hidden flex flex-col bg-background">
-      {/* Header */}
-      <MainHeader />
+    <BranchGate>
+      {/* Keeps the racing accent in step with client-side navigation */}
+      <BranchThemeSync />
 
-      {/* Main Content Area - Takes remaining space */}
-      <main className="flex-1 overflow-auto">
-        {children}
-      </main>
+      <div className="h-screen w-screen overflow-hidden flex flex-col bg-racing-bg">
+        {/* Header */}
+        <MainHeader />
 
-      {/* Footer */}
-      <MainFooter />
+        {/* Main Content Area - Takes remaining space */}
+        <main className="flex-1 overflow-auto">{children}</main>
 
-      {/* Chat Widget - Floating, admin only (Feature Toggled) */}
-      {process.env.NEXT_PUBLIC_ENABLE_CHAT_WIDGET === 'true' && <ChatWidget />}
-    </div>
+        {/* Footer */}
+        <MainFooter />
+
+        {/* Chat Widget - Floating, admin only (Feature Toggled) */}
+        {process.env.NEXT_PUBLIC_ENABLE_CHAT_WIDGET === "true" && (
+          <ChatWidget />
+        )}
+      </div>
+    </BranchGate>
   );
 }
-

@@ -4,6 +4,7 @@ import { Booking } from '@/src/application/repositories/IBookingRepository';
 import { Session } from '@/src/application/repositories/ISessionRepository';
 import { WalkInQueue } from '@/src/application/repositories/IWalkInQueueRepository';
 import { calculateSessionPrice } from '@/src/config/booking.config';
+import { useActiveBranch } from '@/src/presentation/components/branch/BranchScope';
 import dayjs from 'dayjs';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ControlPresenter, ControlViewModel } from './ControlPresenter';
@@ -70,6 +71,11 @@ export function useControlPresenter(
     [presenterOverride]
   );
 
+  // /backend/control is branch-scoped like the customer pages: the branch comes
+  // from BranchScope's context, resolved during render so the first fetch is
+  // already for the right branch.
+  const branchId = useActiveBranch().id;
+
   // Track mounted state for memory leak protection
   const isMountedRef = useRef(true);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -122,7 +128,7 @@ export function useControlPresenter(
     setError(null);
 
     try {
-      const newViewModel = await presenter.getViewModel();
+      const newViewModel = await presenter.getViewModel(branchId);
       if (isMountedRef.current) {
         setViewModel(newViewModel);
       }
@@ -139,7 +145,7 @@ export function useControlPresenter(
         setLoading(false);
       }
     }
-  }, [presenter]);
+  }, [presenter, branchId]);
 
   // ============================================================
   // SESSION ACTIONS

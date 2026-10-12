@@ -42,18 +42,22 @@ export function QueuesTab({
     }).format(dayjs(dateString).toDate());
   };
 
+  // `color` is the pill fill and `onColor` the text that sits on it. They differ
+  // because the two colour sets have different on-colours: a branch flag is dark
+  // in both modes (white text), while the LED colours are dark in light mode but
+  // turn bright in dark mode, where white on them would drop to ~1.9:1.
   const getStatusConfig = (status: string) => {
     switch (status) {
       case 'waiting':
-        return { label: 'รอคิว', color: 'bg-purple-500', textColor: 'text-purple-400' };
+        return { label: 'รอคิว', color: 'bg-racing-flag', onColor: 'text-racing-on-flag', textColor: 'text-racing-flag-text' };
       case 'called':
-        return { label: 'เรียกแล้ว', color: 'bg-cyan-500', textColor: 'text-cyan-400' };
+        return { label: 'เรียกแล้ว', color: 'bg-racing-led-info', onColor: 'text-racing-led-on', textColor: 'text-racing-led-info' };
       case 'seated':
-        return { label: 'เริ่มเล่นแล้ว', color: 'bg-emerald-500', textColor: 'text-emerald-400' };
+        return { label: 'เริ่มเล่นแล้ว', color: 'bg-racing-led-go', onColor: 'text-racing-led-on', textColor: 'text-racing-led-go' };
       case 'cancelled':
-        return { label: 'ยกเลิก', color: 'bg-red-500', textColor: 'text-red-400' };
+        return { label: 'ยกเลิก', color: 'bg-racing-led-stop', onColor: 'text-racing-led-on', textColor: 'text-racing-led-stop' };
       default:
-        return { label: status, color: 'bg-gray-500', textColor: 'text-gray-400' };
+        return { label: status, color: 'bg-racing-led-off', onColor: 'text-racing-led-on', textColor: 'text-racing-led-off' };
     }
   };
 
@@ -77,12 +81,13 @@ export function QueuesTab({
     cancelled: queues.filter(q => q.status === 'cancelled').length,
   };
 
+  // `onColor`/`badgeOn` follow the same flag-vs-LED split as the status pills.
   const filterButtons = [
-    { key: 'all', label: 'ทั้งหมด', icon: '📋', color: 'from-gray-500 to-gray-600' },
-    { key: 'waiting', label: 'รอคิว', icon: '⏳', color: 'from-purple-500 to-violet-600' },
-    { key: 'called', label: 'เรียกแล้ว', icon: '🔔', color: 'from-cyan-500 to-blue-600' },
-    { key: 'seated', label: 'เริ่มเล่นแล้ว', icon: '✅', color: 'from-emerald-500 to-green-600' },
-    { key: 'cancelled', label: 'ยกเลิก', icon: '❌', color: 'from-red-500 to-rose-600' },
+    { key: 'all', label: 'ทั้งหมด', icon: '📋', color: 'from-racing-led-off to-racing-led-off', onColor: 'text-racing-led-on', badgeOn: 'bg-racing-led-on/20' },
+    { key: 'waiting', label: 'รอคิว', icon: '⏳', color: 'from-racing-flag to-racing-flag-soft', onColor: 'text-racing-on-flag', badgeOn: 'bg-racing-on-flag/20' },
+    { key: 'called', label: 'เรียกแล้ว', icon: '🔔', color: 'from-racing-led-info to-racing-led-info', onColor: 'text-racing-led-on', badgeOn: 'bg-racing-led-on/20' },
+    { key: 'seated', label: 'เริ่มเล่นแล้ว', icon: '✅', color: 'from-racing-led-go to-racing-led-go', onColor: 'text-racing-led-on', badgeOn: 'bg-racing-led-on/20' },
+    { key: 'cancelled', label: 'ยกเลิก', icon: '❌', color: 'from-racing-led-stop to-racing-led-stop', onColor: 'text-racing-led-on', badgeOn: 'bg-racing-led-on/20' },
   ];
 
   return (
@@ -102,7 +107,7 @@ export function QueuesTab({
             onClick={() => handleFilterChange(btn.key)}
             className={`px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
               statusFilter === btn.key
-                ? `bg-gradient-to-r ${btn.color} text-white shadow-lg`
+                ? `bg-gradient-to-r ${btn.color} ${btn.onColor} shadow-lg`
                 : 'bg-surface border border-border text-muted hover:bg-muted-light hover:text-foreground'
             }`}
           >
@@ -110,7 +115,7 @@ export function QueuesTab({
             <span>{btn.label}</span>
             <span className={`px-1.5 py-0.5 rounded-full text-xs ${
               statusFilter === btn.key 
-                ? 'bg-white/20' 
+                ? btn.badgeOn
                 : 'bg-muted-light'
             }`}>
               {statusCounts[btn.key as keyof typeof statusCounts]}
@@ -135,7 +140,7 @@ export function QueuesTab({
               <AnimatedCard key={queue.id} className="p-4">
                 <div className="flex items-center justify-between flex-wrap gap-4">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-xl font-bold text-white">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-xl font-bold text-racing-on-flag">
                       #{queue.queueNumber}
                     </div>
                     <div>
@@ -148,7 +153,7 @@ export function QueuesTab({
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className={`px-3 py-1 rounded-full ${statusConfig.color} text-white text-xs font-medium`}>
+                    <span className={`px-3 py-1 rounded-full ${statusConfig.color} ${statusConfig.onColor} text-xs font-medium`}>
                       {statusConfig.label}
                     </span>
 
@@ -214,7 +219,7 @@ export function QueuesTab({
                       onClick={() => onPageChange(page)}
                       className={`w-10 h-10 rounded-lg font-medium transition-all ${
                         currentPage === page
-                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
+                          ? 'bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag shadow-lg'
                           : 'bg-surface border border-border text-muted hover:bg-muted-light'
                       }`}
                     >

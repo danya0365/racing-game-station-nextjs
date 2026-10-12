@@ -6,5 +6,9 @@ export interface HomeDashboardStats {
 }
 
 export interface IDashboardRepository {
-  getHomeDashboardStats(): Promise<HomeDashboardStats>;
+  /**
+   * Get today's counts for the home dashboard
+   * @param branchId - Restrict to one branch; omit for all (staff view)
+   */
+  getHomeDashboardStats(branchId?: string): Promise<HomeDashboardStats>;
 }

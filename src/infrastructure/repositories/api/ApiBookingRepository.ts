@@ -81,8 +81,10 @@ export class ApiBookingRepository implements IBookingRepository {
    * Get all bookings for the current customer (by customer_id)
    * SECURE: Only returns bookings that belong to this customer_id
    */
-  async getMyBookings(customerId: string): Promise<Booking[]> {
-    const res = await fetch(`${this.baseUrl}/my-bookings?customerId=${encodeURIComponent(customerId)}`);
+  async getMyBookings(customerId: string, branchId?: string): Promise<Booking[]> {
+    const qs = new URLSearchParams({ customerId });
+    if (branchId) qs.set('branch', branchId);
+    const res = await fetch(`${this.baseUrl}/my-bookings?${qs}`);
     if (!res.ok) {
       const error = await res.json();
       throw new Error(error.error || 'ไม่สามารถโหลดข้อมูลการจองได้');

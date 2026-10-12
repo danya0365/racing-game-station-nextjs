@@ -59,7 +59,7 @@ export function QueueStatusSkeleton() {
   return (
     <div className="h-full overflow-auto scrollbar-thin">
       {/* Header Skeleton */}
-      <section className="px-4 md:px-8 py-6 bg-gradient-to-br from-purple-500/10 via-background to-cyan-500/10">
+      <section className="px-4 md:px-8 py-6 bg-gradient-to-br from-racing-flag/10 via-background to-racing-flag/10">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-between mb-4">
             <SkeletonText width="w-32" />
@@ -86,7 +86,7 @@ export function QueueStatusSkeleton() {
           {[1, 2].map((i) => (
             <div 
               key={i} 
-              className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl p-4"
+              className="bg-gradient-to-r from-racing-flag/10 to-racing-flag/10 border border-racing-line rounded-xl p-4"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-center gap-4">
@@ -214,7 +214,7 @@ export function BackendSkeleton() {
   return (
     <div className="h-full overflow-auto scrollbar-thin">
       {/* Header */}
-      <section className="px-4 md:px-8 py-6 bg-gradient-to-br from-purple-500/10 via-background to-pink-500/10 border-b border-border">
+      <section className="px-4 md:px-8 py-6 bg-gradient-to-br from-racing-flag/10 via-background to-racing-flag/10 border-b border-border">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -266,7 +266,7 @@ export function CustomerViewSkeleton() {
   return (
     <div className="h-full overflow-auto scrollbar-thin">
       {/* Hero Header */}
-      <section className="relative py-10 px-4 md:px-8 bg-gradient-to-br from-cyan-500/10 via-background to-purple-500/10">
+      <section className="relative py-10 px-4 md:px-8 bg-gradient-to-br from-racing-flag/10 via-background to-racing-flag-soft/10">
         <div className="max-w-6xl mx-auto">
           <SkeletonText width="w-32 mb-6" />
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
@@ -580,7 +580,7 @@ export function ProfileSkeleton() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-cyan-500/20 via-blue-500/10 to-purple-500/20 py-12">
+      <div className="relative overflow-hidden bg-gradient-to-br from-racing-flag/20 via-racing-flag/10 to-racing-flag-soft/20 py-12">
         <div className="relative z-10 max-w-4xl mx-auto px-4">
           <div className="text-center">
             {/* Avatar */}
@@ -595,7 +595,7 @@ export function ProfileSkeleton() {
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         {/* Profile Info Card */}
         <div className="bg-surface border border-border rounded-2xl overflow-hidden">
-          <div className="p-4 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border-b border-border flex items-center justify-between">
+          <div className="p-4 bg-gradient-to-r from-racing-flag/10 to-racing-flag-soft/10 border-b border-border flex items-center justify-between">
             <Skeleton className="h-6 w-32" />
             <Skeleton className="h-9 w-20 rounded-lg" />
           </div>
@@ -611,7 +611,7 @@ export function ProfileSkeleton() {
 
         {/* Quick Actions Card */}
         <div className="bg-surface border border-border rounded-2xl overflow-hidden">
-          <div className="p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-b border-border">
+          <div className="p-4 bg-gradient-to-r from-racing-flag/10 to-racing-flag/10 border-b border-border">
             <Skeleton className="h-6 w-24" />
           </div>
           <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-3">

@@ -17,9 +17,9 @@ interface AnimatedButtonProps {
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary: 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:from-cyan-400 hover:to-blue-500 shadow-lg shadow-cyan-500/25',
-  secondary: 'bg-gradient-to-r from-purple-500 to-pink-600 text-white hover:from-purple-400 hover:to-pink-500 shadow-lg shadow-purple-500/25',
-  ghost: 'bg-transparent border border-border text-foreground hover:bg-surface hover:border-cyan-500',
+  primary: 'bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag hover:from-racing-flag-soft hover:to-racing-flag shadow-lg shadow-racing-flag/25',
+  secondary: 'bg-gradient-to-r from-racing-flag-soft to-racing-flag text-racing-on-flag hover:from-racing-flag hover:to-racing-flag-soft shadow-lg shadow-racing-flag/25',
+  ghost: 'bg-transparent border border-border text-foreground hover:bg-surface hover:border-racing-flag',
   danger: 'bg-gradient-to-r from-red-500 to-rose-600 text-white hover:from-red-400 hover:to-rose-500 shadow-lg shadow-red-500/25',
   success: 'bg-gradient-to-r from-emerald-500 to-green-600 text-white hover:from-emerald-400 hover:to-green-500 shadow-lg shadow-emerald-500/25',
 };

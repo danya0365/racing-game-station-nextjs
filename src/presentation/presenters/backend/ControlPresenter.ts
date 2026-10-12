@@ -11,7 +11,6 @@ import { IMachineRepository, Machine } from '@/src/application/repositories/IMac
 import { ISessionRepository, Session } from '@/src/application/repositories/ISessionRepository';
 import { IWalkInQueueRepository, WalkInQueue } from '@/src/application/repositories/IWalkInQueueRepository';
 import { getShopTodayString, SHOP_TIMEZONE } from '@/src/lib/date';
-import { Metadata } from 'next';
 
 // ============================================================
 // VIEW MODEL TYPES
@@ -56,21 +55,25 @@ export class ControlPresenter {
   /**
    * Get view model for the control panel
    */
-  async getViewModel(): Promise<ControlViewModel> {
+  /**
+   * @param branchId - Restrict every query to one branch. Omit to show all
+   *   branches (the un-scoped dashboard does this).
+   */
+  async getViewModel(branchId?: string): Promise<ControlViewModel> {
     const today = getShopTodayString();
-    
+
     // Fetch data in parallel
     const [allMachines, activeSessions, waitingQueue] = await Promise.all([
-      this.machineRepo.getAll(),
-      this.sessionRepo.getActiveSessions(),
-      this.walkInRepo.getWaiting(),
+      this.machineRepo.getAll(branchId),
+      this.sessionRepo.getActiveSessions(branchId),
+      this.walkInRepo.getWaiting(branchId),
     ]);
 
     // Filter active machines only
     const machines = allMachines.filter(m => m.isActive);
     
     // Fetch today's bookings for all machines in ONE call (Optimization)
-    const allBookingsPromise = this.bookingRepo.getByDate(today);
+    const allBookingsPromise = this.bookingRepo.getByDate(today, undefined, branchId);
 
     // Fetch schedules (still N calls unfortunately, unless optimized further)
     const schedulesPromises = machines.map(m =>
@@ -133,16 +136,6 @@ export class ControlPresenter {
         waitingQueueCount: waitingQueue.length,
       },
       currentTime: new Date().toISOString(),
-    };
-  }
-
-  /**
-   * Generate metadata for the page
-   */
-  generateMetadata(): Metadata {
-    return {
-      title: 'ควบคุมห้องเกม | Racing Game Station',
-      description: 'หน้าควบคุมห้องเครื่องเล่นเกม - Session Control Panel',
     };
   }
 

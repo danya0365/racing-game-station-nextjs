@@ -1,0 +1,63 @@
+#!/bin/sh
+#
+# pre-commit hook — บล็อกการ commit ลง main / develop โดยตรง
+#
+# ติดตั้ง: npm run setup:git-hooks
+# ข้าม:    git commit --no-verify   (ใช้เมื่อจำเป็นจริง ๆ เท่านั้น)
+#
+
+set -e
+
+# อ่านชื่อ branch จริง — ต้องมี commit แล้วถึงจะรู้ชื่อ HEAD ได้
+# (ถ้ายังไม่มี commit จะได้ "HEAD" ซึ่งต้องไม่ผ่านการตรวจ)
+if BRANCH=$(git symbolic-ref --quiet --short HEAD 2>/dev/null) && [ -n "$BRANCH" ]; then
+    :
+else
+    BRANCH="unknown"
+fi
+
+case "$BRANCH" in
+  main|master|develop)
+    echo ""
+    echo "🚫 ห้าม commit ลง '$BRANCH' โดยตรง"
+    echo ""
+    echo "   ต้องสร้าง feature branch ก่อน:"
+    echo ""
+    echo "     git checkout -b feature/<slug>"
+    echo "     # หรือ fix/ docs/ chore/ refactor/"
+    echo ""
+    echo "   Branch ที่แนะนำ:   fix/  · docs/  · chore/  · refactor/  · feat/"
+    echo "   PR เปิดเข้า:      develop"
+    echo ""
+    echo "   ถ้า commit พลาดไปแล้ว:"
+    echo "     git reset --soft HEAD~1"
+    echo "     git checkout -b fix/<slug>"
+    echo ""
+    echo "   ถ้าจำเป็นต้องข้ามจริง ๆ: git commit --no-verify"
+    echo ""
+    exit 1
+    ;;
+esac
+
+# ─────────────────────────────────────────────────────────────
+# ตรวจ branch name ตาม convention (ข้ามได้ด้วย SKIP_BRANCH_CHECK=1)
+# ─────────────────────────────────────────────────────────────
+if [ "$SKIP_BRANCH_CHECK" != "1" ]; then
+  case "$BRANCH" in
+    feature/*|fix/*|docs/*|chore/*|refactor/*|test/*|perf/*|style/*|hotfix/*|release/*)
+      ;;
+    *)
+      echo ""
+      echo "⚠️  ชื่อ branch '$BRANCH' ไม่ตรง convention"
+      echo ""
+      echo "   แนะนำ: feature/ · fix/ · docs/ · chore/ · refactor/ · test/ · perf/"
+      echo ""
+      echo "   เปลี่ยนชื่อ:  git branch -m <ชื่อใหม่>"
+      echo "   ข้าม:        SKIP_BRANCH_CHECK=1 git commit"
+      echo ""
+      exit 1
+      ;;
+  esac
+fi
+
+exit 0

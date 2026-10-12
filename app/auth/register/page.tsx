@@ -1,9 +1,10 @@
 import { RegisterView } from '@/src/presentation/components/auth/RegisterView';
 import type { Metadata } from 'next';
+import { SHOP_NAME, shopPageTitle } from "@/src/config/shop.config";
 
 export const metadata: Metadata = {
-  title: 'สมัครสมาชิก | Racing Game Station',
-  description: 'สมัครสมาชิกเพื่อจองคิว Racing Game Station ได้ง่ายขึ้น',
+  title: shopPageTitle("สมัครสมาชิก"),
+  description: `สมัครสมาชิกเพื่อจองคิว ${SHOP_NAME} ได้ง่ายขึ้น`,
 };
 
 /**

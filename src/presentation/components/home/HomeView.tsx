@@ -1,200 +1,199 @@
 "use client";
 
 import { Machine } from "@/src/application/repositories/IMachineRepository";
+import { useActiveBranch } from "@/src/presentation/components/branch/BranchScope";
+import { DURATION_OPTIONS } from "@/src/config/booking.config";
+import { BRANCHES } from "@/src/config/branch.config";
 import { HomeViewModel } from "@/src/presentation/presenters/home/HomePresenter";
+import { MachineImage } from "@/src/presentation/components/ui/MachineImage";
 import { useHomePresenter } from "@/src/presentation/presenters/home/useHomePresenter";
-import "dayjs/locale/th";
+import Image from "next/image";
 import Link from "next/link";
-import { PageHeader } from "../ui/PageHeader";
-
-interface DashboardStats {
-  totalMachines: number;
-  availableMachines: number;
-  occupiedMachines: number;
-  todayBookings: number;
-  activeBookings: number;
-  walkInQueueCount: number;
-  averageWaitTime: number;
-  generalCustomers: number;
-  totalPlayers: number;
-  waitingInQueue: number;
-}
 
 /**
- * HomeView - Racing Game Station Landing Page
+ * HomeView — หน้าแรกลูกค้า
  *
- * Redesigned to support:
- * - Booking system (จองล่วงหน้า)
- * - Walk-in queue (เข้าคิวหน้าร้าน)
- * - Session management (การใช้งานเครื่อง)
- * - Real-time status
+ * โครงแบบ "pit wall": เลขสถานะสามค่าเท่ากันเป็นอันดับแรก (คิวรอ / เครื่องว่าง /
+ * เข้าเล่นวันนี้) เพราะคำถามแรกของคนที่มาร้านคือ "ต้องรอนานไหม" แล้วค่อยเป็น
+ * ปุ่มหลักสองปุ่มที่ครอบคลุมการใช้งานเกือบทั้งหมด
  *
- * Features:
- * ✅ Hero section with racing theme
- * ✅ Quick action cards
- * ✅ Live dashboard
- * ✅ Dark mode support via CSS variables
+ * สีมาจากธีม racing (public/styles/racing-theme.css) ซึ่งสลับ accent
+ * ตาม data-racing — ค่าใน component นี้ไม่ผูกสีแบรนด์ไว้เลย
  */
 export function HomeView({
   initialViewModel,
 }: {
   initialViewModel?: HomeViewModel;
 }) {
-  const [{ viewModel, loading: isLoading }, { refreshData }] =
-    useHomePresenter(initialViewModel);
+  // Links carry the branch prefix so a customer stays on the branch they picked
+  const branch = useActiveBranch();
+  const branchSlug = branch.slug;
+  const branchHref = (path: string) => `/${branchSlug}${path}`;
 
-  // Derive stats from viewModel
+  const [{ viewModel, loading: isLoading }] = useHomePresenter(
+    initialViewModel,
+    undefined,
+    branch.id,
+  );
+
   const machines = viewModel?.machines || [];
-  const stats: DashboardStats = {
+  const stats = {
     totalMachines: machines.length,
     availableMachines: machines.filter((m) => m.status === "available").length,
-    occupiedMachines: machines.filter((m) => m.status === "occupied").length,
     todayBookings: viewModel?.todayBookings || 0,
-    activeBookings: viewModel?.activeBookings || 0,
     walkInQueueCount: viewModel?.walkInQueueCount || 0,
-    averageWaitTime: viewModel?.queueStats.averageWaitMinutes || 0,
     generalCustomers: viewModel?.generalCustomers || 0,
     totalPlayers: viewModel?.totalPlayers || 0,
     waitingInQueue: viewModel?.queueStats.waitingCount || 0,
+    averageWaitTime: viewModel?.queueStats.averageWaitMinutes || 0,
   };
 
   const loading = isLoading && !viewModel;
 
   return (
-    <div className="bg-background overflow-auto scrollbar-thin">
-      <PageHeader
-        title="Racing Game Station"
-        rightContent={
-          <>
-            <div className="px-4 py-2 rounded-xl bg-surface border border-border flex flex-col items-center min-w-[100px]">
-              <span className="text-xs text-muted mb-1">เครื่องว่าง</span>
-              <span className="text-xl font-bold text-accent-emerald">
-                {loading ? "-" : stats.availableMachines}
-                <span className="text-sm text-muted font-normal ml-1">
-                  / {stats.totalMachines}
-                </span>
-              </span>
-            </div>
-            <div className="px-4 py-2 rounded-xl bg-surface border border-border flex flex-col items-center min-w-[100px]">
-              <span className="text-xs text-muted mb-1">คิวรอ</span>
-              <span className="text-xl font-bold text-accent-amber">
-                {loading ? "-" : stats.waitingInQueue}
-              </span>
-            </div>
-          </>
-        }
-      />
+    <div className="bg-racing-bg text-racing-fg overflow-auto scrollbar-thin">
+      {/* Mobile ถูกบีบให้จบในจอเดียว: padding และระยะห่างลดลง แต่จำนวน
+          column เท่ากับ desktop — จุดนี้คือของแลกเปลี่ยน ถ้า stack เป็น
+          column เดียวสิ่งที่ต้องเห็นก่อนเล่น (รอนานไหม / ว่างไหม) จะถูก
+          ดันไปนอกจอทั้งที่มันคือคำถามแรกของคนที่ยืนหน้าร้าน */}
+      <div className="max-w-6xl mx-auto px-3 py-2 md:px-4 md:py-8 space-y-2 md:space-y-8">
+        {/* ---------- Pit board: สามค่าที่ตอบคำถามแรก ---------- */}
+        <section className="grid grid-cols-3 gap-px bg-racing-line border border-racing-line rounded-xl overflow-hidden">
+          <StatCell
+            label="คิวรอตอนนี้"
+            value={loading ? null : stats.waitingInQueue}
+            unit="คน"
+            sub={
+              stats.waitingInQueue > 0 && stats.averageWaitTime > 0
+                ? `รอประมาณ ${stats.averageWaitTime} นาที`
+                : "ยังไม่มีคิวรอ"
+            }
+            emphasis
+          />
+          <StatCell
+            label="เครื่องว่าง"
+            value={loading ? null : stats.availableMachines}
+            total={stats.totalMachines}
+            tone="go"
+            sub={
+              stats.totalMachines - stats.availableMachines > 0
+                ? `กำลังเล่น/ปิด ${stats.totalMachines - stats.availableMachines} เครื่อง`
+                : "เครื่องว่างทั้งหมด"
+            }
+          />
+          <StatCell
+            label="เข้าเล่นวันนี้"
+            value={loading ? null : stats.totalPlayers}
+            unit="คน"
+            sub={`จองล่วงหน้า ${stats.todayBookings} รายการ`}
+          />
+        </section>
 
-      <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
-        {/* Quick Actions - Primary Utility */}
+        {/* ---------- ปุ่มหลัก ----------
+            One way in, on purpose: walk-in is entered by staff at the counter,
+            so offering "เข้าคิวเล่นเลย" beside "จองล่วงหน้า" told customers
+            there were two ways to start a session when there is one.
+
+            Capped rather than full-bleed: this sat in a two-column grid, and a
+            single button stretched across max-w-6xl reads as a broken layout
+            rather than a deliberate choice. */}
         <section>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <QuickActionCard
-              href="/walk-in"
-              icon="🏁"
-              title="เข้าคิวทันที"
-              description="เล่นเลย ไม่ต้องจอง"
-              color="cyan"
-              isPrimary
-            />
-            <QuickActionCard
-              href="/time-booking"
+          <div className="max-w-md">
+            <ActionButton
+              href={branchHref("/time-booking")}
               icon="📅"
               title="จองล่วงหน้า"
-              description="ล็อคเวลาที่ต้องการ"
-              color="purple"
-            />
-            <QuickActionCard
-              href="/customer/booking-history"
-              icon="📋"
-              title="ประวัติการจอง"
-              description="เช็คสถานะของคุณ"
-              color="pink"
-            />
-            <QuickActionCard
-              href="/qr-scan"
-              icon="📱"
-              title="สแกน QR"
-              description="เช็คอิน / จ่ายเงิน"
-              color="green"
+              description="ล็อกเวลาที่ต้องการ ราคาเหมือนกัน"
+              primary
             />
           </div>
         </section>
 
-        {/* Real-time Machine Status */}
+        {/* ---------- สถานะเครื่อง ----------
+            สามคอลัมน์ตั้งแต่มือถือ ไม่ใช่สอง — จำนวนเครื่องที่เห็นในจอเดียวคือ
+            ข้อมูลที่คนยืนหน้าร้านใช้ตัดสินใจจะรอหรือกลับมาทีหลัง การ์ดจึง
+            บีบขนาดแทนที่จะเพิ่มความสูง */}
         <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold flex items-center gap-2">
-              <span className="w-2 h-6 md:h-8 rounded-full bg-accent-purple" />
-              สถานะเครื่อง
+          <div className="flex items-center justify-between gap-2 flex-nowrap mb-1 md:gap-3 md:mb-3 md:flex-wrap">
+            <h2 className="font-bold text-[13px] md:text-[15px] tracking-tight">
+              เครื่องที่ใช้ได้ตอนนี้
             </h2>
-            <div className="flex gap-2 text-xs">
-              <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-accent-emerald/10 text-accent-emerald">
-                <span className="w-2 h-2 rounded-full bg-accent-emerald" /> ว่าง
-              </div>
-              <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-accent-orange/10 text-accent-orange">
-                <span className="w-2 h-2 rounded-full bg-accent-orange" />{" "}
-                ไม่ว่าง
-              </div>
+            <div className="flex gap-2 shrink-0 md:gap-3">
+              <LegendDot color="var(--racing-led-go)" label="ว่าง" />
+              <LegendDot color="var(--racing-flag)" label="กำลังเล่น" />
+              <LegendDot color="var(--racing-led-off)" label="ปิด" />
             </div>
           </div>
 
           {loading ? (
-            <div className="flex justify-center py-12">
-              <div className="animate-spin text-accent-purple text-2xl">⚡</div>
+            <div className="racing-card p-6 md:p-10 text-center text-racing-fg-3 text-sm">
+              กำลังโหลดสถานะเครื่อง…
+            </div>
+          ) : machines.length === 0 ? (
+            <div className="racing-card p-6 md:p-10 text-center">
+              <p className="text-racing-fg-2 text-sm">
+                ยังไม่มีเครื่องที่เปิดให้เล่นในสาขานี้
+              </p>
+              <p className="text-racing-fg-3 text-xs mt-1">
+                ลองสลับไปดูอีกสาขา หรือโทรสอบถามทางร้าน
+              </p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div className="grid grid-cols-3 gap-1.5 md:gap-2.5">
               {machines.map((machine) => (
-                <MachineStatusCard key={machine.id} machine={machine} />
+                <MachineCard key={machine.id} machine={machine} />
               ))}
             </div>
           )}
         </section>
 
-        {/* Today's Schedule Overview */}
-        <section className="bg-surface/30 rounded-2xl p-6 border border-border/50">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-medium text-foreground">ภาพรวมวันนี้</h3>
+        {/* ---------- ราคา ---------- */}
+        <section>
+          <div className="flex items-center justify-between gap-3 flex-wrap mb-1 md:mb-3">
+            <h2 className="font-bold text-[13px] md:text-[15px] tracking-tight">
+              ราคา
+            </h2>
             <Link
-              href="/time-booking"
-              className="text-sm text-accent-purple hover:opacity-80"
+              href={branchHref("/time-booking")}
+              className="text-[12px] md:text-[13px] text-racing-fg-2 hover:text-racing-fg transition-colors"
             >
-              ดูตารางเวลาเต็ม →
+              ดูตารางเวลาว่าง →
             </Link>
           </div>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-4 rounded-xl bg-surface border border-border">
-              <div className="text-sm text-muted mb-1">จองวันนี้แล้ว</div>
-              <div className="text-2xl font-bold">
-                {stats.todayBookings}{" "}
-                <span className="text-sm font-normal text-muted">รายการ</span>
-              </div>
-            </div>
-            <div className="p-4 rounded-xl bg-surface border border-border">
-              <div className="text-sm text-muted mb-1">คิว Walk-in</div>
-              <div className="text-2xl font-bold text-accent-amber">
-                {stats.walkInQueueCount}{" "}
-                <span className="text-sm font-normal text-muted">คิว</span>
-              </div>
-            </div>
-            <div className="p-4 rounded-xl bg-surface border border-border">
-              <div className="text-sm text-muted mb-1">ลูกค้าทั่วไป</div>
-              <div className="text-2xl font-bold text-accent-blue">
-                {stats.generalCustomers}{" "}
-                <span className="text-sm font-normal text-muted">คน</span>
-              </div>
-            </div>
-            <div className="p-4 rounded-xl bg-surface border border-border">
-              <div className="text-sm text-muted mb-1">ผู้เล่นวันนี้</div>
-              <div className="text-2xl font-bold text-accent-emerald">
-                {stats.totalPlayers}{" "}
-                <span className="text-sm font-normal text-muted">คน</span>
-              </div>
-            </div>
+          <div className="grid grid-cols-4 gap-1.5 md:gap-2.5">
+            {DURATION_OPTIONS.map((d) => (
+              <RateCard key={d.time} rate={d} />
+            ))}
           </div>
         </section>
+
+        {/* ---------- สาขา ---------- */}
+        <section>
+          <div className="flex items-center justify-between gap-3 flex-wrap mb-1 md:mb-3">
+            <h2 className="font-bold text-[13px] md:text-[15px] tracking-tight">
+              สาขา
+            </h2>
+            {/* บนมือถือปุ่มสลับสาขาอยู่ใน header แล้ว ข้อความนี้กินความสูง
+                โดยไม่บอกอะไรใหม่ */}
+            <span className="hidden md:inline text-[13px] text-racing-fg-3">
+              สลับได้จากปุ่มชื่อสาขาที่มุมขวาบน
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-1.5 md:gap-2.5">
+            {BRANCHES.map((b) => (
+              <BranchCard
+                key={b.id}
+                slug={b.slug}
+                name={b.shortName}
+                logo={b.logo}
+                active={b.slug === branchSlug}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* แถบลายธง — ตัดบนมือถือ เป็นของตกแต่งที่ดันเนื้อหาจริงลงจอถัดไป */}
+        <div className="hidden md:block bg-racing-checker h-2 rounded-sm opacity-50" />
       </div>
     </div>
   );
@@ -204,140 +203,316 @@ export function HomeView({
 // Sub-components
 // ============================================
 
-interface QuickActionCardProps {
+interface StatCellProps {
+  label: string;
+  value: number | null;
+  unit?: string;
+  total?: number;
+  sub?: string;
+  /** ใหญ่กว่าอีกสองช่อง — คือคำตอบของคำถามแรก */
+  emphasis?: boolean;
+  /** สี LED ตามสถานะ ไม่ใช่สีแบรนด์ */
+  tone?: "go";
+}
+
+function StatCell({
+  label,
+  value,
+  unit,
+  total,
+  sub,
+  emphasis,
+  tone,
+}: StatCellProps) {
+  return (
+    /* px-4 py-3.5 เต็มเลยไม่พอดีมือถือ — สามช่องเหลือราว 110px ต่อช่อง ต้องลด
+       padding ลงมาก ไม่งั้นตัวเลขจะตัดทางขวา */
+    <div className="bg-racing-panel px-2 py-2 md:px-4 md:py-3.5">
+      <div className="racing-label !text-[9px] md:!text-[10px] truncate">
+        {label}
+      </div>
+      <div
+        className={`racing-figure mt-1 !text-[26px] md:mt-1.5 md:!text-[34px] ${
+          emphasis ? "md:text-[38px]" : "md:text-[32px]"
+        } ${tone === "go" ? "text-racing-led-go" : ""}`}
+      >
+        {value === null ? (
+          "–"
+        ) : (
+          <>
+            {value}
+            {unit ? (
+              <span className="!text-[11px] md:!text-[15px] font-medium text-racing-fg-3 ml-0.5 md:ml-1">
+                {unit}
+              </span>
+            ) : null}
+            {total !== undefined ? (
+              <span className="!text-[11px] md:!text-[15px] font-medium text-racing-fg-3 ml-0.5">
+                / {total}
+              </span>
+            ) : null}
+          </>
+        )}
+      </div>
+      {sub ? (
+        <div
+          className={`text-[10px] md:text-xs mt-0.5 md:mt-1.5 leading-tight line-clamp-2 ${
+            emphasis ? "text-racing-fg font-medium" : "text-racing-fg-2"
+          }`}
+        >
+          {sub}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+interface ActionButtonProps {
   href: string;
   icon: string;
   title: string;
   description: string;
-  color: "purple" | "cyan" | "pink" | "green" | "orange";
-  isPrimary?: boolean;
+  primary?: boolean;
 }
 
-const colorMap = {
-  purple: {
-    gradient: "gradient-purple-bg",
-    border: "border-accent-purple/30 hover:border-accent-purple/60",
-    iconBg: "gradient-purple",
-    shadow: "hover:shadow-accent-purple/20",
-  },
-  cyan: {
-    gradient: "gradient-cyan-bg",
-    border: "border-accent-cyan/30 hover:border-accent-cyan/60",
-    iconBg: "gradient-cyan",
-    shadow: "hover:shadow-accent-cyan/20",
-  },
-  pink: {
-    gradient: "gradient-pink-bg",
-    border: "border-accent-pink/30 hover:border-accent-pink/60",
-    iconBg: "gradient-pink",
-    shadow: "hover:shadow-accent-pink/20",
-  },
-  green: {
-    gradient: "gradient-green-bg",
-    border: "border-accent-emerald/30 hover:border-accent-emerald/60",
-    iconBg: "gradient-green",
-    shadow: "hover:shadow-accent-emerald/20",
-  },
-  orange: {
-    gradient: "gradient-orange-bg",
-    border: "border-accent-orange/30 hover:border-accent-orange/60",
-    iconBg: "gradient-orange",
-    shadow: "hover:shadow-accent-orange/20",
-  },
-};
-
-function QuickActionCard({
+function ActionButton({
   href,
   icon,
   title,
   description,
-  color,
-  isPrimary,
-}: QuickActionCardProps) {
-  const colors = colorMap[color];
-
+  primary,
+}: ActionButtonProps) {
   return (
-    <Link href={href}>
-      <div
-        className={`
-          group relative p-6 rounded-2xl 
-          ${colors.gradient}
-          border ${colors.border}
-          transition-all duration-300
-          hover:scale-105 hover:-translate-y-1
-          hover:shadow-xl ${colors.shadow}
-          cursor-pointer
-          ${isPrimary ? "ring-2 ring-accent-emerald/50" : ""}
-          h-full
-        `}
+    <Link
+      href={href}
+      className={`group flex items-center gap-3 px-3 py-2.5 md:px-4 md:py-4 rounded-xl border transition-all duration-200 ${
+        primary
+          ? "bg-linear-to-b from-racing-flag-soft to-racing-flag border-transparent shadow-[0_10px_26px_-12px_var(--racing-flag)] hover:brightness-110"
+          : "bg-racing-panel border-racing-line hover:border-racing-fg-3"
+      }`}
+    >
+      <span
+        className={`w-9 h-9 md:w-10 md:h-10 shrink-0 grid place-items-center rounded-[10px] text-[16px] md:text-[17px] border ${
+          primary
+            ? "bg-racing-on-flag/10 border-racing-on-flag/25"
+            : "bg-racing-panel-2 border-racing-line"
+        }`}
       >
-        <div
-          className={`
-            inline-flex items-center justify-center 
-            w-16 h-16 rounded-2xl 
-            ${colors.iconBg}
-            text-4xl mb-4 
-            shadow-lg
-            group-hover:scale-110 transition-transform
-          `}
+        {icon}
+      </span>
+      <span className="min-w-0">
+        {/* on-flag, not white: Pattani's gold puts white text at 3.84:1, under
+            the 4.5:1 AA threshold. The token carries whichever colour passes for
+            that branch and mode. */}
+        <span
+          className={`block font-bold text-[16px] md:text-[17px] tracking-tight ${
+            primary ? "text-racing-on-flag" : "text-racing-fg"
+          }`}
         >
-          {icon}
-        </div>
-        <h3 className="text-xl font-bold text-foreground mb-2">{title}</h3>
-        <p className="text-muted text-sm">{description}</p>
-
-        {/* Arrow indicator */}
-        <div className="absolute top-6 right-6 text-muted group-hover:text-foreground transition-colors">
-          →
-        </div>
-
-        {isPrimary && (
-          <div className="absolute -top-3 left-6 px-3 py-1 bg-accent-emerald text-white text-xs font-bold rounded-full shadow-lg animate-bounce">
-            แนะนำ
-          </div>
-        )}
-      </div>
+          {title}
+        </span>
+        <span
+          className={`block text-[11px] md:text-xs mt-0.5 ${
+            primary ? "text-racing-on-flag/80" : "text-racing-fg-2"
+          }`}
+        >
+          {description}
+        </span>
+      </span>
+      <span
+        className={`ml-auto text-[16px] shrink-0 ${
+          primary ? "text-racing-on-flag/85" : "text-racing-fg-3"
+        }`}
+        aria-hidden
+      >
+        →
+      </span>
     </Link>
   );
 }
 
-function MachineStatusCard({ machine }: { machine: Machine }) {
-  const statusConfig = {
-    available: {
-      color: "bg-accent-emerald",
-      text: "ว่าง",
-      bgClass: "bg-accent-emerald/10 border-accent-emerald/30",
-    },
-    occupied: {
-      color: "bg-accent-orange",
-      text: "ไม่ว่าง",
-      bgClass: "bg-accent-orange/10 border-accent-orange/30",
-    },
-    maintenance: {
-      color: "bg-muted",
-      text: "ปิดปรับปรุง",
-      bgClass: "bg-muted/10 border-muted/30",
-    },
-  };
+function LegendDot({ color, label }: { color: string; label: string }) {
+  return (
+    <span className="flex items-center gap-1.5 text-[10.5px] md:text-[11.5px] text-racing-fg-2">
+      <span
+        className="w-[7px] h-[7px] rounded-full"
+        style={{ backgroundColor: color }}
+        aria-hidden
+      />
+      {label}
+    </span>
+  );
+}
 
-  const config = statusConfig[machine.status] || statusConfig.maintenance;
+const STATUS_META = {
+  available: { label: "ว่าง", tone: "go" },
+  occupied: { label: "กำลังเล่น", tone: "busy" },
+  maintenance: { label: "ปิด", tone: "off" },
+} as const;
+
+function MachineCard({ machine }: { machine: Machine }) {
+  const meta = STATUS_META[machine.status] ?? STATUS_META.maintenance;
 
   return (
+    /* การ์ดสามคอลัมน์บนมือถือกว้างราว 110px — โครงเดิม (padding 16px ซ้าย +
+       รูป 40px) กินไปครึ่งการ์ด ชื่อเครื่องจึงถูกตัดเหลือสองตัวอักษร */
     <div
-      className={`p-4 rounded-xl border ${config.bgClass} transition-all hover:scale-105`}
+      className={`relative pl-2 pr-1.5 py-2 md:pl-4 md:pr-3.5 md:py-3 rounded-xl bg-racing-panel border border-racing-line overflow-hidden ${
+        meta.tone === "off" ? "opacity-60" : ""
+      }`}
     >
-      <div className="text-center">
-        <div className="text-2xl mb-2">🎮</div>
-        <h4 className="font-bold text-foreground text-sm truncate">
-          {machine.name}
-        </h4>
-        <div className="flex items-center justify-center gap-1.5 mt-2">
+      {/* แถบสถานะด้านซ้าย — อ่านได้โดยไม่ต้องอ่านตัวอักษร */}
+      <span
+        className="absolute inset-y-0 left-0 w-[3px]"
+        style={{
+          backgroundColor:
+            meta.tone === "go"
+              ? "var(--racing-led-go)"
+              : meta.tone === "busy"
+                ? "var(--racing-flag)"
+                : "var(--racing-led-off)",
+        }}
+        aria-hidden
+      />
+      <div className="flex items-center justify-between gap-1">
+        <span className="racing-label !text-[9px]">
+          RIG {String(machine.position).padStart(2, "0")}
+        </span>
+        <span
+          className={`flex items-center gap-1 text-[9.5px] md:text-[11px] font-semibold px-1 md:px-2 py-0.5 rounded-full bg-racing-panel-2 ${
+            meta.tone === "go"
+              ? "text-racing-led-go"
+              : meta.tone === "busy"
+                ? "text-racing-flag-text"
+                : "text-racing-fg-2"
+          }`}
+        >
           <span
-            className={`w-2 h-2 rounded-full ${config.color} animate-pulse`}
+            className={`w-1.5 h-1.5 rounded-full ${
+              meta.tone === "go"
+                ? "bg-racing-led-go animate-pulse"
+                : meta.tone === "busy"
+                  ? "bg-racing-flag"
+                  : "bg-racing-led-off"
+            }`}
+            aria-hidden
           />
-          <span className="text-xs text-muted">{config.text}</span>
-        </div>
+          {meta.label}
+        </span>
+      </div>
+      {/* รูปถูกตัดออกใต้ sm: คอลัมน์แคบกว่า 34px พอดี รูปจะกินพื้นที่ทั้ง
+          แถวและดันชื่อเครื่องให้เหลือสามตัวอักษร — RIG 01 กับจุดสีบอก
+          เครื่องนั้นว่าง/กำลังเล่นอยู่แล้ว */}
+      <MachineImage
+        imageUrl={machine.imageUrl}
+        name={machine.name}
+        className="hidden sm:block w-7 h-7 md:w-10 md:h-10 rounded-lg"
+        fallbackClassName="bg-racing-panel-2 text-base md:text-xl"
+      />
+      <h3 className="font-bold text-[11.5px] sm:text-[13px] md:text-[14.5px] tracking-tight truncate mt-0.5 md:mt-2">
+        {machine.name}
+      </h3>
+      {/* คำอธิบายยาว ~60 ตัวอักษร พอดีกับการ์ดสามคอลัมน์บนมือถือคือห้าบรรทัด
+          ที่ตัดกลางคัน — ซ่อนไว้ใต้ lg ดีกว่า ให้ผู้ใช้เห็นสถานะเครื่องครบ
+          ทุกตัวก่อน */}
+      {machine.description ? (
+        <p className="hidden lg:block text-xs text-racing-fg-2 leading-relaxed mt-0.5 line-clamp-2">
+          {machine.description}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+function RateCard({ rate }: { rate: (typeof DURATION_OPTIONS)[number] }) {
+  return (
+    <div
+      className={`px-2 py-2 md:px-3.5 md:py-3 rounded-xl border ${
+        rate.popular
+          ? "border-racing-flag bg-linear-to-b from-[var(--racing-flag-dim)] to-racing-panel"
+          : "bg-racing-panel border-racing-line"
+      }`}
+    >
+      {/* "GRAND PRIX" ต้อง 73px แต่การ์ดสี่คอลัมน์บนมือถือเหลือ 62px —
+          racing-label มี letter-spacing 0.16em กินไปเกือบ 13px จึงต้อง
+          บังคับ tracking แคบลงเฉพาะบรรทัดนี้ คืนค่าเดิมตั้งแต่ md ขึ้นไป
+
+          ไม่มีป้าย "คุ้มสุด" ที่นี่ — การ์ดบรรทัดเดียวกันนี้เคยโชว์สองคำนี้
+          ตอนนั้นมันแยกบรรทัดกัน แล้วการ์ดจะดูรกลงไปเปล่าๆ ทางเลือกคือ
+          อาศัยเส้นขอบสีของ popular เป็นสัญญาณให้เห็นแทน ไม่ต้องเขียนคำ */}
+      <div
+        className={`racing-label !text-[8.5px] !tracking-[0.06em] md:!text-[9px] md:!tracking-[0.16em] truncate ${
+          rate.popular ? "!text-racing-flag-text" : ""
+        }`}
+      >
+        {rate.labelEn}
+      </div>
+      <div className="racing-figure !text-[18px] md:!text-[22px] mt-0.5 md:mt-1.5">
+        <span className="sr-only">{rate.label}</span>
+        {rate.priceDisplay}
+      </div>
+      {/* ราคาต่อนาทีซ้ำกับที่คิดได้จากราคารวม หน้าจองมีอยู่แล้ว — ซ่อนไว้
+          ใต้ lg ดีกว่า แล้วป้าย WARM UP / PRO RACE ต้องตัดทิ้งด้วย เพราะ
+          การ์ดสี่คอลัมน์บนมือถือกว้างราว 85px และ "GRAND PRIX" ตัด
+          กลางคันเหลือ "GRA…" ซึ่งอ่านไม่ออก */}
+      <div className="hidden lg:block text-[11.5px] text-racing-fg-2 mt-0.5 md:mt-1">
+        {rate.label} · {rate.pricePerMinute.toFixed(2)} บาท/นาที
       </div>
     </div>
+  );
+}
+
+function BranchCard({
+  slug,
+  name,
+  logo,
+  active,
+}: {
+  slug: string;
+  name: string;
+  logo: string;
+  active: boolean;
+}) {
+  return (
+    <Link
+      href={`/${slug}`}
+      aria-current={active ? "page" : undefined}
+      className={`flex items-center gap-2 md:gap-3.5 px-2.5 md:px-3.5 py-2.5 md:py-3 rounded-xl border transition-colors ${
+        active
+          ? "border-racing-flag bg-racing-panel"
+          : "bg-racing-panel border-racing-line hover:border-racing-fg-3"
+      }`}
+    >
+      <Image
+        src={logo}
+        alt={`โลโก้สาขา${name}`}
+        width={128}
+        height={36}
+        /* max-w ไม่ลดความกว้างจริงถ้ายังเหลือช่องว่างในบรรทัด — ต้องบังคับ
+           ด้วย w-8 ด้วย ไม่งั้นโลโก้จะกินและดันชื่อสาขาให้เหลือสองตัวอักษร */
+        className="h-6 md:h-9 w-8 md:w-auto max-w-8 md:max-w-32 object-contain object-left shrink-0"
+      />
+      <span className="min-w-0">
+        <span className="block font-bold text-[13px] md:text-[14px] tracking-tight">
+          {name}
+        </span>
+        {/* คำอธิบายยาวเกินพื้นที่การ์ดสองคอลัมน์บนมือถือ — เก็บไว้ฝั่ง desktop */}
+        <span className="hidden md:block text-[11.5px] text-racing-fg-2">
+          {active ? "สาขาที่คุณอยู่ตอนนี้" : "ดูสถานะและจองได้ที่นี่"}
+        </span>
+      </span>
+      {active ? (
+        <span className="ml-auto shrink-0 text-[9.5px] md:text-[10px] font-semibold tracking-wider uppercase text-racing-flag-text px-1.5 md:px-2 py-0.5 rounded-full border border-racing-flag">
+          ปัจจุบัน
+        </span>
+      ) : (
+        <span
+          className="ml-auto shrink-0 text-racing-fg-3 text-[16px]"
+          aria-hidden
+        >
+          →
+        </span>
+      )}
+    </Link>
   );
 }

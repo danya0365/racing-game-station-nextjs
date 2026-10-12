@@ -221,12 +221,12 @@ SELECT public.migrate_profile_roles();
 -- ============================================================================
 -- RACING GAME STATION: Seed Machines
 -- ============================================================================
-INSERT INTO public.machines (id, name, description, position, status, is_active)
+INSERT INTO public.machines (id, name, description, position, status, is_active, branch_id)
 VALUES
-  ('00000000-0000-0000-0000-000000000101', 'Game Station 1', 'เครื่อง Formula Racing Game Station พร้อมพวงมาลัย Fanatec GT DD Pro', 1, 'available', TRUE),
-  ('00000000-0000-0000-0000-000000000102', 'Game Station 2', 'เครื่อง GT Racing Game Station พร้อมพวงมาลัย Thrustmaster T300RS', 2, 'available', TRUE),
-  ('00000000-0000-0000-0000-000000000103', 'Game Station 3', 'เครื่อง Rally Racing Game Station พร้อมพวงมาลัย Logitech G923', 3, 'available', TRUE),
-  ('00000000-0000-0000-0000-000000000104', 'Game Station 4', 'เครื่อง Drift Game Station พร้อมจอโค้ง Ultrawide 49 นิ้ว', 4, 'available', TRUE),
-  ('00000000-0000-0000-0000-000000000105', 'Game Station 5', 'เครื่อง F1 Game Station VIP พร้อมระบบ Motion Platform', 5, 'available', TRUE),
-  ('00000000-0000-0000-0000-000000000106', 'Game Station 6', 'เครื่อง Endurance Game Station ระดับ Pro สำหรับ E-Sports', 6, 'maintenance', FALSE)
+  ('00000000-0000-0000-0000-000000000101', 'Game Station 1', 'เครื่อง Formula Racing Game Station พร้อมพวงมาลัย Fanatec GT DD Pro', 1, 'available', TRUE, '00000000-0000-0000-0000-000000000b02'),
+  ('00000000-0000-0000-0000-000000000102', 'Game Station 2', 'เครื่อง GT Racing Game Station พร้อมพวงมาลัย Thrustmaster T300RS', 2, 'available', TRUE, '00000000-0000-0000-0000-000000000b02'),
+  ('00000000-0000-0000-0000-000000000103', 'Game Station 3', 'เครื่อง Rally Racing Game Station พร้อมพวงมาลัย Logitech G923', 3, 'available', TRUE, '00000000-0000-0000-0000-000000000b02'),
+  ('00000000-0000-0000-0000-000000000104', 'Game Station 4', 'เครื่อง Drift Game Station พร้อมจอโค้ง Ultrawide 49 นิ้ว', 4, 'available', TRUE, '00000000-0000-0000-0000-000000000b02'),
+  ('00000000-0000-0000-0000-000000000105', 'Game Station 5', 'เครื่อง F1 Game Station VIP พร้อมระบบ Motion Platform', 5, 'available', TRUE, '00000000-0000-0000-0000-000000000b02'),
+  ('00000000-0000-0000-0000-000000000106', 'Game Station 6', 'เครื่อง Endurance Game Station ระดับ Pro สำหรับ E-Sports', 6, 'maintenance', FALSE, '00000000-0000-0000-0000-000000000b02')
 ON CONFLICT (id) DO NOTHING;

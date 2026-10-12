@@ -6,7 +6,7 @@ export default function NotFound() {
   return (
     <div className="min-h-screen bg-racing-gradient flex items-center justify-center p-4">
       <div className="text-center">
-        <div className="text-9xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent mb-4">
+        <div className="text-9xl font-bold bg-gradient-to-r from-racing-flag to-racing-flag-soft bg-clip-text text-transparent mb-4">
           404
         </div>
         <h1 className="text-2xl font-bold text-foreground mb-2">
@@ -17,7 +17,7 @@ export default function NotFound() {
         </p>
         <Link 
           href="/"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium rounded-xl shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:scale-105 transition-all"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag font-medium rounded-xl shadow-lg shadow-racing-flag/30 hover:shadow-racing-flag/50 hover:scale-105 transition-all"
         >
           <span>🏠</span>
           <span>กลับหน้าแรก</span>

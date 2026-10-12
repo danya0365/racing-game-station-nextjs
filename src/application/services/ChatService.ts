@@ -2,7 +2,7 @@
  * ChatService - Single Source of Truth
  * 
  * Business logic for the chat system (Web Chat + LINE OA)
- * Adapted for Racing Game Station domain
+ * Adapted for Gran Turismo Thailand domain
  * 
  * Used by:
  * - API routes (server-side, with SupabaseChatRepository)
@@ -10,6 +10,7 @@
  */
 
 import { IChatRepository } from '@/src/application/repositories/IChatRepository';
+import { SHOP_NAME } from '@/src/config/shop.config';
 import { ChatResponse } from '@/src/domain/types/chatTypes';
 
 export class ChatService {
@@ -104,8 +105,8 @@ export class ChatService {
   getMainMenu(greeting?: string): ChatResponse {
     return {
       type: 'menu',
-      title: '📋 เมนูหลัก Racing Game Station',
-      text: greeting ?? '📋 เมนูหลัก Racing Game Station\n\nกรุณาเลือกข้อมูลที่ต้องการ:',
+      title: `📋 เมนูหลัก ${SHOP_NAME}`,
+      text: greeting ?? `📋 เมนูหลัก ${SHOP_NAME}\n\nกรุณาเลือกข้อมูลที่ต้องการ:`,
       quickReplies: this.mainMenuCommands,
     };
   }
@@ -120,7 +121,7 @@ export class ChatService {
     return {
       type: 'card',
       title: '📊 สรุปวันนี้',
-      subtitle: 'Racing Game Station',
+      subtitle: SHOP_NAME,
       headerColor: '#6366F1',
       rows: [
         { label: '📅 วันที่', value: new Date().toLocaleDateString('th-TH', { day: '2-digit', month: '2-digit', year: 'numeric' }) },

@@ -4,6 +4,7 @@ import { Booking, BookingDaySchedule, BookingTimeSlot, CreateBookingData } from 
 import { Machine } from '@/src/application/repositories/IMachineRepository';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { TimeBookingPresenter, TimeBookingViewModel } from './TimeBookingPresenter';
+import { useActiveBranch } from '@/src/presentation/components/branch/BranchScope';
 import { createClientTimeBookingPresenter } from './TimeBookingPresenterClientFactory';
 
 import { getShopNow, getShopTodayString, SHOP_TIMEZONE } from '@/src/lib/date';
@@ -63,6 +64,11 @@ export function useTimeBookingPresenter(
     [presenterOverride]
   );
 
+  // Resolved during render from BranchScope's context, so it is already the
+  // right branch on the first render — a child's effect runs before the
+  // parent's, so reading it from the store inside loadData would be stale.
+  const branchId = useActiveBranch().id;
+
   // ✅ Track mounted state for memory leak protection
   const isMountedRef = useRef(true);
 
@@ -102,7 +108,9 @@ export function useTimeBookingPresenter(
     setError(null);
 
     try {
-      const newViewModel = await presenter.getViewModel();
+      const newViewModel = await presenter.getViewModel(
+        branchId
+      );
       if (isMountedRef.current) {
         setViewModel(newViewModel);
       }
@@ -117,7 +125,7 @@ export function useTimeBookingPresenter(
         setLoading(false);
       }
     }
-  }, [presenter]);
+  }, [presenter, branchId]);
 
   /**
    * Load schedule for selected machine and date

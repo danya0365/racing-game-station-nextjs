@@ -1,6 +1,7 @@
 "use client";
 
 import { Booking } from "@/src/application/repositories/IBookingRepository";
+import { useActiveBranch } from "@/src/presentation/components/branch/BranchScope";
 import { createBookingRepository } from "@/src/infrastructure/repositories/RepositoryFactory";
 import dayjs, { getShopTodayString } from "@/src/lib/date";
 import { AnimatedButton } from "@/src/presentation/components/ui/AnimatedButton";
@@ -31,6 +32,10 @@ export function BookingStatusView() {
   // ✅ Use factory for repository creation
   const bookingRepo = useMemo(() => createBookingRepository(), []);
 
+  // Resolved during render from BranchScope's context — a customer's history at
+  // one branch must not show bookings they made at the other
+  const branchId = useActiveBranch().id;
+
   // Load my bookings by customer_id (SECURE)
   const loadMyBookings = useCallback(async () => {
     if (!customerInfo.id) {
@@ -43,7 +48,7 @@ export function BookingStatusView() {
     setError(null);
 
     try {
-      const data = await bookingRepo.getMyBookings(customerInfo.id);
+      const data = await bookingRepo.getMyBookings(customerInfo.id, branchId);
       setBookings(data);
     } catch (err) {
       setError("ไม่สามารถโหลดข้อมูลการจองได้");
@@ -51,7 +56,7 @@ export function BookingStatusView() {
     } finally {
       setLoading(false);
     }
-  }, [bookingRepo, customerInfo.id]);
+  }, [ bookingRepo, customerInfo.id, branchId ]);
 
   // Auto-load when customerInfo.id is available
   useEffect(() => {
@@ -122,7 +127,7 @@ export function BookingStatusView() {
       case "completed":
         return {
           label: "เสร็จสิ้น",
-          color: "bg-muted",
+          color: "bg-muted-light",
           textColor: "text-muted",
           icon: "✔️",
         };
@@ -136,7 +141,7 @@ export function BookingStatusView() {
       default:
         return {
           label: status,
-          color: "bg-muted",
+          color: "bg-muted-light",
           textColor: "text-muted",
           icon: "❓",
         };
@@ -308,7 +313,7 @@ export function BookingStatusView() {
         {pastBookings.length > 0 && (
           <div>
             <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-muted/20 flex items-center justify-center text-muted">
+              <span className="w-8 h-8 rounded-lg bg-muted-light/20 flex items-center justify-center text-muted">
                 📋
               </span>
               ประวัติการจอง ({pastBookings.length})
@@ -324,7 +329,7 @@ export function BookingStatusView() {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-muted/20 flex items-center justify-center text-lg">
+                        <div className="w-10 h-10 rounded-lg bg-muted-light/20 flex items-center justify-center text-lg">
                           🎮
                         </div>
                         <div>
@@ -332,7 +337,7 @@ export function BookingStatusView() {
                             {formatDate(booking.localDate)} •{" "}
                             {formatTime(booking.localStartTime)}
                             {booking.machineName && (
-                              <span className="ml-2 px-1.5 py-0.5 bg-muted/20 text-muted text-xs rounded">
+                              <span className="ml-2 px-1.5 py-0.5 bg-muted-light/20 text-muted text-xs rounded">
                                 {booking.machineName}
                               </span>
                             )}

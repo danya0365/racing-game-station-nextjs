@@ -164,10 +164,11 @@ export class SupabaseBookingRepository implements IBookingRepository {
     return this.mapToDomain(data);
   }
 
-  async getMyBookings(customerId: string): Promise<Booking[]> {
+  async getMyBookings(customerId: string, branchId?: string): Promise<Booking[]> {
     const { data, error } = await this.client
       .rpc('rpc_get_my_bookings', {
         p_customer_id: customerId,
+        p_branch_id: branchId,
       });
 
     if (error || !data) {
@@ -229,11 +230,12 @@ export class SupabaseBookingRepository implements IBookingRepository {
     }));
   }
 
-  async getByDate(date: string, customerId?: string): Promise<Booking[]> {
+  async getByDate(date: string, customerId?: string, branchId?: string): Promise<Booking[]> {
     const { data, error } = await this.client
       .rpc('rpc_get_bookings_by_date', {
         p_date: date,
         p_customer_id: customerId,
+        p_branch_id: branchId,
       });
 
     if (error) {

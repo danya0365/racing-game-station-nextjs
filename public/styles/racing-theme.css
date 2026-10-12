@@ -1,0 +1,419 @@
+/* ============================================
+   Racing Theme — ธีมจากโลโก้จริง
+
+   เพิ่มเป็นชุดแยกจาก theme.css (ไม่แก้ของเดิม)
+   สีถอดจาก public/assets/logo/ ด้วยการสแมปพิกเซล:
+     narathiwat.png → ขาว / แดง TURISMO (#E10600) / ดำ
+     pattani.png    → เงิน / ทอง (#D9A441) / ดำ
+
+   วิธีใช้: ใส่ data-racing="narathiwas" หรือ "pattani" ไว้ที่ <html>
+   (BranchThemeScript จัดการให้)
+
+   สองโหมด: :root คือโหมดสว่าง, .dark คือโหมดมืด — ปุ่มสลับธีมยังใช้ได้
+   หน้าที่ยังไม่ผูกธีมจะได้ค่า light เดิมจาก theme.css ไม่ขยับ
+   ============================================ */
+
+/* ---------- โหมดสว่าง (ค่า base — ใช้ได้แม้ยังไม่มี data-racing) ---------- */
+:root {
+  /* พื้นผิว — ร่วมทั้งสองสาขา เพราะโลโก้ทั้งคู่ตั้งอยู่บนพื้นเข้ม */
+  --racing-bg: #f5f5f3;
+  --racing-panel: #ffffff;
+  --racing-panel-2: #f4f4f2;
+  --racing-line: #e2e2df;
+  --racing-line-soft: #ececea;
+
+  /* ตัวอักษร */
+  --racing-fg: #16161a;
+  --racing-fg-2: #55555f;
+  --racing-fg-3: #8a8a95;
+
+  color-scheme: light;
+}
+
+/* ---------- สีเน้นโหมดสว่าง — เข้มกว่าโหมดมืด เพราะพื้นขาวต้องการ contrast สูงกว่า ----------
+   --racing-on-flag คือสีตัวอักษรที่วางบน --racing-flag ได้โดยผ่าน WCAG AA
+   ทั้งสองสาขาใช้ขาวในโหมดสว่าง ต่างกันแค่ความเข้มของรามป์: แดงเข้มอยู่แล้ว
+   ส่วนทองต้องถูกเข้มลงให้ขาวผ่านทั้งสองปลายของ gradient (ดูบล็อกปัตตานี)
+   โหมดมืดสลับกลับ — ทองสว่างขึ้นมากจนต้องใช้ตัวอักษรสีดำแทน */
+[data-racing="narathiwas"] {
+  --racing-flag: #c10500;
+  --racing-flag-soft: #e10600;
+  --racing-flag-dim: rgba(193, 5, 0, 0.08);
+  --racing-on-flag: #ffffff;
+  --racing-on-flag-soft: #ffffff;
+  /* Branch colour used AS TEXT (links, headings, "รอคิว" labels). Needs its own
+     value: --racing-flag is tuned for large fills, and on a white page it reads
+     at 5.85:1 — but see the dark-mode block below for why the same value there
+     only reaches 4.03:1 and cannot be reused. */
+  --racing-flag-text: #c10500; /* 5.85:1 on #f5f5f3 */
+}
+
+[data-racing="pattani"] {
+  /* Darker gold than the logo's #a87a24, and deliberately so: every flag-filled
+     surface here is a GRADIENT from --racing-flag to --racing-flag-soft, so the
+     text has to clear AA against the LIGHT end too, not just the dark one.
+
+     At the old ramp (#8a6318 → #a87a24) neither colour worked across both ends —
+     white dropped to 3.33:1 on the soft end, near-black to 4.06:1 on the flag
+     end. Darkening the whole ramp until white clears both ends is the only
+     direction that works, and it also lets both branches share the same
+     white-on-flag treatment instead of diverging. Measured after the cards'
+     90% opacity blend over the page: 5.97:1 on the flag end, 4.87:1 on the soft
+     end. In dark mode the ramp inverts back to the bright gold and the on-colour
+     flips to black — see the .dark block below. */
+  --racing-flag: #6e4e0c;
+  --racing-flag-soft: #855c0a;
+  --racing-flag-dim: rgba(110, 78, 12, 0.1);
+  --racing-on-flag: #ffffff; /* 5.97:1 on flag · 4.87:1 on flag-soft */
+  --racing-on-flag-soft: #ffffff;
+  /* Same value as --racing-flag here: with the ramp darkened enough for white to
+     clear AA, the darker end is also fine for text on a page — 6.98:1 on
+     #f5f5f3 and 6.00:1 on the flag's own dim tint. */
+  --racing-flag-text: #6e4e0c;
+}
+
+/* ---------- โหมดมืด (ตรงกับโลโก้ — ดำสนิท ขาวตัวอักษร) ----------
+   พื้นผิวมืดเป็นของร่วมอีกครั้ง: ตอนนี้ใช้ .dark ล้วน ไม่ผูก data-racing
+   เพราะเดิมประกาศไว้แค่ .dark[data-racing="narathiwas"] ทำให้ปัตตานี
+   ได้พื้นสว่างแต่ตัวอักษรสีขาว — ขาวบนขาวจนอ่านไม่ออก
+   specificity เท่ากับ [data-racing=...] และอยู่ทีหลัง จึงชนะเสมอ */
+.dark {
+  --racing-bg: #08080a;
+  --racing-panel: #121216;
+  --racing-panel-2: #191920;
+  --racing-line: #26262f;
+  --racing-line-soft: #1d1d24;
+
+  --racing-fg: #f4f4f2;
+  --racing-fg-2: #9a9aa6;
+  --racing-fg-3: #64646f;
+
+  color-scheme: dark;
+}
+
+/* ---------- สีเน้นโหมดมืด ----------
+   on-flag ต่างจากโหมดสว่างอีก: ทองสว่างขึ้นมากในโหมดมืด (ขาวบนทอง
+   ได้แค่ 1.61:1) จึงต้องเป็นดำ และแดงอ่อน #ff2a1f ก็ตกไปทางดำเช่นกัน
+   ค่าใน comment คือ contrast ที่วัดได้จริงทั้งคู่ */
+.dark[data-racing="narathiwas"] {
+  --racing-flag: #e10600;
+  /* #ff2a1f sat just under AA for white text (4.49:1 against the blended fill).
+     #ee2d21 clears it at 4.97:1 and still reads as the light end of the same
+     ramp — the two ends stay visibly different. */
+  --racing-flag-soft: #ee2d21;
+  --racing-flag-dim: rgba(225, 6, 0, 0.14);
+  --racing-on-flag: #ffffff; /* 5.89:1 on flag · 4.97:1 on flag-soft */
+  --racing-on-flag-soft: #ffffff;
+  /* #e10600 as text sits on #08080a at only 4.03:1 — under AA for body copy, and
+     the flag colour is fixed by the logo. Lightening to the -soft end of the
+     same ramp reaches 5.34:1 while staying recognisably the same red, which is
+     why this needs a token separate from --racing-flag rather than a reuse. */
+  --racing-flag-text: #ee2d21; /* 5.34:1 on #08080a · 4.99:1 on #121216 */
+}
+
+.dark[data-racing="pattani"] {
+  --racing-fg: #e8e8ec;
+  --racing-fg-2: #a0a0aa;
+  --racing-fg-3: #6a6a74;
+
+  --racing-flag: #d9a441;
+  --racing-flag-soft: #f0c674;
+  --racing-flag-dim: rgba(217, 164, 65, 0.14);
+  --racing-on-flag: #0a0a0a; /* 8.80:1 */
+  --racing-on-flag-soft: #0a0a0a; /* 12.29:1 */
+  --racing-flag-text: #d9a441; /* 8.90:1 on #08080a — already fine as text */
+}
+
+/* ---------- LED สถานะ ----------
+   เหมือนกันทุกสาขาและทั้งสองโหมด เพราะต้องอ่านสถานะได้โดยไม่สับสนกับสีแบรนด์
+   (เครื่องว่าง = เขียว ทุกสาขาต้องเขียวเหมือนกัน)
+
+   ค่าโหมดสว่างต้องผ่าน AA ได้ทั้งสองทาง เพราะสีชุดนี้ถูกใช้สองแบบ:
+   เป็นตัวอักษรบนพื้นหน้า (ป้ายสถานะ) และเป็นพื้นของปุ่ม/การ์ดที่มีข้อความทับ
+   ค่าใน comment คือคู่ของทั้งสองการใช้ วัดจริงบนพื้น --racing-bg
+   ข้อความบนพื้น LED วัดหลังผสม opacity .90 ของการ์ดสถิติ */
+[data-racing] {
+  /* go/warn ถูกเข้มกว่าค่าเดิม (#16a34a / #d97706) เพราะค่าเดิมให้ขาวบนพื้น
+     ได้แค่ 3.20–3.19:1 — ค่านี้ให้ 6.19 / 4.65:1 */
+  --racing-led-go: #0e5f2f; /* 7.13:1 บนพื้น · ขาวบนนี้ 6.19:1 */
+  --racing-led-warn: #9a5706; /* 5.14:1 บนพื้น · ขาวบนนี้ 4.65:1 */
+  --racing-led-stop: #b91c1c; /* 5.93:1 · ขาวบนนี้ 5.65:1 */
+  --racing-led-info: #1d4ed8; /* 6.14:1 · ขาวบนนี้ 5.53:1 */
+  --racing-led-off: #57575e; /* 6.02:1 · ขาวบนนี้ 5.62:1 */
+
+  /* สีตัวอักษรที่วางบน LED ได้ — โหมดสว่าง LED เข้ม จึงใช้ขาว */
+  --racing-led-on: #ffffff;
+}
+
+.dark[data-racing] {
+  --racing-led-go: #4ade80; /* 10.72:1 บน #121216 · ดำบนนี้ 9.28:1 */
+  --racing-led-warn: #fbbf24; /* 11.19:1 · ดำบนนี้ 9.68:1 */
+  --racing-led-stop: #f87171; /* 6.76:1 · ดำบนนี้ 5.91:1 */
+  --racing-led-info: #60a5fa; /* 7.35:1 · ดำบนนี้ 6.41:1 */
+  --racing-led-off: #a1a1aa; /* 7.29:1 · ดำบนนี้ 6.41:1 */
+
+  /* LED สว่างขึ้นมากในโหมดมืด ขาวบนนั้นอ่านไม่ออก (~2:1) จึงต้องเป็นดำ */
+  --racing-led-on: #0a0a0a;
+}
+
+/* ============================================
+   Tailwind v4 Mapping — เฉพาะ utility ของธีมนี้
+   ของเดิมทั้งหมดยังทำงานปกติ
+   ============================================ */
+
+/*
+ * Semantic aliases — the lever that brings the rest of the app along.
+ *
+ * 909 call sites across 32 components write bg-surface / text-muted /
+ * border-border rather than a racing-* name. Editing those files one by one is
+ * both slower and more error-prone than pointing the tokens they already use at
+ * the racing palette, so that is what happens here: the names stay, the values
+ * move. A component migrated later keeps working, because it was reading the
+ * same alias all along.
+ *
+ * This block sits in its own @theme inline rather than in the one below because
+ * `@theme inline` emits both the variables and the utilities that use them into
+ * :root. Overriding --color-surface there would emit a second --color-surface
+ * later in the file; it would win, but the generated .bg-surface rule is what
+ * actually matters and it is already correct. Overriding --background itself
+ * would be a lie in dark mode, where theme.css still declares it for the
+ * components not yet moved off it.
+ *
+ * Light/dark come from the racing variables, so each alias follows the branch
+ * accent and the mode switch together with no per-component work.
+ *
+ * `bg-muted` is the one alias left off on purpose: its 8 call sites all use it
+ * as a hover fill (bg-muted/10, hover:bg-muted) — a surface, not a tint of the
+ * text colour — and one --color-muted cannot serve both meanings. Those call
+ * sites were moved to bg-muted-light instead.
+ */
+@theme inline {
+  --color-background: var(--racing-bg);
+  --color-foreground: var(--racing-fg);
+  --color-surface: var(--racing-panel);
+  --color-on-surface: var(--racing-fg);
+  --color-muted: var(--racing-fg-2);
+  --color-border: var(--racing-line);
+  --color-muted-light: var(--racing-panel-2);
+}
+
+/*
+ * `--accent-purple` is the only accent alias with real call sites (7, all in
+ * BookingStatusView). Those uses are decorative — a spinner ring and "today"
+ * badges — so they follow the branch accent. The status tokens
+ * (success/warning/error/info) deliberately do NOT: green for "machine free"
+ * and red for "cannot cancel" have to read the same on every branch, which is
+ * why the racing LED colours exist as their own set.
+ */
+@theme inline {
+  --color-accent-purple: var(--racing-flag);
+}
+
+@theme inline {
+  --color-racing-bg: var(--racing-bg);
+  --color-racing-panel: var(--racing-panel);
+  --color-racing-panel-2: var(--racing-panel-2);
+  --color-racing-line: var(--racing-line);
+  --color-racing-line-soft: var(--racing-line-soft);
+
+  --color-racing-fg: var(--racing-fg);
+  --color-racing-fg-2: var(--racing-fg-2);
+  --color-racing-fg-3: var(--racing-fg-3);
+
+  --color-racing-flag: var(--racing-flag);
+  --color-racing-flag-soft: var(--racing-flag-soft);
+  /* Branch colour for TEXT. Separate from --color-racing-flag because a fill
+     tuned for large areas does not clear AA at body size on both modes. */
+  --color-racing-flag-text: var(--racing-flag-text);
+  /* Text colour that is legible ON the flag, per branch and per mode. */
+  --color-racing-on-flag: var(--racing-on-flag);
+  --color-racing-on-flag-soft: var(--racing-on-flag-soft);
+  /* Dim flag has call sites (branch cards, "current branch" badges) but was
+     missing here, so Tailwind emitted no utility for it and those backgrounds
+     never painted. */
+  --color-racing-flag-dim: var(--racing-flag-dim);
+
+  --color-racing-led-go: var(--racing-led-go);
+  --color-racing-led-warn: var(--racing-led-warn);
+  --color-racing-led-stop: var(--racing-led-stop);
+  --color-racing-led-info: var(--racing-led-info);
+  --color-racing-led-off: var(--racing-led-off);
+  /* Text colour that is legible ON an LED, per mode. */
+  --color-racing-led-on: var(--racing-led-on);
+}
+
+/* ============================================
+   Utilities
+   ============================================ */
+
+/**
+ * พื้นหลังไล่สีจางสำหรับหน้าว่าง (11 จุด: booking, walk-in, 404, qr-scan, backend)
+ *
+ * คืนคืนจาก commit 1d8c217 (เม.ย. 2026) ที่ลบไปพร้อมการรวมไฟล์ CSS แต่
+ * เรียกใช้ยังอยู่ทุกจุด — Tailwind จึงไม่เคย generate class นี้ พื้นหลังเหล่านั้น
+ * ไม่เคยแสดงผลมาตลอด ค่าเดิมเป็น cyan→purple→pink ซึ่งเป็นสีแบรนด์เก่าที่
+ * เลิกใช้แล้ว จึงเปลี่ยนมาไล่จากสีแบรนด์ของสาขาแทน
+ */
+@utility bg-racing-gradient {
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--racing-flag), transparent 92%) 0%,
+    color-mix(in srgb, var(--racing-flag), transparent 88%) 50%,
+    color-mix(in srgb, var(--racing-flag-soft), transparent 92%) 100%
+  );
+}
+
+/**
+ * พื้นหลังลายธงผ้าหมักสีถี่
+ *
+ * ยังไม่มี call site — เก็บไว้เพราะเป็นลายที่ธีมนี้ใช้ แต่ชื่อต้องมี prefix
+ * bg- เหมือนที่ Tailwind v4 คาดหวัง: @utility ไม่เติม prefix ให้เอง ตัวที่
+ * เขียนเป็น @utility racing-checker เดิมจะไม่ถูกเรียกด้วย bg-racing-checker
+ * ได้ และ @apply จะ fail ว่า unknown utility
+ */
+@utility bg-racing-checker {
+  background-image:
+    linear-gradient(
+      45deg,
+      color-mix(in srgb, var(--racing-fg-3), transparent 70%) 25%,
+      transparent 25%,
+      transparent 75%,
+      color-mix(in srgb, var(--racing-fg-3), transparent 70%) 75%
+    ),
+    linear-gradient(
+      45deg,
+      color-mix(in srgb, var(--racing-fg-3), transparent 70%) 25%,
+      transparent 25%,
+      transparent 75%,
+      color-mix(in srgb, var(--racing-fg-3), transparent 70%) 75%
+    );
+  background-size:
+    16px 16px,
+    16px 16px;
+  background-position:
+    0 0,
+    8px 8px;
+}
+
+/** แถบสีเน้นไล่ลงสี — ใช้เป็นเส้นหัวข้อหรือขอบการ์ด */
+@utility racing-flag-rule {
+  background-image: linear-gradient(
+    180deg,
+    var(--racing-flag-soft),
+    var(--racing-flag)
+  );
+}
+
+/** กรอบการ์ดมาตรฐานของธีมนี้ */
+@utility racing-card {
+  background-color: var(--racing-panel);
+  border: 1px solid var(--racing-line);
+  border-radius: 12px;
+}
+
+/** ป้ายตัวอักษรหน่อยๆ แบบ telemetry (ตัวเลข + หน่วย) */
+@utility racing-label {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--racing-fg-3);
+}
+
+/** ตัวเลขหลักของการ์ดสถานะ */
+@utility racing-figure {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================
+   App shell — header / footer / modal
+   อยู่ใน @layer components เพื่อให้ utility ของ Tailwind
+   (เช่น md:flex) ทับได้เมื่อต้องการ
+   ============================================ */
+@layer components {
+  /** แถบบน/ล่างของ app — พื้นโปร่งแสงเหนือเนื้อหา */
+  .racing-chrome {
+    background-color: color-mix(in srgb, var(--racing-panel) 82%, transparent);
+    backdrop-filter: blur(12px);
+    border-color: var(--racing-line);
+  }
+
+  /** ลิงก์เมนู — ขีดล่างเป็นสีเน้นเฉพาะหน้าที่อยู่ */
+  .racing-nav-link {
+    position: relative;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    color: var(--racing-fg-2);
+    transition:
+      color 0.15s ease,
+      background-color 0.15s ease;
+  }
+  .racing-nav-link:hover {
+    color: var(--racing-fg);
+    background-color: var(--racing-panel-2);
+  }
+  .racing-nav-link[aria-current="page"] {
+    color: var(--racing-fg);
+    background-color: var(--racing-panel-2);
+    box-shadow: inset 0 -2px 0 var(--racing-flag);
+  }
+
+  /** ปุ่มสาขาในหัว */
+  .racing-branch-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--racing-flag) 32%, transparent);
+    background-color: var(--racing-flag-dim);
+    color: var(--racing-flag);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease;
+  }
+  .racing-branch-chip:hover {
+    background-color: color-mix(in srgb, var(--racing-flag) 22%, transparent);
+    border-color: color-mix(in srgb, var(--racing-flag) 52%, transparent);
+  }
+
+  /** วงกลมอาตริบัตผู้ใช้ — ไล่สีจากสีเน้นของสาขา */
+  .racing-avatar {
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    background-image: linear-gradient(
+      135deg,
+      var(--racing-flag-soft),
+      var(--racing-flag)
+    );
+    color: #fff;
+    font-weight: 700;
+  }
+
+  /** โครงเมนู dropdown / modal */
+  .racing-panel-solid {
+    background-color: var(--racing-panel);
+    border: 1px solid var(--racing-line);
+    box-shadow: 0 24px 60px -30px rgb(0 0 0 / 0.55);
+  }
+
+  /** แถบสีเน้นบาง ๆ ด้านบนของ modal */
+  .racing-panel-top {
+    background-image: linear-gradient(
+      180deg,
+      var(--racing-flag-dim),
+      transparent
+    );
+  }
+}

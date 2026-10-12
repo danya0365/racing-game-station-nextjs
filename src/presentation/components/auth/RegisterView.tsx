@@ -7,6 +7,8 @@
 'use client';
 
 import { authConfig, getEnabledOAuthProviders, hasAnyOAuthProvider } from '@/src/config/auth.config';
+import { AuthBrandHeader } from '@/src/presentation/components/auth/AuthBrandHeader';
+import { SHOP_NAME } from '@/src/config/shop.config';
 import { useAuthPresenter } from '@/src/presentation/presenters/auth/useAuthPresenter';
 import Link from 'next/link';
 import { FormEvent, useState } from 'react';
@@ -37,10 +39,10 @@ export function RegisterView() {
   // Check if registration is disabled - after all hooks
   if (!config.email.allowRegistration) {
     return (
-      <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-purple-500/10 via-background to-pink-500/10">
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-racing-flag/10 via-background to-racing-flag-soft/10">
         <div className="w-full max-w-md">
           <div className="bg-surface rounded-2xl shadow-xl border border-border p-8 text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 bg-gradient-to-br from-racing-flag/20 to-racing-flag-soft/20 rounded-full flex items-center justify-center mx-auto mb-6">
               <span className="text-5xl">🔒</span>
             </div>
             <h1 className="text-2xl font-bold text-foreground mb-2">
@@ -53,7 +55,7 @@ export function RegisterView() {
             
             <Link
               href="/auth/login"
-              className="inline-block py-3 px-6 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-xl font-medium hover:from-purple-400 hover:to-pink-500 transition-all shadow-lg shadow-purple-500/25"
+              className="inline-block py-3 px-6 bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag rounded-xl font-medium hover:from-racing-flag hover:to-racing-flag-soft transition-all shadow-lg shadow-racing-flag/25"
             >
               ไปหน้าเข้าสู่ระบบ
             </Link>
@@ -142,10 +144,10 @@ export function RegisterView() {
   // Show email verification message
   if (state.needsEmailVerification) {
     return (
-      <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-purple-500/10 via-background to-pink-500/10">
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-racing-flag/10 via-background to-racing-flag-soft/10">
         <div className="w-full max-w-md">
           <div className="bg-surface rounded-2xl shadow-xl border border-border p-8 text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 bg-gradient-to-br from-racing-flag/20 to-racing-flag-soft/20 rounded-full flex items-center justify-center mx-auto mb-6">
               <span className="text-5xl">📧</span>
             </div>
             <h1 className="text-2xl font-bold text-foreground mb-2">
@@ -163,7 +165,7 @@ export function RegisterView() {
             <button
               onClick={() => actions.resendEmailVerification(state.verificationEmail || '')}
               disabled={state.isSubmitting}
-              className="text-purple-400 hover:text-purple-300 font-medium transition-colors disabled:opacity-50"
+              className="text-racing-flag-text hover:text-racing-flag-text font-medium transition-colors disabled:opacity-50"
             >
               {state.isSubmitting ? 'กำลังส่ง...' : 'ส่งอีเมลยืนยันใหม่'}
             </button>
@@ -184,23 +186,16 @@ export function RegisterView() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-purple-500/10 via-background to-pink-500/10">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-racing-flag/10 via-background to-racing-flag-soft/10">
       <div className="w-full max-w-md">
         {/* Logo & Title */}
+        <AuthBrandHeader />
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-3">
-            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-3xl shadow-lg">
-              🏎️
-            </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
-              Racing Game Station
-            </span>
-          </Link>
-          <h1 className="mt-6 text-3xl font-bold text-foreground">
+          <h1 className="text-3xl font-bold text-foreground">
             สมัครสมาชิก
           </h1>
           <p className="mt-2 text-muted">
-            สร้างบัญชีเพื่อจองคิว Racing Game Station
+            สร้างบัญชีเพื่อจองคิว {SHOP_NAME}
           </p>
         </div>
 
@@ -231,7 +226,7 @@ export function RegisterView() {
                   setFullNameError(null);
                 }}
                 placeholder="สมชาย ใจดี"
-                className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all ${
+                className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-racing-flag/50 transition-all ${
                   fullNameError ? 'border-error' : 'border-input-border'
                 }`}
                 disabled={state.isSubmitting}
@@ -255,7 +250,7 @@ export function RegisterView() {
                   setEmailError(null);
                 }}
                 placeholder="your@email.com"
-                className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all ${
+                className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-racing-flag/50 transition-all ${
                   emailError ? 'border-error' : 'border-input-border'
                 }`}
                 disabled={state.isSubmitting}
@@ -279,7 +274,7 @@ export function RegisterView() {
                   setPhoneError(null);
                 }}
                 placeholder="0812345678"
-                className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all ${
+                className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-racing-flag/50 transition-all ${
                   phoneError ? 'border-error' : 'border-input-border'
                 }`}
                 disabled={state.isSubmitting}
@@ -305,7 +300,7 @@ export function RegisterView() {
                     actions.checkPasswordStrength(e.target.value);
                   }}
                   placeholder="อย่างน้อย 6 ตัวอักษร"
-                  className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all pr-12 ${
+                  className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-racing-flag/50 transition-all pr-12 ${
                     passwordError ? 'border-error' : 'border-input-border'
                   }`}
                   disabled={state.isSubmitting}
@@ -370,7 +365,7 @@ export function RegisterView() {
                     setConfirmPasswordError(null);
                   }}
                   placeholder="กรอกรหัสผ่านอีกครั้ง"
-                  className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all pr-12 ${
+                  className={`w-full px-4 py-3 rounded-xl border bg-input-bg text-foreground placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-racing-flag/50 transition-all pr-12 ${
                     confirmPasswordError ? 'border-error' : 'border-input-border'
                   }`}
                   disabled={state.isSubmitting}
@@ -403,13 +398,13 @@ export function RegisterView() {
                     setAcceptTerms(e.target.checked);
                     setTermsError(null);
                   }}
-                  className="w-5 h-5 rounded border-input-border text-purple-500 focus:ring-purple-500 mt-0.5"
+                  className="w-5 h-5 rounded border-input-border text-racing-flag-text focus:ring-racing-flag mt-0.5"
                 />
                 <span className="text-sm text-muted">
                   ฉันยอมรับ{' '}
-                  <Link href="/terms" className="text-purple-400 hover:text-purple-300">เงื่อนไขการใช้งาน</Link>
+                  <Link href="/terms" className="text-racing-flag-text hover:text-racing-flag-text">เงื่อนไขการใช้งาน</Link>
                   {' '}และ{' '}
-                  <Link href="/privacy" className="text-purple-400 hover:text-purple-300">นโยบายความเป็นส่วนตัว</Link>
+                  <Link href="/privacy" className="text-racing-flag-text hover:text-racing-flag-text">นโยบายความเป็นส่วนตัว</Link>
                 </span>
               </label>
               {termsError && (
@@ -420,7 +415,7 @@ export function RegisterView() {
             <button
               type="submit"
               disabled={state.isSubmitting}
-              className="w-full py-3 px-4 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-xl font-medium hover:from-purple-400 hover:to-pink-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-500/25"
+              className="w-full py-3 px-4 bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag rounded-xl font-medium hover:from-racing-flag hover:to-racing-flag-soft transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-racing-flag/25"
             >
               {state.isSubmitting ? (
                 <span className="flex items-center justify-center gap-2">
@@ -465,7 +460,7 @@ export function RegisterView() {
           {/* Login Link */}
           <p className="mt-6 text-center text-sm text-muted">
             มีบัญชีอยู่แล้ว?{' '}
-            <Link href="/auth/login" className="text-purple-400 hover:text-purple-300 font-medium transition-colors">
+            <Link href="/auth/login" className="text-racing-flag-text hover:text-racing-flag-text font-medium transition-colors">
               เข้าสู่ระบบ
             </Link>
           </p>

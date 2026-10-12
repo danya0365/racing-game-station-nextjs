@@ -16,6 +16,8 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const customerId = searchParams.get('customerId');
+    // Optional ?branch=<uuid> — restrict to one branch
+    const branchId = searchParams.get('branch') || undefined;
 
     if (!customerId) {
       return NextResponse.json(
@@ -33,7 +35,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const bookings = await repo.getMyBookings(customerId);
+    const bookings = await repo.getMyBookings(customerId, branchId);
     return NextResponse.json(bookings);
   } catch (error) {
     console.error('Error fetching my bookings:', error);

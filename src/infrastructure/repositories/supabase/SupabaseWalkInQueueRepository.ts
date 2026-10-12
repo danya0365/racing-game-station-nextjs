@@ -56,11 +56,15 @@ export class SupabaseWalkInQueueRepository implements IWalkInQueueRepository {
     return this.mapToDomain(data);
   }
 
-  async getAll(limit: number = 50, page: number = 1): Promise<WalkInQueue[]> {
+  async getAll(
+    limit: number = 50,
+    page: number = 1,
+    branchId?: string
+  ): Promise<WalkInQueue[]> {
     const from = (page - 1) * limit;
     const to = from + limit - 1;
 
-    const { data, error } = await this.supabase
+    let query = this.supabase
       .from('walk_in_queue')
       .select(`
         *,
@@ -70,6 +74,12 @@ export class SupabaseWalkInQueueRepository implements IWalkInQueueRepository {
       .order('joined_at', { ascending: false }) // Newest first for history
       .range(from, to);
 
+    if (branchId) {
+      query = query.eq('branch_id', branchId);
+    }
+
+    const { data, error } = await query;
+
     if (error) {
       console.error('Error fetching walk-in queue:', error);
       return [];
@@ -78,10 +88,10 @@ export class SupabaseWalkInQueueRepository implements IWalkInQueueRepository {
     return (data || []).map(this.mapToDomain);
   }
 
-  async getWaiting(): Promise<WalkInQueue[]> {
+  async getWaiting(branchId?: string): Promise<WalkInQueue[]> {
     // Use RPC for better performance
     const { data, error } = await this.supabase
-      .rpc('rpc_get_waiting_queue');
+      .rpc('rpc_get_waiting_queue', { p_branch_id: branchId });
 
     if (error) {
       console.error('Error fetching waiting queue:', error);
@@ -180,6 +190,7 @@ export class SupabaseWalkInQueueRepository implements IWalkInQueueRepository {
         p_preferred_machine_id: data.preferredMachineId,
         p_notes: data.notes,
         p_customer_id: data.customerId || undefined,
+        p_branch_id: data.branchId,
       });
 
     if (error) throw error;
@@ -265,9 +276,9 @@ export class SupabaseWalkInQueueRepository implements IWalkInQueueRepository {
     return data[0].queue_number + 1;
   }
 
-  async getStats(): Promise<WalkInQueueStats> {
+  async getStats(branchId?: string): Promise<WalkInQueueStats> {
     const { data, error } = await this.supabase
-      .rpc('rpc_get_walk_in_queue_stats');
+      .rpc('rpc_get_walk_in_queue_stats', { p_branch_id: branchId });
 
     if (error) {
       console.error('Error fetching queue stats:', error);

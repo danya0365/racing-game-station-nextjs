@@ -1,11 +1,18 @@
-import { JoinWalkInView } from '@/src/presentation/components/walk-in/JoinWalkInView';
-import { Metadata } from 'next';
+import { RedirectToBranch } from "@/src/presentation/components/branch/RedirectToBranch";
+import { Metadata } from "next";
+import { SHOP_NAME, shopPageTitle } from "@/src/config/shop.config";
 
 export const metadata: Metadata = {
-  title: 'เข้าคิวเล่นเกม | Racing Game Station',
-  description: 'ระบบรับบำดับคิวสำหรับลูกค้า Walk-in ที่ Racing Game Station',
+  title: shopPageTitle("เข้าคิวเล่นเกม"),
+  description: `ระบบรับบำดับคิวสำหรับลูกค้า Walk-in ที่ ${SHOP_NAME}`,
 };
 
+/**
+ * Legacy un-prefixed URL → the customer's chosen branch.
+ *
+ * The real page lives under /pattani/walk-in or /narathiwas/walk-in; see
+ * app/time-booking/page.tsx for why the bare URL only redirects.
+ */
 export default function WalkInPage() {
-  return <JoinWalkInView />;
+  return <RedirectToBranch path="walk-in" />;
 }

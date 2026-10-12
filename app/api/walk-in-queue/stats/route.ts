@@ -9,12 +9,14 @@ import { createClient } from '@/src/infrastructure/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 
 // GET /api/walk-in-queue/stats
-export async function GET(_request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
     const repository = new SupabaseWalkInQueueRepository(supabase);
     
-    const stats = await repository.getStats();
+    // Optional ?branch=<uuid> — restrict stats to one branch
+    const branchId = new URL(request.url).searchParams.get('branch') || undefined;
+    const stats = await repository.getStats(branchId);
     
     return NextResponse.json(stats);
   } catch (error) {

@@ -1,10 +1,11 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { PageHeader } from "@/src/presentation/components/ui/PageHeader";
+import { SHOP_NAME, shopPageTitle } from "@/src/config/shop.config";
 
 export const metadata: Metadata = {
-  title: "เงื่อนไขการใช้บริการ | Racing Game Station",
-  description: "เงื่อนไขและข้อกำหนดในการใช้บริการ Racing Game Station",
+  title: shopPageTitle("เงื่อนไขการใช้บริการ"),
+  description: `เงื่อนไขและข้อกำหนดในการใช้บริการ ${SHOP_NAME}`,
 };
 
 export default function TermsPage() {
@@ -21,11 +22,11 @@ export default function TermsPage() {
           {/* Introduction */}
           <section>
             <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-              <span className="w-1.5 h-6 rounded-full bg-purple-500" />
+              <span className="w-1.5 h-6 rounded-full bg-racing-flag" />
               ข้อตกลงทั่วไป
             </h2>
             <p className="text-muted leading-relaxed">
-              ยินดีต้อนรับสู่ Racing Game Station การใช้บริการของท่านถือว่ายอมรับเงื่อนไขต่อไปนี้
+              ยินดีต้อนรับสู่ {SHOP_NAME} การใช้บริการของท่านถือว่ายอมรับเงื่อนไขต่อไปนี้
               กรุณาอ่านอย่างละเอียดก่อนใช้บริการ
             </p>
           </section>
@@ -33,7 +34,7 @@ export default function TermsPage() {
           {/* Section 1 */}
           <section className="space-y-4">
             <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white text-sm font-bold">
+              <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-racing-on-flag text-sm font-bold">
                 1
               </span>
               การจองและการเข้าคิว
@@ -61,22 +62,22 @@ export default function TermsPage() {
           {/* Section 2 */}
           <section className="space-y-4">
             <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white text-sm font-bold">
+              <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-racing-on-flag text-sm font-bold">
                 2
               </span>
               การชำระเงิน
             </h3>
             <ul className="space-y-3 text-muted pl-4">
               <li className="flex gap-3">
-                <span className="text-cyan-500 mt-1">•</span>
+                <span className="text-racing-flag-text mt-1">•</span>
                 <span>รับชำระผ่านเงินสด, QR Code, และบัตรเครดิต</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-cyan-500 mt-1">•</span>
+                <span className="text-racing-flag-text mt-1">•</span>
                 <span>ค่าบริการคิดตามเวลาใช้งานจริงหรือตามโปรโมชั่น</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-cyan-500 mt-1">•</span>
+                <span className="text-racing-flag-text mt-1">•</span>
                 <span>ไม่มีการคืนเงินสำหรับเวลาที่เหลือจากการยกเลิกก่อนกำหนด</span>
               </li>
             </ul>
@@ -85,26 +86,26 @@ export default function TermsPage() {
           {/* Section 3 */}
           <section className="space-y-4">
             <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white text-sm font-bold">
+              <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-racing-flag to-racing-flag-soft flex items-center justify-center text-racing-on-flag text-sm font-bold">
                 3
               </span>
               กฎระเบียบการใช้เครื่อง
             </h3>
             <ul className="space-y-3 text-muted pl-4">
               <li className="flex gap-3">
-                <span className="text-pink-500 mt-1">•</span>
+                <span className="text-racing-flag-text mt-1">•</span>
                 <span>ห้ามรับประทานอาหารหรือเครื่องดื่มใกล้เครื่องเล่น</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-pink-500 mt-1">•</span>
+                <span className="text-racing-flag-text mt-1">•</span>
                 <span>ห้ามติดตั้งซอฟต์แวร์หรือแก้ไขการตั้งค่าเครื่อง</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-pink-500 mt-1">•</span>
+                <span className="text-racing-flag-text mt-1">•</span>
                 <span>ห้ามใช้เครื่องในเชิงพาณิชย์หรือการแข่งขันที่ไม่ได้รับอนุญาต</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-pink-500 mt-1">•</span>
+                <span className="text-racing-flag-text mt-1">•</span>
                 <span>เครื่องเสียหายจากการใช้งานผิดปกติต้องรับผิดชอบค่าเสียหาย</span>
               </li>
             </ul>
@@ -120,7 +121,7 @@ export default function TermsPage() {
             </h3>
             <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
               <p className="text-amber-500 text-sm leading-relaxed">
-                Racing Game Station ไม่รับผิดชอบต่อทรัพย์สินสูญหาย
+                {SHOP_NAME} ไม่รับผิดชอบต่อทรัพย์สินสูญหาย
                 กรุณาดูแลทรัพย์สินส่วนตัวของท่านให้ดี
                 เรามีกล้องวงจรปิดเพื่อความปลอดภัย แต่ไม่รับประกันความเสียหายใดๆ
               </p>
@@ -160,7 +161,7 @@ export default function TermsPage() {
               </div>
               <Link
                 href="/customer/booking-history"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 text-white font-medium hover:from-purple-400 hover:to-pink-500 transition-all"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-racing-flag to-racing-flag-soft text-racing-on-flag font-medium hover:from-racing-flag hover:to-racing-flag-soft transition-all"
               >
                 ติดต่อเรา
                 <span>→</span>
@@ -171,11 +172,11 @@ export default function TermsPage() {
 
         {/* Footer Links */}
         <div className="flex justify-center gap-6 mt-8 text-sm text-muted">
-          <Link href="/privacy" className="hover:text-purple-400 transition-colors">
+          <Link href="/privacy" className="hover:text-racing-flag-text transition-colors">
             นโยบายความเป็นส่วนตัว
           </Link>
           <span>•</span>
-          <Link href="/" className="hover:text-purple-400 transition-colors">
+          <Link href="/" className="hover:text-racing-flag-text transition-colors">
             หน้าหลัก
           </Link>
         </div>
