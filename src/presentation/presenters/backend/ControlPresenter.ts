@@ -187,9 +187,13 @@ export class ControlPresenter {
   }
 
   /**
-   * End a session
+   * End a session at an amount the staff member confirmed.
+   *
+   * `totalAmount` is required: `rpc_end_session` refuses NULL and has no
+   * DEFAULT, so a missing amount is a 404 from PostgREST rather than a
+   * system-priced total.
    */
-  async endSession(sessionId: string, totalAmount?: number): Promise<Session> {
+  async endSession(sessionId: string, totalAmount: number): Promise<Session> {
     return this.sessionRepo.endSession({
       sessionId,
       totalAmount,

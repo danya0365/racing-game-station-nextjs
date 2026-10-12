@@ -20,7 +20,17 @@ export async function POST(request: NextRequest, { params }: Params) {
     
     const { id } = await params;
     const body = await request.json().catch(() => ({}));
-    
+
+    // `rpc_end_session` ไม่มี DEFAULT ของ p_total_amount → เรียกโดยไม่ส่งจะได้
+    // PGRST202 และข้อความดิบจาก Postgres หลุดถึง client (ชื่อ function + signature)
+    // ตรวจตรงนี้แทนที่จะให้ route โยน error ดิบกลับไป
+    if (typeof body.totalAmount !== 'number' || !Number.isFinite(body.totalAmount)) {
+      return NextResponse.json(
+        { error: 'กรุณาระบุยอดเงินที่เก็บ' },
+        { status: 400 }
+      );
+    }
+
     const session = await repository.endSession({
       sessionId: id,
       totalAmount: body.totalAmount,

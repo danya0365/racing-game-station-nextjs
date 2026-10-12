@@ -78,7 +78,15 @@ export interface StartSessionData {
  */
 export interface EndSessionData {
   sessionId: string;
-  totalAmount?: number;  // If not provided, will be calculated based on duration
+  /**
+   * ยอดเงินที่พนักงานยืนยันแล้ว — required ไม่ใช่ optional
+   *
+   * เคยเป็น optional เพราะ `rpc_end_session` คิดราคาให้เองเมื่อได้ NULL
+   * ตอนนี้ RPC ปฏิเสธ NULL (ไม่มีทางที่ระบบเก็บเงินโดยไม่มีคนยืนยัน)
+   * และฟังก์ชันไม่มี DEFAULT ทำให้เรียกแบบไม่ส่ง argument จะได้ PGRST202
+   * ตัวเลขที่ระบบคำนวณมีอยู่ใน UI เป็น "ราคาแนะนำ" ให้พนักงานเทียบ
+   */
+  totalAmount: number;
 }
 
 // ============================================================

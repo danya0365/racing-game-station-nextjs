@@ -363,7 +363,7 @@ export class BackendPresenter {
   /**
    * End a session
    */
-  async endSession(sessionId: string, totalAmount?: number): Promise<Session> {
+  async endSession(sessionId: string, totalAmount: number): Promise<Session> {
     try {
       return await this.sessionRepository.endSession({ sessionId, totalAmount });
     } catch (error) {

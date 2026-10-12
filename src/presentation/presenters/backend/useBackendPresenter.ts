@@ -57,7 +57,7 @@ export interface BackendPresenterActions {
   selectMachine: (machine: Machine | null) => void;
   updateQueueStatus: (queueId: string, status: QueueStatus) => Promise<void>;
 
-  endSession: (sessionId: string, totalAmount?: number) => Promise<void>;
+  endSession: (sessionId: string, totalAmount: number) => Promise<void>;
   createMachine: (data: MachineCreateData) => Promise<void>;
   updateMachineStatus: (machineId: string, status: MachineStatus) => Promise<void>;
   updateMachine: (machineId: string, data: MachineUpdateData) => Promise<void>;
@@ -219,7 +219,7 @@ export function useBackendPresenter(
   /**
    * End a session
    */
-  const endSession = useCallback(async (sessionId: string, totalAmount?: number) => {
+  const endSession = useCallback(async (sessionId: string, totalAmount: number) => {
     setIsUpdating(true);
     setError(null);
 
