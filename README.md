@@ -295,6 +295,8 @@ npm run dev
 | `npm run setup:env:prod` | ตรวจ env vars ที่จำเป็นสำหรับ production (fail ถ้าขาด) |
 | `npm run setup:git-hooks` | ติดตั้ง `pre-commit` hook (บล็อก commit ลง main/develop) — รันครั้งเดียวหลัง clone |
 | **Test** ||
+| `npm test` | unit test 19 เคส + DB sync test 7 เคส (pricing-sync ข้ามถ้า local Supabase ไม่ได้ขึ้น) |
+| `npm run test:db` | alias ของ `npm test` |
 | `npm run test:api` | integration test 13 เคส (ต้องเปิด dev server ก่อน) |
 
 ---
@@ -449,7 +451,8 @@ npm run dev
 | `branches` | สาขาของร้าน (`slug` = ส่วนของ URL) — seed มา 2 แถว: pattani · narathiwas |
 | `profiles` | โปรไฟล์ผู้ใช้ (ผูก `auth.users`) — รองรับหลายโปรไฟล์ต่อคน |
 | `profile_roles` | บทบาท: `user` / `moderator` / `admin` |
-| `machines` | เครื่องเล่น + สถานะ + ราคาต่อชั่วโมง + `branch_id` (บังคับ NOT NULL) |
+| `machines` | เครื่องเล่น + สถานะ + `branch_id` (บังคับ NOT NULL) · `hourly_rate` เลิกใช้แล้ว |
+| `branch_rate_tiers` | **ราคาต่อสาขา** — เจ้าของตัวเลขเงินจริงที่ RPC ใช้คิด |
 | `customers` | ข้อมูลลูกค้า (เบอร์โทร = identity key, VIP, จำนวนครั้งที่มา) |
 | `bookings` | การจองล่วงหน้า + generated columns สำหรับคิวตามเวลาร้าน — สาขามาจากเครื่อง |
 | `walk_in_queue` | คิวหน้าร้าน (เลขคิว, party size, สถานะ waiting→called→seated) — มี `branch_id` เพราะ `preferred_machine_id` เป็น NULL ได้ |
@@ -484,7 +487,11 @@ branches ──┬──< machines ──┬──< bookings >── customers >
 - **`sessions` คือแหล่งความจริงของรายได้** — คิดเงินจากเวลาที่เล่นจริง ไม่ใช่เวลาที่จอง
 - **สาขาอยู่ที่ `machines.branch_id`** — booking ของเครื่องไหนก็อยู่สาขานั้น · `walk_in_queue` ต้องมี `branch_id` เอง เพราะลูกค้าเลือก preferred machine ได้
 - **`bookings` ใช้ generated columns** (`local_date`, `local_start_time`, `is_cross_midnight`) คำนวณจาก `business_timezone` → query ตามวันเวลาร้านได้เร็วโดยไม่ต้องแปลง timezone ทุกครั้ง
-- **ราคาคำนวณ 2 ชั้น**: `calculate_booking_total_price()` trigger คิดตอนจอง (`CEIL(minutes/60) × hourly_rate`), ส่วน `rpc_end_session()` คิดตอนจบเซสชัน
+- **ราคาอ้างอิงอยู่ที่ `branch_rate_tiers` ของสาขาเครื่องนั้น** คำนวณด้วย `calculate_session_price(branch_id, minutes)`
+  - `rpc_create_booking()` ใช้ค่านี้เป็น **ยอดที่เก็บจริง** — ลูกค้าเห็นราคานี้ตอนกดยืนยัน แก้ไม่ได้
+  - `rpc_end_session()` **ไม่คำนวณให้** — ปฏิเสธยอด NULL บังคับให้พนักงานยืนยันตัวเลข (ค่าที่ระบบคำนวณแสดงเป็น "ราคาแนะนำ" ฝั่ง UI)
+  - ⚠️ ก่อนปี 2026-10-12 ทั้งสองฝั่งคิดคนละสูตร (`CEIL(minutes/60) × hourly_rate`) กับราคาที่แสดงบนเว็บ → ลูกค้าโดนเก็บเงินผิด
+  - `npm test` เทียบสูตร JS กับสูตร SQL ทุกค่า กันไม่ให้หลุดอีก
 - **ทุกการเขียนผ่าน `SECURITY DEFINER` RPC** — ไม่มี client เขียนตารางตรง
 
 ### RPC หลัก
@@ -543,16 +550,43 @@ Utility gradient ที่สร้างไว้ (`@utility`): `gradient-purpl
 
 ## 💵 ราคาและกติกาทางธุรกิจ
 
-ราคาทั้งหมดอยู่ที่ [`src/config/booking.config.ts`](src/config/booking.config.ts) — แก้ที่เดียว ทั้งระบบเปลี่ยน
+**ราคาแยกตามสาขา** — แต่ละสาขาคิดไม่เท่ากัน
 
-| ระยะเวลา | รหัส | ราคา | ต่อนาที |
-|----------|------|------|--------|
-| 30 นาที | WARM UP | ฿60 | ฿2.00 |
-| 60 นาที | PRO RACE | ฿100 | ฿1.67 |
-| 120 นาที | PRO RACE | ฿200 | ฿1.67 |
-| 180 นาที | GRAND PRIX | ฿280 | ฿1.56 |
+| ระยะเวลา | รหัส | นราธิวาส | ปัตตานี |
+|----------|------|---------|--------|
+| 30 นาที | WARM UP | ฿60 | ฿79 |
+| 60 นาที | PRO RACE | ฿100 | ฿119 |
+| 120 นาที | PRO RACE | ฿200 | ฿200 |
+| 180 นาที | GRAND PRIX | ฿280 | ฿280 |
 
-**Step pricing**: เกินเวลาเมื่อไร คิดเป็นขั้นบน (เช่น 45 นาที → ฿100 ไม่ใช่ ฿90) เกินขั้นสูงสุดแล้วคิดต่อนาทีด้วยเรทที่ถูกที่สุด
+**แก้ราคาต้องแก้ 2 ที่ให้ตรงกัน** แล้วรัน `npm test` เพื่อเช็ค:
+
+| ที่ไหน | ทำอะไร |
+|-------|--------|
+| [`src/config/booking.config.ts`](src/config/booking.config.ts) → `BRANCH_RATES` | ราคาที่แสดงบนหน้าเว็บ + ที่ client คิดตอนจบเซสชัน |
+| [`supabase/migrations/20261012000000_branch_pricing.sql`](supabase/migrations/20261012000000_branch_pricing.sql) → seed `branch_rate_tiers` | ราคาที่ RPC ใช้คิดเงินจริง |
+
+`npm test` จะรัน `scripts/test/pricing-sync.test.ts` เทียบสูตรจาก JS กับสูตรจาก
+PostgreSQL ทุกค่า — ถ้าสองฝั่งหลุดจากกันจะแดงทันที ไม่ใช่เจอตอนลูกค้ามาเก็บเงิน
+
+**Step pricing**: เกินเวลาเมื่อไร คิดเป็นขั้นบน (เช่น 45 นาทีที่ปัตตานี → ฿119 ไม่ใช่ ฿99)
+เกินขั้นสูงสุดแล้วคิดต่อนาทีด้วยเรทที่ถูกที่สุดของสาขานั้น
+
+### ใครเป็นคนตัดสินเรื่องเงิน — สองทางนี้ไม่เหมือนกัน
+
+| | การจองล่วงหน้า | จบเซสชัน (walk-in / เล่นผ่านเครื่อง) |
+|---|---|---|
+| ใครตัดสิน | **ลูกค้า** — เห็นราคาตอนกดยืนยัน | **พนักงาน** — ยืนยันและแก้ได้ |
+| ระบบทำอะไร | คำนวณให้อัตโนมัติ | คำนวณเป็น **ราคาแนะนำ** ให้เทียบ |
+| ผิดพลาดแล้วเป็นอะไร | ลูกค้ามาบอกได้ เลยต้องตรงเสมอ | พนักงานแก้ได้ก่อนยืนยัน จึงไม่กระทบ |
+
+ฝั่งจบเซสชัน **ไม่มีทางที่ระบบเก็บเงินโดยไม่มีคนยืนยัน** —
+`rpc_end_session` ปฏิเสธยอด NULL และ `endSession()` ฝั่ง client บังคับให้ส่งตัวเลขเสมอ
+ช่องยอดเงินเริ่มว่าง พนักงานกด "ใช้ราคาแนะนำ" หรือพิมพ์เอง (ลดราคา ของแถม ส่วนลด)
+ราคาที่เก็บลง `sessions.total_amount` คือยอดที่คนยืนยัน ไม่ใช่ยอดที่ระบบคำนวณ
+
+> ⚠️ `machines.hourly_rate` **เลิกถูกใช้คิดเงินแล้ว** (คงไว้เพราะหน้า backend ยังเขียนค่านี้อยู่)
+> ถ้าอยากให้เครื่องบางตัวราคาเฉพาะ ต้องเพิ่ม per-machine override — **ห้าม**แก้กลับไปอ่าน `hourly_rate`
 
 **เวลาทำการ**: `OPERATING_HOURS` = เปิด 10:00–22:00 แต่มี `isOpen24Hours: true` ซึ่ง override `open`/`close` → ระบบเปิดตลอด 24 ชม. ปรับเป็นเปิดปิดตามเวลาต้องแก้ flag นี้
 
@@ -607,7 +641,7 @@ TEST_URL=https://your-app.vercel.app npm run test:api
 
 ครอบคลุม: machines, bookings schedule, walk-in queue (create → read → call → cancel), sessions (list/active/today/stats)
 
-> โปรเจคนี้**ไม่มี unit test** และไม่มี CI — สคริปต์นี้เป็นตาข่ายนิรภัยชั้นเดียวที่คุณลูกค้า/เซสชันจริงเดินผ่าน
+> สคริปต์นี้ทดสอบ **ผ่าน HTTP จริง** — unit test มีแค่ฝั่งราคา (`npm test`) ส่วนที่เหลือยังต้องเดินผ่าน HTTP
 
 > ⚠️ เคส walk-in เป็นลำดับ — ถ้า `POST /api/walk-in-queue` ล้มเหลว เคสถัดไป 3 จะ fail ตาม (cascade) และเคส `call` คาดหวัง `500 || ok` เพราะ anonymous เรียก RPC ที่ต้องเป็น admin
 
@@ -729,7 +763,8 @@ TEST_URL=https://your-app.vercel.app npm run test:api
 - **`rpc_join_walk_in_queue` เดาสาขาเอง** — [20261008000000_multi_branch.sql](supabase/migrations/20261008000000_multi_branch.sql) บรรทัดที่ `COALESCE(p_branch_id, '00000000-0000-0000-0000-000000000b02')` ฝัง UUID สาขานราธิวาสไว้เป็น fallback: ถ้าเข้าคิวโดยไม่ได้เลือกเครื่อง และ request ไม่ได้ส่ง branch มา → ลงคิวของนราธิวาสโดยไม่ถาม ตอนนี้ยังถูก (นราธิวาสคือสาขาเดียวที่มีเครื่อง) แต่พอแตกสาขาที่ 3 จะพังเงียบ ๆ — ทางแก้คือคืน `success: false` + error "ไม่ทราบสาขา" แทนการเดา
 - ตาราง `branches` ไม่มี `GRANT` ให้ `anon`/`authenticated` (migration เดิมให้ `GRANT ALL` 5 ตารางหลัก) — ตอนนี้ยังไม่พังเพราะโค้ดอ่านผ่าน `rpc_get_branches()` ที่เป็น `SECURITY DEFINER` แต่ถ้ามีใครเรียก `.from('branches')` ตรงจะเจอ permission denied
 - ไม่มีไฟล์ `LICENSE`
-- ไม่มี unit test และไม่มี CI — gate ที่ใช้ได้จริงมีแค่ `npm run type-check` (ผ่าน) กับ `npm run build` (ผ่าน) ส่วน `npm run lint` **แดงอยู่ 103 errors / 24 warnings** ทั้งหมดเป็นของเก่าที่ยังไม่ได้แก้
+- **ไม่มี CI** — gate รันมือ: `npm run type-check` (ผ่าน) · `npm run lint` · `npm run build` (ผ่าน) · `npm test` (ผ่าน 26 เคส) · `npm run test:api`
+- `npm run lint` **แดงอยู่ 103 errors / 23 warnings** ทั้งหมดเป็นของเก่าที่ยังไม่ได้แก้ (วัด 2026-10-12 เทียบ HEAD แล้ว ไม่มีของใหม่หลุดเข้ามา)
 
 ---
 

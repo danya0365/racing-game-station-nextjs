@@ -2,7 +2,8 @@
 
 import {
   DEFAULT_DURATION,
-  DURATION_OPTIONS,
+  formatPrice,
+  getDurationOptions,
   OPERATING_HOURS,
 } from "@/src/config/booking.config";
 import { BranchBanner } from "@/src/presentation/components/branch/BranchBanner";
@@ -58,6 +59,9 @@ export function TimeBookingView({
   const [name, setName] = useState(customerInfo.name);
   const [phone, setPhone] = useState(customerInfo.phone);
   const [duration, setDuration] = useState(DEFAULT_DURATION);
+
+  // ราคาตามสาขาที่ลูกค้าเลือก — ปัตตานีกับนราธิวาสไม่ได้คิดเท่ากัน
+  const durationOptions = getDurationOptions(branch.slug);
 
   // Update local state when customer info changes
   useEffect(() => {
@@ -675,7 +679,7 @@ export function TimeBookingView({
                       ระยะเวลา
                     </label>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      {DURATION_OPTIONS.map((d) => (
+                      {durationOptions.map((d) => (
                         <button
                           key={d.time}
                           type="button"
@@ -789,6 +793,18 @@ export function TimeBookingView({
                       </span>
                       <span className="text-racing-flag-text font-bold">
                         {duration} นาที
+                      </span>
+                    </div>
+                    {/* ราคา — ต้องเห็นก่อนกดยืนยัน
+                        ขั้นนี้คือหน้าสุดท้ายก่อนคิดเงินจริง ถ้าไม่มีบรรทัดนี้ลูกค้า
+                        เลือก "1 ชั่วโมง" แล้วกดยืนยันโดยไม่รู้ว่าจะโดนกี่บาท
+                        ราคาแยกตามสาขาแล้วการเดายิ่งไม่ได้ */}
+                    <div className="flex justify-between items-center gap-4">
+                      <span className="text-muted dark:text-white/60 shrink-0">
+                        💰 ค่าใช้จ่าย
+                      </span>
+                      <span className="text-foreground dark:text-white font-bold text-right">
+                        {formatPrice(duration, branch.slug)}
                       </span>
                     </div>
                   </div>

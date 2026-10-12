@@ -33,7 +33,9 @@ export class SupabaseChatRepository implements IChatRepository {
       name: m.name as string,
       status: m.status as 'available' | 'occupied' | 'maintenance',
       type: (m.type as string) ?? null,
-      hourlyRate: m.hourly_rate as number,
+      // rate_1h คือราคา tier 1 ชั่วโมงของสาขานั้น อ่านจาก branch_rate_tiers
+      // ไม่ใช่ machines.hourly_rate ที่ไม่ได้อยู่ในตารางราคาที่ลูกค้าเห็น
+      rate1h: (m.rate_1h as number | null) ?? null,
     }));
   }
 

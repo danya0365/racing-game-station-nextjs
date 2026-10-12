@@ -10,7 +10,17 @@ export interface MachineInfo {
   name: string;
   status: 'available' | 'occupied' | 'maintenance';
   type: string | null;
-  hourlyRate: number;
+  /**
+   * ราคา tier 1 ชั่วโมงของสาขานี้เครื่อง (rate_1h จาก rpc_get_active_machines)
+   *
+   * เดิมชื่อ hourlyRate และอ่านจาก machines.hourly_rate ซึ่งเป็นตัวเลขที่ไม่มีที่ไหน
+   * แสดงให้ลูกค้าเห็น — ลูกค้าเห็น 100 บาท แต่ LINE บอก 200 บาท/ชม.
+   * ตอนนี้เป็นราคาจริงจาก branch_rate_tiers ของสาขานั้น
+   *
+   * null = สาขายังไม่ได้ตั้งราคา → ผู้ใช้ต้องแสดง "ยังไม่มีข้อมูลราคา"
+   * ห้ามแสดงเป็น 0 เพราะ 0 คือ "เล่นฟรี" ไม่ใช่ "ไม่รู้"
+   */
+  rate1h: number | null;
 }
 
 export interface QueueEntry {

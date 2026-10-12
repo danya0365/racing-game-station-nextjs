@@ -2,7 +2,7 @@
 
 import { Machine } from "@/src/application/repositories/IMachineRepository";
 import { useActiveBranch } from "@/src/presentation/components/branch/BranchScope";
-import { DURATION_OPTIONS } from "@/src/config/booking.config";
+import { DurationOption, getDurationOptions } from "@/src/config/booking.config";
 import { BRANCHES } from "@/src/config/branch.config";
 import { HomeViewModel } from "@/src/presentation/presenters/home/HomePresenter";
 import { MachineImage } from "@/src/presentation/components/ui/MachineImage";
@@ -35,6 +35,9 @@ export function HomeView({
     undefined,
     branch.id,
   );
+
+  // ราคาเปลี่ยนตามสาขา — อ่านจาก branch ที่ลูกค้าเลือก ไม่ใช่ค่าคงที่
+  const rateCards = getDurationOptions(branchSlug);
 
   const machines = viewModel?.machines || [];
   const stats = {
@@ -161,7 +164,7 @@ export function HomeView({
             </Link>
           </div>
           <div className="grid grid-cols-4 gap-1.5 md:gap-2.5">
-            {DURATION_OPTIONS.map((d) => (
+            {rateCards.map((d) => (
               <RateCard key={d.time} rate={d} />
             ))}
           </div>
@@ -424,7 +427,7 @@ function MachineCard({ machine }: { machine: Machine }) {
   );
 }
 
-function RateCard({ rate }: { rate: (typeof DURATION_OPTIONS)[number] }) {
+function RateCard({ rate }: { rate: DurationOption }) {
   return (
     <div
       className={`px-2 py-2 md:px-3.5 md:py-3 rounded-xl border ${
