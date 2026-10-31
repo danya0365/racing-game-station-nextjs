@@ -3,7 +3,6 @@
 /* ============================================
    Tailwind v4: Class-based Dark Mode
    ============================================ */
-@custom-variant dark (&:where(.dark, .dark *));
 
 /* ============================================
    Racing Game Station — Main Entry Point
@@ -20,10 +19,9 @@
 @import "./racing-theme.css";
 @import "./fonts.css";
 
-@layer base {
-  @import "./base.css";
-}
+@import "./base.css" layer(base);
 
-@layer components {
-  @import "./components.css";
-}
+@import "./components.css" layer(components);
+
+/* Tailwind v4: class-based dark mode (must follow all @import rules) */
+@custom-variant dark (&:where(.dark, .dark *));
