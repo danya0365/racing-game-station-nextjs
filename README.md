@@ -212,7 +212,7 @@ racing-game-station-nextjs/
 │   └── seeds_mock/000-init_seed.sql    # ⚠️ ยังรันไม่ได้ (ดู Known Issues)
 │
 ├── scripts/                            # bash deploy scripts + git-hooks/ + test-api.ts
-├── public/styles/                      # 6 CSS files (Tailwind v4 entry)
+├── app/styles/                      # 6 CSS files (Tailwind v4 entry)
 └── docs/                               # DEPLOYMENT.md, audit/, plan/, walkthrough/, screenshots/
 ```
 
@@ -514,7 +514,7 @@ branches ──┬──< machines ──┬──< bookings >── customers >
 
 ระบบธีมแบ่งเป็น 3 ชั้น:
 
-**ชั้นที่ 1 — Global theme** (ทั้งเว็บ) อยู่ใน [public/styles/theme.css](public/styles/theme.css)
+**ชั้นที่ 1 — Global theme** (ทั้งเว็บ) อยู่ใน [app/styles/theme.css](app/styles/theme.css)
 
 | Token | ใช้ทำอะไร |
 |-------|-----------|
@@ -529,7 +529,7 @@ Dark mode ใช้ class-based variant (`@custom-variant dark`) — สลั�
 
 Utility gradient ที่สร้างไว้ (`@utility`): `gradient-purple` · `gradient-cyan` · `gradient-pink` · `gradient-green` · `gradient-orange` (+ เวอร์ชัน `-bg` ที่เป็นพื้นหลัง)
 
-**ชั้นที่ 2 — Branch racing theme** (สีประจำสาขา) อยู่ใน [public/styles/racing-theme.css](public/styles/racing-theme.css)
+**ชั้นที่ 2 — Branch racing theme** (สีประจำสาขา) อยู่ใน [app/styles/racing-theme.css](app/styles/racing-theme.css)
 
 สีถอดจากโลโก้จริงใน `public/assets/logo/`:
 

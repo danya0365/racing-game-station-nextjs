@@ -8,7 +8,7 @@ import {
   SHOP_TEAM_NAME,
 } from "@/src/config/shop.config";
 import type { Metadata } from "next";
-import "../public/styles/index.css";
+import "./styles/index.css";
 
 const SITE_TITLE = `${SHOP_NAME} - ระบบจองคิว`;
 const SITE_DESCRIPTION = `ระบบจองคิวสำหรับ ${SHOP_NAME} - จองคิวง่าย รวดเร็ว`;

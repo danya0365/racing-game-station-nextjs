@@ -17,7 +17,7 @@ import Link from "next/link";
  * ของคนที่มาร้านคือ "เล่นได้เลยไหม" แล้วค่อยเป็นปุ่มหลักที่ครอบคลุม
  * การใช้งานเกือบทั้งหมด
  *
- * สีมาจากธีม racing (public/styles/racing-theme.css) ซึ่งสลับ accent
+ * สีมาจากธีม racing (app/styles/racing-theme.css) ซึ่งสลับ accent
  * ตาม data-racing — ค่าใน component นี้ไม่ผูกสีแบรนด์ไว้เลย
  */
 export function HomeView({
